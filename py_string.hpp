@@ -207,7 +207,7 @@ bool isspace(_Elme c)
 #ifndef PY_SLICE
 #define PY_SLICE
 
-using nint_t = null_allow::null_allow<int>;
+using null_int_t = null_allow::null_allow<int>;
 
 #endif
 
@@ -248,6 +248,7 @@ public:
   using std::basic_string<_Elme>::operator=;
   basic_string<_Elme>() : std::basic_string<_Elme>(){};
   basic_string<_Elme>(std::basic_string<_Elme> _Str) : std::basic_string<_Elme>(_Str){};
+  basic_string<_Elme>(_Elme _Chr) : std::basic_string<_Elme>(1, _Chr){};
   //override//
   const _Elme &at(int _Index) const { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
   _Elme &at(int _Index) { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
@@ -331,9 +332,9 @@ public:
   basic_string<_Elme> title(void);
   basic_string<_Elme> upper(void);
   basic_string<_Elme> zfill(size_t width);
-  basic_string<_Elme> slice(null_allow::null_allow<int> index);
-  basic_string<_Elme> slice(null_allow::null_allow<int> start, null_allow::null_allow<int> end);
-  basic_string<_Elme> slice(null_allow::null_allow<int> start, null_allow::null_allow<int> end, null_allow::null_allow<int> step);
+  basic_string<_Elme> slice(null_int_t index);
+  basic_string<_Elme> slice(null_int_t start, null_int_t end);
+  basic_string<_Elme> slice(null_int_t start, null_int_t end, null_int_t step);
 };
 
 template <class _Elme>
@@ -390,77 +391,21 @@ basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<null_a
 {
   basic_string<_Elme> str;
   auto in = slice.begin();
-  null_allow::null_allow<int> index1 = *in;
-  ++in;
-  null_allow::null_allow<int> index2 = *in;
-  ++in;
-  null_allow::null_allow<int> index3 = *in;
-  if (slice.size() == 0)
+  null_int_t index1 = *in++;
+  null_int_t index2 = *in++;
+  null_int_t index3 = *in;
+
+  switch (slice.size())
   {
+  case 0:
     return *this;
+  case 1:
+    return this->slice(index1);
+  case 2:
+    return this->slice(index1, index2);
+  default: //case 3:
+    return this->slice(index1, index2, index3);
   }
-  else if (slice.size() == 1)
-  {
-    if (index1 == nullptr)
-    {
-      return *this;
-    }
-    else
-    {
-      str.push_back(this->at(index1));
-      return str;
-    }
-  }
-  else if (slice.size() == 2)
-  {
-    index1 = index1 == nullptr ? 0 : index1;
-    index1 = index1 < 0 ? _back_index(index1) : index1;
-
-    index2 = (index2 == nullptr) || (index2 > this->size_i()) ? this->size_i() : index2;
-    index2 = (index2 < 0) ? _back_index(index2) : index2;
-
-    if (index1 >= index2)
-    {
-      return str;
-    }
-
-    for (int i = index1; i < index2; i++)
-    {
-      str.push_back(this->at(i));
-    }
-    return str;
-  }
-  else
-  {
-    if (index3 == 0)
-    {
-      return str;
-    }
-    index1 = index1 == nullptr ? 0 : index1;
-    index1 = index1 < 0 ? _back_index(index1) : index1;
-
-    index2 = (index2 == nullptr) || (index2 > this->size_i()) ? this->size_i() : index2;
-    index2 = (index2 < 0) ? _back_index(index2) : index2;
-
-    index3 = index3 == nullptr ? 1 : index3;
-
-    if (index3 > 0)
-    {
-      for (int i = index1; i < index2; i += index3)
-      {
-        str.push_back(this->at(i));
-      }
-    }
-    else //the case of the 3ed number is negative
-    {
-      for (int i = index1 - 1; std::abs(i) < index2 + 1; i += index3)
-      {
-        str.push_back(this->at(i));
-      }
-    }
-    return str;
-  }
-  return str;
 }
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::capitalize(void)
@@ -1289,18 +1234,71 @@ basic_string<_Elme> basic_string<_Elme>::zfill(size_t width)
   }
   return str;
 }
-/*
-basic_string<_Elme> slice(null_allow::null_allow<int> index);
-basic_string<_Elme> slice(null_allow::null_allow<int> start, null_allow::null_allow<int> end);
-basic_string<_Elme> slice(null_allow::null_allow<int> start, null_allow::null_allow<int> end, null_allow::null_allow<int> step);
-template<class _Elme>
-template<class _Elme>
-template<class _Elme>
+template <class _Elme>
+basic_string<_Elme> basic_string<_Elme>::slice(null_int_t index)
+{
+  if (index == nullptr)
+  {
+    return *this;
+  }
+  else
+  {
+    return this->at(index);
+  }
+}
+template <class _Elme>
+basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end)
+{
+  start = start == nullptr ? 0 : start;
+  start = start < 0 ? _back_index(start) : start;
 
-*/
+  end = (end == nullptr) || (end > this->size()) ? this->size() : end;
+  end = (end < 0) ? _back_index(end) : end;
+
+  if (start >= end)
+  {
+    return "";
+  }
+  return this->substr(start, end - start);
+}
+template <class _Elme>
+basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end, null_int_t step)
+{
+  if (step == 0)
+    return "";
+  if (step == nullptr || step == 1)
+    return this->slice(start, end);
+  start = start == nullptr ? 0 : start;
+  start = start < 0 ? _back_index(start) : start;
+
+  end = (end == nullptr) || (end > this->size()) ? this->size() : end;
+  end = (end < 0) ? _back_index(end) : end;
+
+  if (start >= end)
+  {
+    return "";
+  }
+  basic_string<_Elme> str;
+  if (step > 0)
+  {
+    for (int i = start; i < end; i += step)
+    {
+      str.push_back(this->at(i));
+    }
+  }
+  else //the case of the 3ed number is negative
+  {
+    for (int i = start - 1; std::abs(i) < end + 1; i += step)
+    {
+      str.push_back(this->at(i));
+    }
+  }
+  return str;
+}
 
 using string = basic_string<char>;
 using wstring = basic_string<wchar_t>;
 
 } // namespace py
+using py_string = py::string;
 #endif //include garde PY_STRING_HPP

@@ -214,15 +214,14 @@ template <class _Elme>
 class basic_string : public std::basic_string<_Elme>
 {
 private:
-  size_t _back_index(int index) { return this->size() + index; };
+  size_t _back_index(int index) { return this->size() + index; }
   size_t _index_normalize(int index)
   {
     index = index < 0 ? index : _back_index(index);
     return index > this->size() ? this->size() : index;
   }
-  _Elme _py_at(int index) { return (index < 0) ? this->at(_back_index(index)) : this->at(index); }
   int size_i(void) { return this->size(); }
-  void pop_front(void){if(!empty())this->erase(0,1);}
+  void pop_front(void){if(!empty()) this->erase(0,1); }
 
 public:
   using std::basic_string<_Elme>::basic_string;
@@ -230,6 +229,13 @@ public:
   using std::basic_string<_Elme>::operator=;
   basic_string<_Elme>() : std::basic_string<_Elme>(){};
   basic_string<_Elme>(std::basic_string<_Elme> _Str) : std::basic_string<_Elme>(_Str){};
+  //override//
+  const _Elme &at(int _Index) const { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
+  _Elme &at(int _Index) { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
+  const _Elme &operator[](int _Index) const { return this->at(_Index); }
+  _Elme &operator[](int _Index) { return this->at(_Index); }
+  /////
+
   basic_string<_Elme> operator*(size_t i);
   basic_string<_Elme> &operator*=(size_t i);
   basic_string<_Elme> operator[](std::initializer_list<null_allow::null_allow<int>> slice);
@@ -379,7 +385,7 @@ basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<null_a
     }
     else
     {
-      str.push_back(this->_py_at(index1));
+      str.push_back(this->at(index1));
       return str;
     }
   }
@@ -398,7 +404,7 @@ basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<null_a
 
     for (int i = index1; i < index2; i++)
     {
-      str.push_back(this->_py_at(i));
+      str.push_back(this->at(i));
     }
     return str;
   }
@@ -420,14 +426,14 @@ basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<null_a
     {
       for (int i = index1; i < index2; i += index3)
       {
-        str.push_back(this->_py_at(i));
+        str.push_back(this->at(i));
       }
     }
     else //the case of the 3ed number is negative
     {
       for (int i = index1 - 1; std::abs(i) < index2 + 1; i += index3)
       {
-        str.push_back(this->_py_at(i));
+        str.push_back(this->at(i));
       }
     }
     return str;

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef PY_STRING_HPP
 #define PY_STRING_HPP
 
@@ -8,6 +8,7 @@
 #include <cwctype>
 #include <algorithm>
 #include <initializer_list>
+#include <sstream>
 
 #include <iostream>
 using std::cout;
@@ -226,6 +227,20 @@ private:
     if (!empty())
       this->erase(0, 1);
   }
+  basic_string<_Elme> _format(basic_string<_Elme> &_Str){return _Str; }
+  template <class Head, class... Tail>
+  basic_string<_Elme> _format(basic_string<_Elme> &_Str, Head head, Tail... tail)
+  {
+    std::basic_stringstream<_Elme> stm;
+    stm << head;
+    int index = _Str.pyfind("{}");
+    if (index == -1)
+    {
+      return _Str;
+    }
+    _Str = _Str.pyreplace("{}", stm.str(), 1);
+    return this->_format(_Str,std::move(tail)...);
+  }
 
 public:
   using std::basic_string<_Elme>::basic_string;
@@ -255,6 +270,8 @@ public:
   int pyfind(basic_string<_Elme> sub);
   int pyfind(basic_string<_Elme> sub, int start);
   int pyfind(basic_string<_Elme> sub, int start, int end);
+  template <class Head, class... Tail>
+  basic_string<_Elme> format(Head head, Tail ... tail);
   int index(basic_string<_Elme> sub);
   int index(basic_string<_Elme> sub, int start);
   int index(basic_string<_Elme> sub, int start, int end);
@@ -548,6 +565,22 @@ int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start, int end)
   return result;
 }
 template <class _Elme>
+template <class Head, class... Tail>
+basic_string<_Elme> basic_string<_Elme>::format(Head head, Tail... tail)
+{
+  std::basic_stringstream<_Elme> stm;
+  stm << head;
+
+  basic_string<_Elme> str(*this);
+  int index = str.pyfind("{}");
+  if (index == -1)
+  {
+    return str;
+  }
+  str = str.pyreplace("{}", stm.str(), 1);
+  return this->_format(str, std::move(tail)...);
+}
+template <class _Elme>
 inline int basic_string<_Elme>::index(basic_string<_Elme> sub)
 {
   return this->index(sub, 0);
@@ -802,9 +835,10 @@ basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basi
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count)
 {
+  int cursor = 0;
   basic_string<_Elme> s(*this);
   size_t oldlen = old.size(), newlen = _new.size();
-  int cursor = s.pyfind(old, cursor);
+  cursor = s.pyfind(old, cursor);
   while (cursor != -1 && cursor <= s.size() && count > 0)
   {
     s.replace(cursor, oldlen, _new);

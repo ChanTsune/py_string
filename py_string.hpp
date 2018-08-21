@@ -227,7 +227,7 @@ private:
     if (!empty())
       this->erase(0, 1);
   }
-  basic_string<_Elme> _format(basic_string<_Elme> &_Str){return _Str; }
+  basic_string<_Elme> _format(basic_string<_Elme> &_Str) { return _Str; }
   template <class Head, class... Tail>
   basic_string<_Elme> _format(basic_string<_Elme> &_Str, Head head, Tail... tail)
   {
@@ -239,7 +239,7 @@ private:
       return _Str;
     }
     _Str = _Str.pyreplace("{}", stm.str(), 1);
-    return this->_format(_Str,std::move(tail)...);
+    return this->_format(_Str, std::move(tail)...);
   }
 
 public:
@@ -260,9 +260,9 @@ public:
   basic_string<_Elme> operator[](std::initializer_list<null_allow::null_allow<int>> slice);
   basic_string<_Elme> capitalize(void);
   basic_string<_Elme> center(size_t width, _Elme fillchar = ' ');
-  size_t count(basic_string<_Elme> sub);
-  size_t count(basic_string<_Elme> sub, int start);
-  size_t count(basic_string<_Elme> sub, int start, int end);
+  size_t count(basic_string<_Elme> sub) const;
+  size_t count(basic_string<_Elme> sub, int start) const;
+  size_t count(basic_string<_Elme> sub, int start, int end) const;
   bool endswith(basic_string<_Elme> suffix);
   bool endswith(basic_string<_Elme> suffix, int start);
   bool endswith(basic_string<_Elme> suffix, int start, int end);
@@ -270,8 +270,8 @@ public:
   int pyfind(basic_string<_Elme> sub);
   int pyfind(basic_string<_Elme> sub, int start);
   int pyfind(basic_string<_Elme> sub, int start, int end);
-  template <class Head, class... Tail>
-  basic_string<_Elme> format(Head head, Tail ... tail);
+  template <class... Args>
+  basic_string<_Elme> format(Args... args);
   int index(basic_string<_Elme> sub);
   int index(basic_string<_Elme> sub, int start);
   int index(basic_string<_Elme> sub, int start, int end);
@@ -481,17 +481,17 @@ basic_string<_Elme> basic_string<_Elme>::center(size_t width, _Elme fillchar)
   return basic_string<_Elme>(l, fillchar) + *this + basic_string<_Elme>(r - l, fillchar);
 }
 template <class _Elme>
-inline size_t basic_string<_Elme>::count(basic_string<_Elme> sub)
+inline size_t basic_string<_Elme>::count(basic_string<_Elme> sub) const
 {
   return this->count(sub, 0);
 }
 template <class _Elme>
-inline size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start)
+inline size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start) const
 {
   return this->count(sub, start, this->size());
 }
 template <class _Elme>
-size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start, int end)
+size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start, int end) const
 {
   adjust_index(start, end, this->size());
   size_t nummatches = 0;
@@ -565,20 +565,11 @@ int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start, int end)
   return result;
 }
 template <class _Elme>
-template <class Head, class... Tail>
-basic_string<_Elme> basic_string<_Elme>::format(Head head, Tail... tail)
+template <class... Args>
+basic_string<_Elme> basic_string<_Elme>::format(Args... args)
 {
-  std::basic_stringstream<_Elme> stm;
-  stm << head;
-
   basic_string<_Elme> str(*this);
-  int index = str.pyfind("{}");
-  if (index == -1)
-  {
-    return str;
-  }
-  str = str.pyreplace("{}", stm.str(), 1);
-  return this->_format(str, std::move(tail)...);
+  return this->_format(str, std::move(args)...);
 }
 template <class _Elme>
 inline int basic_string<_Elme>::index(basic_string<_Elme> sub)

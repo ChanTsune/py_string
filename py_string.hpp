@@ -7,6 +7,8 @@
 #include <cctype>
 #include <cwctype>
 #include <algorithm>
+#include <map>
+#include <unordered_map>
 #include <initializer_list>
 #include <sstream>
 
@@ -204,24 +206,16 @@ bool isspace(_Elme c)
 } // namespace util
 #endif
 
-#ifndef PY_SLICE
-#define PY_SLICE
 
 using null_int_t = null_allow::null_allow<int>;
-
-#endif
 
 template <class _Elme>
 class basic_string : public std::basic_string<_Elme>
 {
+public:
+  using transtable_t = std::unordered_map<_Elme, basic_string<_Elme>>;
 private:
   size_t _back_index(int index) { return this->size() + index; }
-  size_t _index_normalize(int index)
-  {
-    index = index < 0 ? index : _back_index(index);
-    return index > this->size() ? this->size() : index;
-  }
-  int size_i(void) { return this->size(); }
   void pop_front(void)
   {
     if (!empty())
@@ -330,11 +324,54 @@ public:
   basic_string<_Elme> strip(basic_string<_Elme> chars);
   basic_string<_Elme> swapcase(void);
   basic_string<_Elme> title(void);
+  basic_string<_Elme> translate(transtable_t &table);
   basic_string<_Elme> upper(void);
   basic_string<_Elme> zfill(size_t width);
   basic_string<_Elme> slice(null_int_t index);
   basic_string<_Elme> slice(null_int_t start, null_int_t end);
   basic_string<_Elme> slice(null_int_t start, null_int_t end, null_int_t step);
+  static transtable_t maketrans(std::unordered_map<basic_string<_Elme>, basic_string<_Elme>> table_map)
+  {
+    transtable_t table;
+    for (auto m : table_map)
+    {
+      if (m.first.size() != 0)
+      {
+        table[m.first[0]] = m.second;
+      }
+    }
+    return table;
+  }
+  static transtable_t maketrans(std::map<basic_string<_Elme>, basic_string<_Elme>> table_map)
+  {
+    transtable_t table;
+    for (auto m : table_map)
+    {
+      if (m.first.size() != 0)
+      {
+        basic_string<_Elme> key = m.first;
+        table[key[0]] = m.second;
+      }
+    }
+    return table;
+  }
+  static transtable_t maketrans(basic_string<_Elme> from, basic_string<_Elme> to)
+  {
+    return basic_string<_Elme>::maketrans(from, to, "");
+  }
+  static transtable_t maketrans(basic_string<_Elme> from, basic_string<_Elme> to, basic_string<_Elme> delchars)
+  {
+    transtable_t table;
+    for (int i = std::min(from.size(), to.size()); i--;)
+    {
+      table[from[i]] = to[i];
+    }
+    for (auto s : delchars)
+    {
+      table[s] = "";
+    }
+    return table;
+  }
 };
 
 template <class _Elme>
@@ -1205,6 +1242,24 @@ basic_string<_Elme> basic_string<_Elme>::title(void)
   return str;
 }
 template <class _Elme>
+basic_string<_Elme> basic_string<_Elme>::translate(transtable_t &table)
+{
+  basic_string<_Elme> str;
+  for(auto s:*this)
+  {
+    if(table.count(s))
+    {
+      str += table[s];
+    }
+    else
+    {
+      str.push_back(s);
+    }
+  }
+  return str;
+}
+
+template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::upper(void)
 {
   basic_string<_Elme> str(*this);
@@ -1288,7 +1343,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end,
   }
   else //the case of the 3ed number is negative
   {
-    for (int i = start - 1; std::abs(i) < end + 1; i += step)
+    for (int i = end - 1; i > start-1 ; i += step)
     {
       str.push_back(this->at(i));
     }

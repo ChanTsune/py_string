@@ -143,7 +143,22 @@ private:
     _Str = _Str.pyreplace("{}", stm.str(), 1);
     return this->_format(_Str, std::move(tail)...);
   }
-
+  template <class Map>
+  basic_string<_Elme> _format_map(Map &map);
+  template <class Map>
+  static transtable_t _maketrans(Map &table_map)
+  {
+    transtable_t table;
+    for (auto m : table_map)
+    {
+      if (m.first.size() != 0)
+      {
+        basic_string<_Elme> key = m.first;
+        table[key[0]] = m.second;
+      }
+    }
+    return table;
+  }
 public:
   using std::basic_string<_Elme>::basic_string;
   using std::basic_string<_Elme>::operator+=;
@@ -175,6 +190,8 @@ public:
   int pyfind(basic_string<_Elme> sub, int start, int end);
   template <class... Args>
   basic_string<_Elme> format(Args... args);
+  basic_string<_Elme> format_map(std::map<basic_string<_Elme>,basic_string<_Elme>> map);
+  basic_string<_Elme> format_map(std::unordered_map<basic_string<_Elme>,basic_string<_Elme>> map);
   int index(basic_string<_Elme> sub);
   int index(basic_string<_Elme> sub, int start);
   int index(basic_string<_Elme> sub, int start, int end);
@@ -240,28 +257,11 @@ public:
   basic_string<_Elme> slice(null_int_t start, null_int_t end, null_int_t step);
   static transtable_t maketrans(std::unordered_map<basic_string<_Elme>, basic_string<_Elme>> table_map)
   {
-    transtable_t table;
-    for (auto m : table_map)
-    {
-      if (m.first.size() != 0)
-      {
-        table[m.first[0]] = m.second;
-      }
-    }
-    return table;
+    return basic_string<_Elme>::_maketrans(table_map);
   }
   static transtable_t maketrans(std::map<basic_string<_Elme>, basic_string<_Elme>> table_map)
   {
-    transtable_t table;
-    for (auto m : table_map)
-    {
-      if (m.first.size() != 0)
-      {
-        basic_string<_Elme> key = m.first;
-        table[key[0]] = m.second;
-      }
-    }
-    return table;
+    return basic_string<_Elme>::_maketrans(table_map);
   }
   static transtable_t maketrans(basic_string<_Elme> from, basic_string<_Elme> to)
   {
@@ -440,6 +440,45 @@ basic_string<_Elme> basic_string<_Elme>::format(Args... args)
 {
   basic_string<_Elme> str(*this);
   return this->_format(str, std::move(args)...);
+}
+template <class _Elme>
+basic_string<_Elme> basic_string<_Elme>::format_map(std::map<basic_string<_Elme>, basic_string<_Elme>> map)
+{
+  return this->_format_map(map);
+}
+template <class _Elme>
+basic_string<_Elme> basic_string<_Elme>::format_map(std::unordered_map<basic_string<_Elme>, basic_string<_Elme>> map)
+{
+  return this->_format_map(map);
+}
+template <class _Elme>
+template <class Map>
+inline basic_string<_Elme> basic_string<_Elme>::_format_map(Map &map)
+{
+  basic_string<_Elme> str(*this);
+  basic_string<_Elme> key,val;
+  int s_cursor = str.pyfind("{");
+  int e_cursor = str.pyfind("}",s_cursor);
+  int key_len;
+  while (s_cursor != -1 && e_cursor != -1)
+  {
+    key_len = e_cursor-s_cursor-1;
+    key = str.substr(s_cursor+1,key_len);
+
+    cout <<"find key:"<< key << endl;
+
+    if(map.count(key))
+    {
+      cout << "hit!" << endl;
+      val = map[key];//こいつの長さも使う
+      str.replace(s_cursor,key_len+2,val);
+      e_cursor -= key_len+2;
+      e_cursor += val.size();
+    }
+    s_cursor = str.pyfind("{",e_cursor);
+    e_cursor = str.pyfind("}",s_cursor);
+  }
+  return str;
 }
 template <class _Elme>
 inline int basic_string<_Elme>::index(basic_string<_Elme> sub)
@@ -799,50 +838,31 @@ void basic_string<_Elme>::rsplit(_Iterable &result, int maxsplit)
   basic_string<_Elme> tmp;
   if (maxsplit < 0)
   {
-    for (; start != end; ++start)
-    {
-      if (util::isspace(*start))
-      {
-        if (len != 0)
-        {
-          result.push_back(this->substr(index, len));
-          index -= len;
-        }
-        --index;
-        len = 0;
-      }
-      else
-      {
-        ++len;
-      }
-    }
+    maxsplit = INT_MAX;
   }
-  else
+  for (; start != end && maxsplit; ++start)
   {
-    for (; start != end && maxsplit; ++start)
+    if (util::isspace(*start))
     {
-      if (util::isspace(*start))
+      if (len != 0)
       {
-        if (len != 0)
-        {
-          result.push_back(this->substr(index, len));
-          --maxsplit;
-          index -= len;
-        }
-        --index;
-        len = 0;
+        result.insert(result.begin(),this->substr(index, len));
+        --maxsplit;
+        index -= len;
       }
-      else
-      {
-        ++len;
-      }
+      --index;
+      len = 0;
+    }
+    else
+    {
+      ++len;
     }
   }
-  tmp = this->substr(0, index);
+  tmp = this->substr(0, ++index);
   tmp = tmp.rstrip();
   if (tmp.size() != 0)
   {
-    result.push_back(tmp);
+    result.insert(result.begin(),tmp);
   }
 }
 
@@ -858,28 +878,17 @@ void basic_string<_Elme>::rsplit(_Iterable &result, basic_string<_Elme> sep, int
   basic_string<_Elme> str(*this);
   if (maxsplit < 0)
   {
-    while (1)
-    {
-      str.rpartition(sep, tmp1, tmp2, tmp3);
-      if (str == tmp1)
-        break;
-      str = tmp1;
-      result.insert(result.begin(), tmp3);
-    }
-    result.insert(result.begin(), tmp1);
+    maxsplit = INT_MAX;
   }
-  else
+  for (; maxsplit--;)
   {
-    for (; maxsplit--;)
-    {
-      str.rpartition(sep, tmp1, tmp2, tmp3);
-      if (str == tmp1)
-        break;
-      str = tmp1;
-      result.insert(result.begin(), tmp3);
-    }
-    result.insert(result.begin(), tmp1);
+    str.rpartition(sep, tmp1, tmp2, tmp3);
+    if (str == tmp1)
+      break;
+    str = tmp1;
+    result.insert(result.begin(), tmp3);
   }
+  result.insert(result.begin(), tmp1);
 }
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::rstrip(void)
@@ -887,7 +896,7 @@ basic_string<_Elme> basic_string<_Elme>::rstrip(void)
   if (this->empty())
     return *this;
   basic_string<_Elme> str(*this);
-  while (1)
+  while (true)
   {
     if (util::isspace(str.back()))
       str.pop_back();
@@ -904,7 +913,7 @@ basic_string<_Elme> basic_string<_Elme>::rstrip(basic_string<_Elme> chars)
   if (chars.empty())
     return this->lstrip();
   basic_string<_Elme> str(*this);
-  while (1)
+  while (true)
   {
     if (chars.pyfind(basic_string<_Elme>(1, str.back())) != -1)
       str.pop_back();
@@ -926,43 +935,24 @@ void basic_string<_Elme>::split(_Iterable &result, int maxsplit)
   basic_string<_Elme> tmp;
   if (maxsplit < 0)
   {
-    for (; start != end; ++start)
-    {
-      if (util::isspace(*start))
-      {
-        if (len != 0)
-        {
-          result.push_back(this->substr(index, len));
-          index += len;
-        }
-        ++index;
-        len = 0;
-      }
-      else
-      {
-        ++len;
-      }
-    }
+    maxsplit = INT_MAX;
   }
-  else
+  for (; start != end && maxsplit; ++start)
   {
-    for (; start != end && maxsplit; ++start)
+    if (util::isspace(*start))
     {
-      if (util::isspace(*start))
+      if (len != 0)
       {
-        if (len != 0)
-        {
-          result.push_back(this->substr(index, len));
-          --maxsplit;
-          index += len;
-        }
-        ++index;
-        len = 0;
+        result.push_back(this->substr(index, len));
+        --maxsplit;
+        index += len;
       }
-      else
-      {
-        ++len;
-      }
+      ++index;
+      len = 0;
+    }
+    else
+    {
+      ++len;
     }
   }
   tmp = this->substr(index);
@@ -984,28 +974,17 @@ void basic_string<_Elme>::split(_Iterable &result, basic_string<_Elme> sep, int 
   basic_string<_Elme> str(*this);
   if (maxsplit < 0)
   {
-    while (1)
-    {
-      str.partition(sep, tmp1, tmp2, tmp3);
-      if (str == tmp1)
-        break;
-      str = tmp3;
-      result.push_back(tmp1);
-    }
-    result.push_back(tmp3);
+    maxsplit = INT_MAX;
   }
-  else
+  for (; maxsplit--;)
   {
-    for (; maxsplit--;)
-    {
-      str.partition(sep, tmp1, tmp2, tmp3);
-      if (str == tmp1)
-        break;
-      str = tmp3;
-      result.push_back(tmp1);
-    }
-    result.push_back(tmp3);
+    str.partition(sep, tmp1, tmp2, tmp3);
+    if (str == tmp1)
+      break;
+    str = tmp3;
+    result.push_back(tmp1);
   }
+  result.push_back(str);
 }
 template <class _Elme>
 template <typename _Iterable>

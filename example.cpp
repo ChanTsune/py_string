@@ -17,6 +17,14 @@ int main(int argc, char const *argv[])
     std::cout << str * 2 << std::endl;
     //hello world!hello world!
 
+    //Subscript operator
+    py::string astr = "0123456789";
+
+    cout << astr[0] << endl;
+
+    cout << astr[-1] << endl; //last element
+
+    cout << astr[-3] << endl; //third element from the back (7)
 
     //string slice
     py::string sstr = "0123456789";
@@ -31,6 +39,13 @@ int main(int argc, char const *argv[])
     cout << fstr.format(3,"bigger",1) << endl;
 
     cout << fstr.format(2,"smaller",4) << endl;
+
+    //string replace
+
+    py::string rstr = "1+2-3";
+
+    cout << rstr.pyreplace("-","=");
+    //1+2=3
 
     //string split
     py::string spstr = "12,3,4-2,2,3";

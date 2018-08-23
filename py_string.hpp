@@ -465,12 +465,9 @@ inline basic_string<_Elme> basic_string<_Elme>::_format_map(Map &map)
     key_len = e_cursor-s_cursor-1;
     key = str.substr(s_cursor+1,key_len);
 
-    cout <<"find key:"<< key << endl;
-
     if(map.count(key))
     {
-      cout << "hit!" << endl;
-      val = map[key];//こいつの長さも使う
+      val = map[key];
       str.replace(s_cursor,key_len+2,val);
       e_cursor -= key_len+2;
       e_cursor += val.size();

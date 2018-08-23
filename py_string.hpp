@@ -12,10 +12,6 @@
 #include <initializer_list>
 #include <sstream>
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 namespace py
 {
 
@@ -50,6 +46,7 @@ public:
 };
 
 } // namespace null_allow
+using null_int_t = null_allow::null_allow<int>;
 
 #ifndef PY_STR_UTIL
 #define PY_STR_UTIL
@@ -57,7 +54,7 @@ public:
 namespace util
 {
 template <class _Elme>
-bool isRowBoundary(_Elme c)
+inline bool isRowBoundary(_Elme c)
 {
   switch (c)
   {
@@ -77,143 +74,54 @@ bool isRowBoundary(_Elme c)
   }
 }
 template <class _Elme>
-bool isprintable(_Elme c)
+inline bool isprintable(_Elme c)
 {
-  switch (c)
-  {
-  case 32:
-  case 33:
-  case 34:
-  case 35:
-  case 36:
-  case 37:
-  case 38:
-  case 39:
-  case 40:
-  case 41:
-  case 42:
-  case 43:
-  case 44:
-  case 45:
-  case 46:
-  case 47:
-  case 48:
-  case 49:
-  case 50:
-  case 51:
-  case 52:
-  case 53:
-  case 54:
-  case 55:
-  case 56:
-  case 57:
-  case 58:
-  case 59:
-  case 60:
-  case 61:
-  case 62:
-  case 63:
-  case 64:
-  case 65:
-  case 66:
-  case 67:
-  case 68:
-  case 69:
-  case 70:
-  case 71:
-  case 72:
-  case 73:
-  case 74:
-  case 75:
-  case 76:
-  case 77:
-  case 78:
-  case 79:
-  case 80:
-  case 81:
-  case 82:
-  case 83:
-  case 84:
-  case 85:
-  case 86:
-  case 87:
-  case 88:
-  case 89:
-  case 90:
-  case 91:
-  case 92:
-  case 93:
-  case 94:
-  case 95:
-  case 96:
-  case 97:
-  case 98:
-  case 99:
-  case 100:
-  case 101:
-  case 102:
-  case 103:
-  case 104:
-  case 105:
-  case 106:
-  case 107:
-  case 108:
-  case 109:
-  case 110:
-  case 111:
-  case 112:
-  case 113:
-  case 114:
-  case 115:
-  case 116:
-  case 117:
-  case 118:
-  case 119:
-  case 120:
-  case 121:
-  case 122:
-  case 123:
-  case 124:
-  case 125:
-  case 126:
-    return true;
-  default:
-    return false;
-  }
+  return (32 <= c) && (c <= 126);
 }
 
 template <class _Elme>
-bool isspace(_Elme c)
+inline bool isspace(_Elme c)
 {
-  switch (c)
+  return ((9 <= c) && (c <= 13)) || ((28 <= c) && (c <= 32));
+}
+inline void adjust_index(int &start, int &end, int len)
+{
+  if (end > len)
   {
-  case 9:
-  case 10:
-  case 11:
-  case 12:
-  case 13:
-  case 28:
-  case 29:
-  case 30:
-  case 31:
-  case 32:
-    return true;
-  default:
-    return false;
+    end = len;
   }
+  else if (end < 0)
+  {
+    end += len;
+    if (end < 0)
+      end = 0;
+  }
+  if (start < 0)
+  {
+    start += len;
+    if (start < 0)
+      start = 0;
+  }
+}
+
+inline void adjust_index(null_int_t &start, null_int_t &end, int len)
+{
+  start = start == nullptr ? 0 : start;
+  start = start < 0 ? len - start : start;
+
+  end = (end == nullptr) || (end > len) ? len : end;
+  end = (end < 0) ? len - end : end;
 }
 
 } // namespace util
 #endif
-
-
-using null_int_t = null_allow::null_allow<int>;
 
 template <class _Elme>
 class basic_string : public std::basic_string<_Elme>
 {
 public:
   using transtable_t = std::unordered_map<_Elme, basic_string<_Elme>>;
+
 private:
   size_t _back_index(int index) { return this->size() + index; }
   void pop_front(void)
@@ -258,9 +166,9 @@ public:
   size_t count(basic_string<_Elme> sub) const;
   size_t count(basic_string<_Elme> sub, int start) const;
   size_t count(basic_string<_Elme> sub, int start, int end) const;
-  bool endswith(basic_string<_Elme> suffix);
-  bool endswith(basic_string<_Elme> suffix, int start);
-  bool endswith(basic_string<_Elme> suffix, int start, int end);
+  bool endswith(basic_string<_Elme> suffix) const;
+  bool endswith(basic_string<_Elme> suffix, int start) const;
+  bool endswith(basic_string<_Elme> suffix, int start, int end) const;
   basic_string<_Elme> expandtabs(size_t tabsize = 8);
   int pyfind(basic_string<_Elme> sub);
   int pyfind(basic_string<_Elme> sub, int start);
@@ -381,26 +289,6 @@ basic_string<_Elme> operator+(basic_string<_Elme> r, basic_string<_Elme> l)
   return r;
 }
 
-inline void adjust_index(int &start, int &end, int len)
-{
-  if (end > len)
-  {
-    end = len;
-  }
-  else if (end < 0)
-  {
-    end += len;
-    if (end < 0)
-      end = 0;
-  }
-  if (start < 0)
-  {
-    start += len;
-    if (start < 0)
-      start = 0;
-  }
-}
-
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::operator*(size_t i)
 {
@@ -475,7 +363,7 @@ inline size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start) con
 template <class _Elme>
 size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start, int end) const
 {
-  adjust_index(start, end, this->size());
+  util::adjust_index(start, end, this->size());
   size_t nummatches = 0;
   int cursor = start;
   while (true)
@@ -490,22 +378,22 @@ size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start, int end) c
   return nummatches;
 }
 template <class _Elme>
-inline bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix)
+inline bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix) const
 {
   return this->endswith(suffix, 0);
 }
 template <class _Elme>
-inline bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix, int start)
+inline bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix, int start) const
 {
   return this->endswith(suffix, start, this->size());
 }
 template <class _Elme>
-bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix, int start, int end)
+bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix, int start, int end) const
 {
   int len = this->size();
   int sublen = suffix.size();
 
-  adjust_index(start, end, len);
+  util::adjust_index(start, end, len);
   if (end - start < sublen || start > len)
   {
     return false;
@@ -538,7 +426,7 @@ inline int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start)
 template <class _Elme>
 int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start, int end)
 {
-  adjust_index(start, end, this->size());
+  util::adjust_index(start, end, this->size());
   int result = this->find(sub, start);
   if (result == npos || (result + sub.size() > end))
   {
@@ -644,7 +532,7 @@ bool basic_string<_Elme>::istitle(void)
   if (this->size() == 0)
     return false;
   if (this->size() == 1)
-    return ::isupper(str[0]);
+    return std::isupper(this->at(0));
   bool cased = false, previous_is_cased = false;
   for (auto s : *this)
   {
@@ -841,7 +729,7 @@ inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start)
 template <class _Elme>
 inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start, int end)
 {
-  adjust_index(start, end, this->size());
+  util::adjust_index(start, end, this->size());
   int result = this->rfind(sub, end);
   if (result == std::string::npos || result < start || (result + sub.size() > end))
   {
@@ -1172,7 +1060,7 @@ bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix, int start, int 
   const _Elme *self = this->c_str();
   const _Elme *sub = suffix.c_str();
 
-  adjust_index(start, end, len);
+  util::adjust_index(start, end, len);
   if (start + sublen > len)
   {
     return false;
@@ -1245,9 +1133,9 @@ template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::translate(transtable_t &table)
 {
   basic_string<_Elme> str;
-  for(auto s:*this)
+  for (auto s : *this)
   {
-    if(table.count(s))
+    if (table.count(s))
     {
       str += table[s];
     }
@@ -1280,7 +1168,7 @@ basic_string<_Elme> basic_string<_Elme>::zfill(size_t width)
 
   basic_string<_Elme> str(*this);
   int fill = width - len;
-  str = std::string(fill, '0') + str;
+  str = basic_string<_Elme>(fill, '0') + str;
 
   if (str.at(fill) == '+' || str.at(fill) == '-')
   {
@@ -1304,11 +1192,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t index)
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end)
 {
-  start = start == nullptr ? 0 : start;
-  start = start < 0 ? _back_index(start) : start;
-
-  end = (end == nullptr) || (end > this->size()) ? this->size() : end;
-  end = (end < 0) ? _back_index(end) : end;
+  util::adjust_index(start, end, this->size());
 
   if (start >= end)
   {
@@ -1323,11 +1207,8 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end,
     return "";
   if (step == nullptr || step == 1)
     return this->slice(start, end);
-  start = start == nullptr ? 0 : start;
-  start = start < 0 ? _back_index(start) : start;
 
-  end = (end == nullptr) || (end > this->size()) ? this->size() : end;
-  end = (end < 0) ? _back_index(end) : end;
+  util::adjust_index(start, end, this->size());
 
   if (start >= end)
   {
@@ -1343,7 +1224,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end,
   }
   else //the case of the 3ed number is negative
   {
-    for (int i = end - 1; i > start-1 ; i += step)
+    for (int i = end - 1; i > start - 1; i += step)
     {
       str.push_back(this->at(i));
     }

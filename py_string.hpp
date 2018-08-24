@@ -123,15 +123,15 @@ public:
   using transtable_t = std::unordered_map<_Elme, basic_string<_Elme>>;
 
 private:
-  size_t _back_index(int index) { return this->size() + index; }
+  size_t _back_index(int index) const{ return this->size() + index; }
   void pop_front(void)
   {
     if (!empty())
       this->erase(0, 1);
   }
-  basic_string<_Elme> _format(basic_string<_Elme> &_Str) { return _Str; }
+  basic_string<_Elme> _format(basic_string<_Elme> &_Str) const{ return _Str; }
   template <class Head, class... Tail>
-  basic_string<_Elme> _format(basic_string<_Elme> &_Str, Head head, Tail... tail)
+  basic_string<_Elme> _format(basic_string<_Elme> &_Str, Head head, Tail... tail)const
   {
     std::basic_stringstream<_Elme> stm;
     stm << head;
@@ -159,6 +159,7 @@ private:
     }
     return table;
   }
+
 public:
   using std::basic_string<_Elme>::basic_string;
   using std::basic_string<_Elme>::operator+=;
@@ -176,85 +177,85 @@ public:
   basic_string<_Elme> operator*(size_t i);
   basic_string<_Elme> &operator*=(size_t i);
   basic_string<_Elme> operator[](std::initializer_list<null_allow::null_allow<int>> slice);
-  basic_string<_Elme> capitalize(void);
-  basic_string<_Elme> center(size_t width, _Elme fillchar = ' ');
+  basic_string<_Elme> capitalize(void) const;
+  basic_string<_Elme> center(size_t width, _Elme fillchar = ' ') const;
   size_t count(basic_string<_Elme> sub) const;
   size_t count(basic_string<_Elme> sub, int start) const;
   size_t count(basic_string<_Elme> sub, int start, int end) const;
   bool endswith(basic_string<_Elme> suffix) const;
   bool endswith(basic_string<_Elme> suffix, int start) const;
   bool endswith(basic_string<_Elme> suffix, int start, int end) const;
-  basic_string<_Elme> expandtabs(size_t tabsize = 8);
-  int pyfind(basic_string<_Elme> sub);
-  int pyfind(basic_string<_Elme> sub, int start);
-  int pyfind(basic_string<_Elme> sub, int start, int end);
+  basic_string<_Elme> expandtabs(size_t tabsize = 8) const;
+  int pyfind(basic_string<_Elme> sub) const;
+  int pyfind(basic_string<_Elme> sub, int start) const;
+  int pyfind(basic_string<_Elme> sub, int start, int end) const;
   template <class... Args>
   basic_string<_Elme> format(Args... args);
-  basic_string<_Elme> format_map(std::map<basic_string<_Elme>,basic_string<_Elme>> map);
-  basic_string<_Elme> format_map(std::unordered_map<basic_string<_Elme>,basic_string<_Elme>> map);
-  int index(basic_string<_Elme> sub);
-  int index(basic_string<_Elme> sub, int start);
-  int index(basic_string<_Elme> sub, int start, int end);
-  bool isalnum(void);
-  bool isalpha(void);
-  bool isdecimal(void);
-  bool isdigit(void);
-  bool islower(void);
-  bool isnumeric(void);
-  bool isprintable(void);
-  bool isspace(void);
-  bool istitle(void);
-  bool isupper(void);
+  basic_string<_Elme> format_map(std::map<basic_string<_Elme>, basic_string<_Elme>> map);
+  basic_string<_Elme> format_map(std::unordered_map<basic_string<_Elme>, basic_string<_Elme>> map);
+  int index(basic_string<_Elme> sub) const;
+  int index(basic_string<_Elme> sub, int start) const;
+  int index(basic_string<_Elme> sub, int start, int end) const;
+  bool isalnum(void) const;
+  bool isalpha(void) const;
+  bool isdecimal(void) const;
+  bool isdigit(void) const;
+  bool islower(void) const;
+  bool isnumeric(void) const;
+  bool isprintable(void) const;
+  bool isspace(void) const;
+  bool istitle(void) const;
+  bool isupper(void) const;
   template <typename _Iterable>
-  basic_string<_Elme> join(_Iterable iterable);
-  basic_string<_Elme> ljust(size_t width, _Elme fillchar = ' ');
-  basic_string<_Elme> lower(void);
-  basic_string<_Elme> lstrip(void);
-  basic_string<_Elme> lstrip(basic_string<_Elme> chars);
-  void partition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3);
+  basic_string<_Elme> join(_Iterable iterable) const;
+  basic_string<_Elme> ljust(size_t width, _Elme fillchar = ' ')const;
+  basic_string<_Elme> lower(void)const;
+  basic_string<_Elme> lstrip(void)const;
+  basic_string<_Elme> lstrip(basic_string<_Elme> chars)const;
+  void partition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3)const;
   template <typename _Iterable>
-  void partition(basic_string<_Elme> sep, _Iterable &iterable);
-  basic_string<_Elme> pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new);
-  basic_string<_Elme> pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count);
-  int pyrfind(basic_string<_Elme> sub);
-  int pyrfind(basic_string<_Elme> sub, int start);
-  int pyrfind(basic_string<_Elme> sub, int start, int end);
-  int rindex(basic_string<_Elme> sub);
-  int rindex(basic_string<_Elme> sub, int start);
-  int rindex(basic_string<_Elme> sub, int start, int end);
-  basic_string<_Elme> rjust(size_t width, _Elme fillchar = ' ');
-  void rpartition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3);
+  void partition(basic_string<_Elme> sep, _Iterable &iterable)const;
+  basic_string<_Elme> pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new) const;
+  basic_string<_Elme> pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count)const;
+  int pyrfind(basic_string<_Elme> sub)const;
+  int pyrfind(basic_string<_Elme> sub, int start)const;
+  int pyrfind(basic_string<_Elme> sub, int start, int end)const;
+  int rindex(basic_string<_Elme> sub)const;
+  int rindex(basic_string<_Elme> sub, int start)const;
+  int rindex(basic_string<_Elme> sub, int start, int end)const;
+  basic_string<_Elme> rjust(size_t width, _Elme fillchar = ' ')const;
+  void rpartition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3)const;
   template <typename _Iterable>
-  void rpartition(basic_string<_Elme> sep, _Iterable &iterable);
+  void rpartition(basic_string<_Elme> sep, _Iterable &iterable)const;
 
   template <typename _Iterable>
-  void rsplit(_Iterable &dst, int maxsplit = -1);
+  void rsplit(_Iterable &dst, int maxsplit = -1)const;
   template <typename _Iterable>
-  void rsplit(_Iterable &dst, basic_string<_Elme> sep, int maxsplit = -1);
+  void rsplit(_Iterable &dst, basic_string<_Elme> sep, int maxsplit = -1)const;
 
-  basic_string<_Elme> rstrip(void);
-  basic_string<_Elme> rstrip(basic_string<_Elme> chars);
-
-  template <typename _Iterable>
-  void split(_Iterable &dst, int maxsplit = -1);
-  template <typename _Iterable>
-  void split(_Iterable &dst, basic_string<_Elme> sep, int maxsplit = -1);
+  basic_string<_Elme> rstrip(void)const;
+  basic_string<_Elme> rstrip(basic_string<_Elme> chars)const;
 
   template <typename _Iterable>
-  void splitlines(_Iterable &dst, bool keepends = false);
-  bool startswith(basic_string<_Elme> suffix);
-  bool startswith(basic_string<_Elme> suffix, int start);
-  bool startswith(basic_string<_Elme> suffix, int start, int end);
-  basic_string<_Elme> strip(void);
-  basic_string<_Elme> strip(basic_string<_Elme> chars);
-  basic_string<_Elme> swapcase(void);
-  basic_string<_Elme> title(void);
-  basic_string<_Elme> translate(transtable_t &table);
-  basic_string<_Elme> upper(void);
-  basic_string<_Elme> zfill(size_t width);
-  basic_string<_Elme> slice(null_int_t index);
-  basic_string<_Elme> slice(null_int_t start, null_int_t end);
-  basic_string<_Elme> slice(null_int_t start, null_int_t end, null_int_t step);
+  void split(_Iterable &dst, int maxsplit = -1)const;
+  template <typename _Iterable>
+  void split(_Iterable &dst, basic_string<_Elme> sep, int maxsplit = -1)const;
+
+  template <typename _Iterable>
+  void splitlines(_Iterable &dst, bool keepends = false)const;
+  bool startswith(basic_string<_Elme> suffix)const;
+  bool startswith(basic_string<_Elme> suffix, int start)const;
+  bool startswith(basic_string<_Elme> suffix, int start, int end)const;
+  basic_string<_Elme> strip(void)const;
+  basic_string<_Elme> strip(basic_string<_Elme> chars)const;
+  basic_string<_Elme> swapcase(void)const;
+  basic_string<_Elme> title(void)const;
+  basic_string<_Elme> translate(transtable_t &table)const;
+  basic_string<_Elme> upper(void)const;
+  basic_string<_Elme> zfill(size_t width)const;
+  basic_string<_Elme> slice(null_int_t index)const;
+  basic_string<_Elme> slice(null_int_t start, null_int_t end)const;
+  basic_string<_Elme> slice(null_int_t start, null_int_t end, null_int_t step)const;
   static transtable_t maketrans(std::unordered_map<basic_string<_Elme>, basic_string<_Elme>> table_map)
   {
     return basic_string<_Elme>::_maketrans(table_map);
@@ -333,14 +334,14 @@ basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<null_a
   }
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::capitalize(void)
+basic_string<_Elme> basic_string<_Elme>::capitalize(void) const
 {
   basic_string<_Elme> str = this->lower();
   str[0] = std::toupper(str[0]);
   return str;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::center(size_t width, _Elme fillchar)
+basic_string<_Elme> basic_string<_Elme>::center(size_t width, _Elme fillchar) const
 {
   size_t r, l, len = this->size();
   if (width <= len)
@@ -409,22 +410,22 @@ bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix, int start, int en
   return false;
 }
 template <class _Elme>
-inline basic_string<_Elme> basic_string<_Elme>::expandtabs(size_t tabsize)
+inline basic_string<_Elme> basic_string<_Elme>::expandtabs(size_t tabsize) const
 {
   return this->pyreplace("\t", basic_string<_Elme>(tabsize, ' '));
 }
 template <class _Elme>
-inline int basic_string<_Elme>::pyfind(basic_string<_Elme> sub)
+inline int basic_string<_Elme>::pyfind(basic_string<_Elme> sub) const
 {
   return this->pyfind(sub, 0);
 }
 template <class _Elme>
-inline int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start)
+inline int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start) const
 {
   return this->pyfind(sub, start, this->size());
 }
 template <class _Elme>
-int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start, int end)
+int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start, int end) const
 {
   util::adjust_index(start, end, this->size());
   int result = this->find(sub, start);
@@ -456,44 +457,44 @@ template <class Map>
 inline basic_string<_Elme> basic_string<_Elme>::_format_map(Map &map)
 {
   basic_string<_Elme> str(*this);
-  basic_string<_Elme> key,val;
+  basic_string<_Elme> key, val;
   int s_cursor = str.pyfind("{");
-  int e_cursor = str.pyfind("}",s_cursor);
+  int e_cursor = str.pyfind("}", s_cursor);
   int key_len;
   while (s_cursor != -1 && e_cursor != -1)
   {
-    key_len = e_cursor-s_cursor-1;
-    key = str.substr(s_cursor+1,key_len);
+    key_len = e_cursor - s_cursor - 1;
+    key = str.substr(s_cursor + 1, key_len);
 
-    if(map.count(key))
+    if (map.count(key))
     {
       val = map[key];
-      str.replace(s_cursor,key_len+2,val);
-      e_cursor -= key_len+2;
+      str.replace(s_cursor, key_len + 2, val);
+      e_cursor -= key_len + 2;
       e_cursor += val.size();
     }
-    s_cursor = str.pyfind("{",e_cursor);
-    e_cursor = str.pyfind("}",s_cursor);
+    s_cursor = str.pyfind("{", e_cursor);
+    e_cursor = str.pyfind("}", s_cursor);
   }
   return str;
 }
 template <class _Elme>
-inline int basic_string<_Elme>::index(basic_string<_Elme> sub)
+inline int basic_string<_Elme>::index(basic_string<_Elme> sub) const
 {
   return this->index(sub, 0);
 }
 template <class _Elme>
-inline int basic_string<_Elme>::index(basic_string<_Elme> sub, int start)
+inline int basic_string<_Elme>::index(basic_string<_Elme> sub, int start) const
 {
   return this->index(sub, start, this->size());
 }
 template <class _Elme>
-inline int basic_string<_Elme>::index(basic_string<_Elme> sub, int start, int end)
+inline int basic_string<_Elme>::index(basic_string<_Elme> sub, int start, int end) const
 {
   return this->pyfind(sub, start, end);
 }
 template <class _Elme>
-bool basic_string<_Elme>::isalnum(void)
+bool basic_string<_Elme>::isalnum(void) const
 {
   for (auto s : *this)
   {
@@ -503,7 +504,7 @@ bool basic_string<_Elme>::isalnum(void)
   return this->size() > 0;
 }
 template <class _Elme>
-bool basic_string<_Elme>::isalpha(void)
+bool basic_string<_Elme>::isalpha(void) const
 {
   for (auto s : *this)
   {
@@ -513,7 +514,7 @@ bool basic_string<_Elme>::isalpha(void)
   return this->size() > 0;
 }
 template <class _Elme>
-bool basic_string<_Elme>::isdecimal(void)
+bool basic_string<_Elme>::isdecimal(void) const
 {
   for (auto s : *this)
   {
@@ -523,12 +524,12 @@ bool basic_string<_Elme>::isdecimal(void)
   return this->size() > 0;
 }
 template <class _Elme>
-bool basic_string<_Elme>::isdigit(void)
+bool basic_string<_Elme>::isdigit(void) const
 {
   return this->isdecimal();
 }
 template <class _Elme>
-bool basic_string<_Elme>::islower(void)
+bool basic_string<_Elme>::islower(void) const
 {
   for (auto s : *this)
   {
@@ -538,12 +539,12 @@ bool basic_string<_Elme>::islower(void)
   return this->size() > 0;
 }
 template <class _Elme>
-bool basic_string<_Elme>::isnumeric(void)
+bool basic_string<_Elme>::isnumeric(void) const
 {
   return this->isdecimal();
 }
 template <class _Elme>
-bool basic_string<_Elme>::isprintable(void)
+bool basic_string<_Elme>::isprintable(void) const
 {
   for (auto s : *this)
   {
@@ -553,7 +554,7 @@ bool basic_string<_Elme>::isprintable(void)
   return this->size() > 0;
 }
 template <class _Elme>
-bool basic_string<_Elme>::isspace(void)
+bool basic_string<_Elme>::isspace(void) const
 {
   for (auto s : *this)
   {
@@ -563,7 +564,7 @@ bool basic_string<_Elme>::isspace(void)
   return this->size() > 0;
 }
 template <class _Elme>
-bool basic_string<_Elme>::istitle(void)
+bool basic_string<_Elme>::istitle(void) const
 {
   if (this->size() == 0)
     return false;
@@ -598,7 +599,7 @@ bool basic_string<_Elme>::istitle(void)
   return cased;
 }
 template <class _Elme>
-bool basic_string<_Elme>::isupper(void)
+bool basic_string<_Elme>::isupper(void) const
 {
   {
     for (auto s : *this)
@@ -612,7 +613,7 @@ bool basic_string<_Elme>::isupper(void)
 
 template <class _Elme>
 template <typename _Iterable>
-basic_string<_Elme> basic_string<_Elme>::join(_Iterable iterable)
+basic_string<_Elme> basic_string<_Elme>::join(_Iterable iterable)const
 {
   basic_string<_Elme> str;
   size_t count, size = iterable.size();
@@ -630,7 +631,7 @@ basic_string<_Elme> basic_string<_Elme>::join(_Iterable iterable)
 }
 
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::ljust(size_t width, _Elme fillchar)
+basic_string<_Elme> basic_string<_Elme>::ljust(size_t width, _Elme fillchar)const
 {
   if (width <= this->size())
   {
@@ -639,7 +640,7 @@ basic_string<_Elme> basic_string<_Elme>::ljust(size_t width, _Elme fillchar)
   return basic_string<_Elme>(width - this->size(), fillchar) + *this;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::lower(void)
+basic_string<_Elme> basic_string<_Elme>::lower(void)const
 {
   {
     basic_string<_Elme> str(*this);
@@ -651,39 +652,29 @@ basic_string<_Elme> basic_string<_Elme>::lower(void)
   }
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::lstrip(void)
+basic_string<_Elme> basic_string<_Elme>::lstrip(void)const
 {
   if (this->empty())
     return *this;
   basic_string<_Elme> str(*this);
-  while (true)
-  {
-    if (util::isspace(str.front()))
-      str.pop_front();
-    else
-      break;
-  }
+  while (util::isspace(str.front()))
+    str.pop_front();
   return str;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::lstrip(basic_string<_Elme> chars)
+basic_string<_Elme> basic_string<_Elme>::lstrip(basic_string<_Elme> chars)const
 {
   if (this->empty())
     return *this;
   if (chars.empty())
     return this->lstrip();
   basic_string<_Elme> str(*this);
-  while (true)
-  {
-    if (chars.pyfind(basic_string<_Elme>(1, str.front())) != -1)
-      str.pop_front();
-    else
-      break;
-  }
+  while (chars.find(str.front()) != npos)
+    str.pop_front();
   return str;
 }
 template <class _Elme>
-void basic_string<_Elme>::partition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3)
+void basic_string<_Elme>::partition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3)const
 {
   int index = this->pyfind(sep);
   if (index == -1)
@@ -701,14 +692,14 @@ void basic_string<_Elme>::partition(basic_string<_Elme> sep, basic_string<_Elme>
 }
 template <class _Elme>
 template <typename _Iterable>
-void basic_string<_Elme>::partition(basic_string<_Elme> sep, _Iterable &iterable)
+void basic_string<_Elme>::partition(basic_string<_Elme> sep, _Iterable &iterable)const
 {
   basic_string<_Elme> dst1, dst2, dst3;
   this->partition(sep, dst1, dst2, dst3);
   iterable = {dst1, dst2, dst3};
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new)
+basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new)const
 {
   int cursor = 0;
   basic_string<_Elme> s(*this);
@@ -730,7 +721,7 @@ basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basi
   return s;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count)
+basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count)const
 {
   int cursor = 0;
   basic_string<_Elme> s(*this);
@@ -753,17 +744,17 @@ basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basi
   return s;
 }
 template <class _Elme>
-inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub)
+inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub)const
 {
   return this->pyrfind(sub, 0);
 }
 template <class _Elme>
-inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start)
+inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start)const
 {
   return this->pyrfind(sub, start, this->size());
 }
 template <class _Elme>
-inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start, int end)
+inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start, int end)const
 {
   util::adjust_index(start, end, this->size());
   int result = this->rfind(sub, end);
@@ -774,22 +765,22 @@ inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start, int 
   return result;
 }
 template <class _Elme>
-inline int basic_string<_Elme>::rindex(basic_string<_Elme> sub)
+inline int basic_string<_Elme>::rindex(basic_string<_Elme> sub)const
 {
   return this->rindex(sub, 0);
 }
 template <class _Elme>
-inline int basic_string<_Elme>::rindex(basic_string<_Elme> sub, int start)
+inline int basic_string<_Elme>::rindex(basic_string<_Elme> sub, int start)const
 {
   return this->rindex(sub, start, this->size());
 }
 template <class _Elme>
-inline int basic_string<_Elme>::rindex(basic_string<_Elme> sub, int start, int end)
+inline int basic_string<_Elme>::rindex(basic_string<_Elme> sub, int start, int end)const
 {
   return this->pyrfind(sub, start, end);
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::rjust(size_t width, _Elme fillchar)
+basic_string<_Elme> basic_string<_Elme>::rjust(size_t width, _Elme fillchar)const
 {
   if (width <= this->size())
   {
@@ -799,7 +790,7 @@ basic_string<_Elme> basic_string<_Elme>::rjust(size_t width, _Elme fillchar)
 }
 
 template <class _Elme>
-void basic_string<_Elme>::rpartition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3)
+void basic_string<_Elme>::rpartition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3)const
 {
   int index = this->pyrfind(sep);
   if (index == -1)
@@ -817,7 +808,7 @@ void basic_string<_Elme>::rpartition(basic_string<_Elme> sep, basic_string<_Elme
 }
 template <class _Elme>
 template <typename _Iterable>
-void basic_string<_Elme>::rpartition(basic_string<_Elme> sep, _Iterable &iterable)
+void basic_string<_Elme>::rpartition(basic_string<_Elme> sep, _Iterable &iterable)const
 {
   basic_string<_Elme> dst1, dst2, dst3;
   this->rpartition(sep, dst1, dst2, dst3);
@@ -825,7 +816,7 @@ void basic_string<_Elme>::rpartition(basic_string<_Elme> sep, _Iterable &iterabl
 }
 template <class _Elme>
 template <typename _Iterable>
-void basic_string<_Elme>::rsplit(_Iterable &result, int maxsplit)
+void basic_string<_Elme>::rsplit(_Iterable &result, int maxsplit)const
 {
   if (result.size() != 0)
     result.clear();
@@ -843,7 +834,7 @@ void basic_string<_Elme>::rsplit(_Iterable &result, int maxsplit)
     {
       if (len != 0)
       {
-        result.insert(result.begin(),this->substr(index, len));
+        result.insert(result.begin(), this->substr(index, len));
         --maxsplit;
         index -= len;
       }
@@ -859,70 +850,61 @@ void basic_string<_Elme>::rsplit(_Iterable &result, int maxsplit)
   tmp = tmp.rstrip();
   if (tmp.size() != 0)
   {
-    result.insert(result.begin(),tmp);
+    result.insert(result.begin(), tmp);
   }
 }
 
 template <class _Elme>
 template <typename _Iterable>
-void basic_string<_Elme>::rsplit(_Iterable &result, basic_string<_Elme> sep, int maxsplit)
+void basic_string<_Elme>::rsplit(_Iterable &result, basic_string<_Elme> sep, int maxsplit)const
 {
   if (sep.empty())
     return this->rsplit(result, maxsplit);
   if (result.size() != 0)
     result.clear();
-  basic_string<_Elme> tmp1, tmp2, tmp3;
-  basic_string<_Elme> str(*this);
+  size_t index, pre_index = npos, sep_len = sep.size();
   if (maxsplit < 0)
   {
     maxsplit = INT_MAX;
   }
   for (; maxsplit--;)
   {
-    str.rpartition(sep, tmp1, tmp2, tmp3);
-    if (str == tmp1)
+    index = this->rfind(sep, pre_index);
+    if (index == npos)
       break;
-    str = tmp1;
-    result.insert(result.begin(), tmp3);
+    index += sep_len;
+    result.insert(result.begin(), this->substr(index, ++pre_index - index));
+    index -= sep_len;
+    pre_index = --index;
   }
-  result.insert(result.begin(), tmp1);
+  result.insert(result.begin(), this->substr(0, ++pre_index));
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::rstrip(void)
+basic_string<_Elme> basic_string<_Elme>::rstrip(void)const
 {
   if (this->empty())
     return *this;
   basic_string<_Elme> str(*this);
-  while (true)
-  {
-    if (util::isspace(str.back()))
-      str.pop_back();
-    else
-      break;
-  }
+  while (util::isspace(str.back()))
+    str.pop_back();
   return str;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::rstrip(basic_string<_Elme> chars)
+basic_string<_Elme> basic_string<_Elme>::rstrip(basic_string<_Elme> chars)const
 {
   if (this->empty())
     return *this;
   if (chars.empty())
     return this->lstrip();
   basic_string<_Elme> str(*this);
-  while (true)
-  {
-    if (chars.pyfind(basic_string<_Elme>(1, str.back())) != -1)
-      str.pop_back();
-    else
-      break;
-  }
+  while (chars.find(str.back()) != npos)
+    str.pop_back();
   return str;
 }
 
 template <class _Elme>
 template <typename _Iterable>
-void basic_string<_Elme>::split(_Iterable &result, int maxsplit)
+void basic_string<_Elme>::split(_Iterable &result, int maxsplit)const
 {
   if (result.size() != 0)
     result.clear();
@@ -961,31 +943,30 @@ void basic_string<_Elme>::split(_Iterable &result, int maxsplit)
 }
 template <class _Elme>
 template <typename _Iterable>
-void basic_string<_Elme>::split(_Iterable &result, basic_string<_Elme> sep, int maxsplit)
+void basic_string<_Elme>::split(_Iterable &result, basic_string<_Elme> sep, int maxsplit)const
 {
   if (sep.empty())
     return this->split(result, maxsplit);
   if (result.size() != 0)
     result.clear();
-  basic_string<_Elme> tmp1, tmp2, tmp3;
-  basic_string<_Elme> str(*this);
+  size_t index, pre_index = 0, sep_len = sep.size();
   if (maxsplit < 0)
   {
     maxsplit = INT_MAX;
   }
   for (; maxsplit--;)
   {
-    str.partition(sep, tmp1, tmp2, tmp3);
-    if (str == tmp1)
+    index = this->find(sep, pre_index);
+    if (index == npos)
       break;
-    str = tmp3;
-    result.push_back(tmp1);
+    result.push_back(this->substr(pre_index, index - pre_index));
+    pre_index = index + sep_len;
   }
-  result.push_back(str);
+  result.push_back(this->substr(pre_index));
 }
 template <class _Elme>
 template <typename _Iterable>
-void basic_string<_Elme>::splitlines(_Iterable &dst, bool keepends)
+void basic_string<_Elme>::splitlines(_Iterable &dst, bool keepends)const
 {
   if (dst.size() != 0)
   {
@@ -1019,17 +1000,17 @@ void basic_string<_Elme>::splitlines(_Iterable &dst, bool keepends)
   }
 }
 template <class _Elme>
-bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix)
+inline bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix)const
 {
   return this->startswith(suffix, 0);
 }
 template <class _Elme>
-bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix, int start)
+inline bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix, int start)const
 {
   return this->startswith(suffix, start, this->size());
 }
 template <class _Elme>
-bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix, int start, int end)
+bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix, int start, int end)const
 {
   int len = this->size();
   int sublen = suffix.size();
@@ -1048,18 +1029,18 @@ bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix, int start, int 
   return false;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::strip(void)
+inline basic_string<_Elme> basic_string<_Elme>::strip(void)const
 {
   return this->lstrip();
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::strip(basic_string<_Elme> chars)
+inline basic_string<_Elme> basic_string<_Elme>::strip(basic_string<_Elme> chars)const
 {
   return this->lstrip(chars);
 }
 
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::swapcase(void)
+basic_string<_Elme> basic_string<_Elme>::swapcase(void)const
 {
   basic_string<_Elme> str(*this);
   for (auto &s : str)
@@ -1076,7 +1057,7 @@ basic_string<_Elme> basic_string<_Elme>::swapcase(void)
   return str;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::title(void)
+basic_string<_Elme> basic_string<_Elme>::title(void)const
 {
   basic_string<_Elme> str(*this);
   bool previous_is_cased = false;
@@ -1106,7 +1087,7 @@ basic_string<_Elme> basic_string<_Elme>::title(void)
   return str;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::translate(transtable_t &table)
+basic_string<_Elme> basic_string<_Elme>::translate(transtable_t &table)const
 {
   basic_string<_Elme> str;
   for (auto s : *this)
@@ -1124,7 +1105,7 @@ basic_string<_Elme> basic_string<_Elme>::translate(transtable_t &table)
 }
 
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::upper(void)
+basic_string<_Elme> basic_string<_Elme>::upper(void)const
 {
   basic_string<_Elme> str(*this);
   for (auto &s : str)
@@ -1134,7 +1115,7 @@ basic_string<_Elme> basic_string<_Elme>::upper(void)
   return str;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::zfill(size_t width)
+basic_string<_Elme> basic_string<_Elme>::zfill(size_t width)const
 {
   int len = this->size();
   if (len >= width)
@@ -1154,7 +1135,7 @@ basic_string<_Elme> basic_string<_Elme>::zfill(size_t width)
   return str;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::slice(null_int_t index)
+basic_string<_Elme> basic_string<_Elme>::slice(null_int_t index)const
 {
   if (index == nullptr)
   {
@@ -1166,7 +1147,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t index)
   }
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end)
+basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end)const
 {
   util::adjust_index(start, end, this->size());
 
@@ -1177,7 +1158,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end)
   return this->substr(start, end - start);
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end, null_int_t step)
+basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end, null_int_t step)const
 {
   if (step == 0)
     return "";

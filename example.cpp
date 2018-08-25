@@ -4,54 +4,56 @@
 #include <map>
 #include "py_string.hpp"
 
-
-
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
 
     //string multiplication
-    py::string str = "hello world!";
+    py::string multiplication = "hello world!";
 
-    std::cout << str * 2 << std::endl;
+    std::cout << multiplication * 2 << std::endl;
     //hello world!hello world!
 
     //Subscript operator
-    py::string astr = "0123456789";
+    py::string Subscript_operator = "0123456789";
 
-    cout << astr[0] << endl;
+    cout << Subscript_operator[0] << endl;
 
-    cout << astr[-1] << endl; //last element
+    cout << Subscript_operator[-1] << endl; //last element
 
-    cout << astr[-3] << endl; //third element from the back (7)
+    cout << Subscript_operator[-3] << endl; //third element from the back (7)
 
     //string slice
-    py::string sstr = "0123456789";
+    py::string slice = "0123456789";
 
-    cout << sstr.slice(0,20,2) << endl;
-    cout << sstr.slice(0, 20, -2) << endl;
-    cout << sstr[{4,nullptr}] << endl;
+    cout << slice.slice(0, 20, 2) << endl;
+    cout << slice.slice(0, 20, -2) << endl;
+    cout << slice[{4, nullptr}] << endl;
 
     //string format
-    py::string fstr = "{} is {} than {}";
+    py::string format = "{} is {} than {}";
 
-    cout << fstr.format(3,"bigger",1) << endl;
+    cout << format.format(3, "bigger", 1) << endl;
 
-    cout << fstr.format(2,"smaller",4) << endl;
+    cout << format.format(2, "smaller", 4) << endl;
+
+    py::string format2 = "{0} is {1} as {0}";
+
+    cout << format2.format(2, "same") << endl;
 
     //string replace
 
-    py::string rstr = "1+2-3";
+    py::string replace = "1+2-3";
 
-    cout << rstr.pyreplace("-","=");
+    cout << replace.pyreplace("-", "=");
     //1+2=3
 
     //string split
-    py::string spstr = "12,3,4-2,2,3";
+    py::string split = "12,3,4-2,2,3";
     std::deque<py::string> slist; //std::vector is also acceptable
 
-    spstr.split(slist, ",");
+    split.split(slist, ",");
 
     for (auto &&s : slist)
     {
@@ -60,17 +62,17 @@ int main(int argc, char const *argv[])
 
     //translate
     py::string tstr = "text abc so cool.";
-    auto table = py::string::maketrans("abcd","ABCD",".");
-    std::map<py::string,py::string> _t;
-    _t["."]="!!";
-    _t["s"]="";
-    _t["o"]="O";
+    auto table = py::string::maketrans("abcd", "ABCD", ".");
+    std::map<py::string, py::string> _t;
+    _t["."] = "!!";
+    _t["s"] = "";
+    _t["o"] = "O";
 
     auto table2 = py::string::maketrans(_t);
 
     cout << tstr.translate(table) << endl;
 
-    cout << tstr.translate(table2) << endl; 
+    cout << tstr.translate(table2) << endl;
 
     return 0;
 }

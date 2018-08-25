@@ -129,9 +129,9 @@ private:
     if (!empty())
       this->erase(0, 1);
   }
-  basic_string<_Elme> _format(basic_string<_Elme> &_Str) const { return _Str; }
+  basic_string<_Elme> _format_automatic(basic_string<_Elme> &_Str) const { return _Str; }
   template <class Head, class... Tail>
-  basic_string<_Elme> _format(basic_string<_Elme> &_Str, Head head, Tail... tail) const
+  basic_string<_Elme> _format_automatic(basic_string<_Elme> &_Str, Head head, Tail... tail) const
   {
     std::basic_stringstream<_Elme> stm;
     stm << head;
@@ -141,7 +141,19 @@ private:
       return _Str;
     }
     _Str = _Str.pyreplace("{}", stm.str(), 1);
-    return this->_format(_Str, std::move(tail)...);
+    return this->_format_automatic(_Str, std::move(tail)...);
+  }
+  template <size_t N>
+  basic_string<_Elme> _format(basic_string<_Elme> &_Str) const { return _Str; }
+  template <size_t N,class Head, class... Tail>
+  basic_string<_Elme> _format(basic_string<_Elme> &_Str, Head head, Tail... tail) const//format_numbaring
+  {
+    std::basic_stringstream<_Elme> stm,num;
+    stm << head;
+    num << N;
+    _Str = _Str.pyreplace("{" + num.str() + "}", stm.str(), 1);
+    cout << num.str() << endl;
+    return this->_format<N+1>(_Str, std::move(tail)...);
   }
   template <class Map>
   basic_string<_Elme> _format_map(Map &map);
@@ -440,7 +452,9 @@ template <class... Args>
 basic_string<_Elme> basic_string<_Elme>::format(Args... args)
 {
   basic_string<_Elme> str(*this);
-  return this->_format(str, std::move(args)...);
+  if(str.find("{}")!= npos)
+    return this->_format_automatic(str, std::move(args)...);
+  return this->_format<0>(str, std::move(args)...);
 }
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::format_map(std::map<basic_string<_Elme>, basic_string<_Elme>> map)

@@ -151,7 +151,7 @@ private:
     std::basic_stringstream<_Elme> stm,num;
     stm << head;
     num << N;
-    _Str = _Str.pyreplace("{" + num.str() + "}", stm.str(), 1);
+    _Str = _Str.pyreplace("{" + num.str() + "}", stm.str());
     cout << num.str() << endl;
     return this->_format<N+1>(_Str, std::move(tail)...);
   }

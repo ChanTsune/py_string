@@ -909,7 +909,7 @@ basic_string<_Elme> basic_string<_Elme>::rstrip(basic_string<_Elme> chars) const
   if (this->empty())
     return *this;
   if (chars.empty())
-    return this->lstrip();
+    return this->rstrip();
   basic_string<_Elme> str(*this);
   while (chars.find(str.back()) != npos)
     str.pop_back();
@@ -1043,14 +1043,28 @@ bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix, int start, int 
   return false;
 }
 template <class _Elme>
-inline basic_string<_Elme> basic_string<_Elme>::strip(void) const
+basic_string<_Elme> basic_string<_Elme>::strip(void) const
 {
-  return this->lstrip();
+  if (this->empty())
+    return *this;
+  basic_string<_Elme> str(*this);
+  while (util::isspace(str.back()))
+    str.pop_back();
+  while (util::isspace(str.front()))
+    str.pop_front();
+  return str;
 }
 template <class _Elme>
-inline basic_string<_Elme> basic_string<_Elme>::strip(basic_string<_Elme> chars) const
+basic_string<_Elme> basic_string<_Elme>::strip(basic_string<_Elme> chars) const
 {
-  return this->lstrip(chars);
+  if (this->empty())
+    return *this;
+  basic_string<_Elme> str(*this);
+  while (chars.find(str.back()) != npos)
+    str.pop_back();
+  while (chars.find(str.front()) != npos)
+    str.pop_front();
+  return str;
 }
 
 template <class _Elme>

@@ -196,16 +196,37 @@ using wstring = basic_string<wchar_t>;
 
 class format_parser
 {
+  private:
+    static std::regex& format_spce_regex(void)
+    {
+      static std::regex format_spce("((.?)(<|>|=|\\^))?(\\+|-| )?(#)?(0)?(\\d+?)?(,|_)?([.]\\d+?)?([bcdeEfFgGnosxX%])?");
+      return format_spce;
+    }
+    template<typename T=string>
+    static void _sign_format(T &str,string sign,bool negative)
+    {
+      if (sign == "+")
+      {
+          str.insert(0, (negative ? "-" : "+"));
+      }
+      else if (sign == " ")
+      {
+          str.insert(0, (negative ? "-" : " "));
+      }
+      else //sub.str(4) == "-"
+      {
+          str.insert(0, (negative ? "-" : ""));
+      }
+    }
   public:
     template <typename T, typename std::enable_if_t<!std::is_integral<T>::value && !std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
     static bool format(std::string r, T target, std::string &dst)
     {
-      static std::regex format_spce = std::regex("((.?)(<|>|=|\\^))?(\\+|-| )?(#)?(0)?(\\d+?)?(,|_)?([.]\\d+?)?([bcdeEfFgGnosxX%])?");
       std::smatch sub;
       std::stringstream stm;
       stm << target;
       string str = stm.str();
-      bool result = std::regex_match(r, sub, format_spce);
+      bool result = std::regex_match(r, sub, format_spce_regex());
       if (result)
       {
         char fill_char = ' ';
@@ -218,17 +239,18 @@ class format_parser
         {
           pad_size = std::stoul(sub.str(7));
         }
+
         if (sub.str(3) == "^")
         {
-          dst = str.center(pad_size, fill_char);
+          dst.swap(str.center(pad_size, fill_char));
         }
         else if (sub.str(3) == ">")
         {
-          dst = str.rjust(pad_size, fill_char);
+          dst.swap(str.rjust(pad_size, fill_char));
         }
         else
         {
-          dst = str.ljust(pad_size, fill_char);
+          dst.swap(str.ljust(pad_size, fill_char));
         }
       }
       return result;
@@ -236,11 +258,10 @@ class format_parser
     template <typename T, typename std::enable_if_t<std::is_integral<T>::value, std::nullptr_t> = nullptr>
     static bool format(std::string r, T target, std::string &dst)
     {
-      static std::regex format_spce = std::regex("((.?)(<|>|=|\\^))?(\\+|-| )?(#)?(0)?(\\d+?)?(,|_)?([.]\\d+?)?([bcdeEfFgGnosxX%])?");
       std::smatch sub;
       std::stringstream stm;
       string str;
-      bool result = std::regex_match(r, sub, format_spce);
+      bool result = std::regex_match(r, sub, format_spce_regex());
       if (result)
       {
         bool negative = target < 0;
@@ -297,55 +318,46 @@ class format_parser
         {
           if (sub.str(10) == "b")
           {
-            str = "0b" + str;
+            str.insert(0, "0b");
           }
           else if (sub.str(10) == "o")
           {
-            str = "0o" + str;
+            str.insert(0, "0o");
           }
           else if (sub.str(10) == "x")
           {
-            str = "0x" + str;
+            str.insert(0, "0x");
           }
           else if (sub.str(10) == "X")
           {
-            str = "0X" + str;
+            str.insert(0, "0X");
           }
         }
-        if (sub.str(4) == "+")
-        {
-          str = (negative ? "-" : "+") + str;
-        }
-        else if (sub.str(4) == " ")
-        {
-          str = (negative ? "-" : " ") + str;
-        }
-        else //sub.str(4) == "-"
-        {
-          str = (negative ? "-" : "") + str;
-        }
+
+        _sign_format(str,sub.str(4),negative);
+
         if (!sub.str(6).empty())
         {
           fill_char = '0';
           util::__format_eq(str, fill_char, pad_size);
-          dst = str;
+          dst.swap(str);
         }
         else if (sub.str(3) == "=")
         {
           util::__format_eq(str, fill_char, pad_size);
-          dst = str;
+          dst.swap(str);
         }
         else if (sub.str(3) == "<")
         {
-          dst = str.ljust(pad_size, fill_char);
+          dst.swap(str.ljust(pad_size, fill_char));
         }
         else if (sub.str(3) == "^")
         {
-          dst = str.center(pad_size, fill_char);
+          dst.swap(str.center(pad_size, fill_char));
         }
         else
         {
-          dst = str.rjust(pad_size, fill_char);
+          dst.swap(str.rjust(pad_size, fill_char));
         }
       }
       return result;
@@ -353,12 +365,10 @@ class format_parser
   template <typename T, typename std::enable_if_t<std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
   static bool format(std::string r, T target, std::string &dst)
   {
-    static std::regex format_spce = std::regex("((.?)(<|>|=|\\^))?(\\+|-| )?(#)?(0)?(\\d+?)?(,|_)?([.]\\d+?)?([bcdeEfFgGnosxX%])?");
     std::smatch sub;
     std::stringstream stm;
-    stm << target;
-    string str = stm.str();
-    bool result = std::regex_match(r, sub, format_spce);
+    string str;
+    bool result = std::regex_match(r, sub, format_spce_regex());
     if (result)
     {
       bool negative = target < 0;
@@ -416,18 +426,9 @@ class format_parser
         stm << std::fixed << std::setprecision(dp) << target;
         str = stm.str();
       }
-      if (sub.str(4) == "+")
-      {
-        str = (negative ? "-" : "+") + str;
-      }
-      else if (sub.str(4) == " ")
-      {
-        str = (negative ? "-" : " ") + str;
-      }
-      else //sub.str(4) == "-"
-      {
-        str = (negative ? "-" : "") + str;
-      }
+
+      _sign_format(str,sub.str(4),negative);
+
       if (!sub.str(6).empty())
       {
         fill_char = '0';
@@ -469,14 +470,12 @@ private:
   basic_string<_Elme> _format_automatic(basic_string<_Elme> &_Str, Head head, Tail... tail) const
   {
     std::basic_string<_Elme> str;
-    std::basic_stringstream<_Elme> stm;
     std::smatch sub;
     static std::regex match("\\{(![^:])?(:(.+?)?)?\\}");
-    stm << head;
     if(std::regex_search(_Str,sub,match))
     {
       format_parser::format(sub.str(3), head, str);
-      _Str = _Str.pyreplace(sub.str(0), str);
+      _Str = _Str.pyreplace(sub.str(0), str, 1);
       return this->_format_automatic(_Str, std::move(tail)...);
     }
     return _Str;
@@ -487,7 +486,7 @@ private:
   basic_string<_Elme> _format(basic_string<_Elme> &_Str, Head head, Tail... tail) const//format_numbaring
   {
     std::basic_string<_Elme> str;
-    std::basic_stringstream<_Elme> stm,num;
+    std::basic_stringstream<_Elme> num;
     std::smatch sub;
     num << N;
     std::regex num_match("\\{"s+num.str()+"(![^:])?(:(.+?)?)?\\}"s);
@@ -1062,17 +1061,17 @@ void basic_string<_Elme>::partition(basic_string<_Elme> sep, _Iterable &iterable
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new) const
 {
-  int cursor = 0;
+  size_t cursor = 0;
   basic_string<_Elme> s(*this);
   size_t oldlen = old.size(), newlen = _new.size();
-  cursor = s.pyfind(old, cursor);
-  while (cursor != -1 && cursor <= s.size())
+  cursor = s.find(old, cursor);
+  while (cursor != npos && cursor <= s.size())
   {
     s.replace(cursor, oldlen, _new);
     cursor += newlen;
     if (oldlen != 0)
     {
-      cursor = s.pyfind(old, cursor);
+      cursor = s.find(old, cursor);
     }
     else
     {
@@ -1084,17 +1083,17 @@ basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basi
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count) const
 {
-  int cursor = 0;
+  size_t cursor = 0;
   basic_string<_Elme> s(*this);
   size_t oldlen = old.size(), newlen = _new.size();
-  cursor = s.pyfind(old, cursor);
-  while (cursor != -1 && cursor <= s.size() && count > 0)
+  cursor = s.find(old, cursor);
+  while (cursor != npos && cursor <= s.size() && count > 0)
   {
     s.replace(cursor, oldlen, _new);
     cursor += newlen;
     if (oldlen != 0)
     {
-      cursor = s.pyfind(old, cursor);
+      cursor = s.find(old, cursor);
     }
     else
     {

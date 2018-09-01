@@ -185,6 +185,20 @@ inline void __format_eq(std::string &str, char c, size_t len)
   str = sub.str(1) + std::string((len - sub.str(1).size()) - sub.str(4).size(), c) + sub.str(4);
 }
 
+inline char _get_fill_char(std::string &str)
+{
+  if(str.empty())
+    return ' ';
+  return str[0];
+}
+
+inline size_t _get_size(std::string &str)
+{
+  if(str.empty())
+    return 0;
+  return std::stoul(str);
+}
+
 } // namespace util
 #endif
 
@@ -202,7 +216,7 @@ private:
     return format_spce;
   }
   template <typename T = string>
-  static void _sign_format(T &str, string sign, bool negative)
+  static void _sign_format(T &str, std::string sign, bool negative)
   {
     if (sign == "+")
     {
@@ -229,16 +243,8 @@ public:
     bool result = std::regex_match(r, sub, format_spce_regex());
     if (result)
     {
-      char fill_char = ' ';
-      if (!sub.str(2).empty())
-      {
-        fill_char = sub.str(2).at(0);
-      }
-      size_t pad_size = 0;
-      if (!sub.str(7).empty())
-      {
-        pad_size = std::stoul(sub.str(7));
-      }
+      char fill_char = util::_get_fill_char(sub.str(2));
+      size_t pad_size = util::_get_size(sub.str(7));
 
       if (sub.str(3) == "^")
       {
@@ -266,16 +272,8 @@ public:
     {
       bool negative = target < 0;
       target = negative ? -target : target;
-      char fill_char = ' ';
-      if (!sub.str(2).empty())
-      {
-        fill_char = sub.str(2).at(0);
-      }
-      size_t pad_size = 0;
-      if (!sub.str(7).empty())
-      {
-        pad_size = std::stoul(sub.str(7));
-      }
+      char fill_char = util::_get_fill_char(sub.str(2));
+      size_t pad_size = util::_get_size(sub.str(7));
       if (sub.str(10) == "b")
       {
         str = util::itobin(target);
@@ -305,7 +303,7 @@ public:
       }
       else if (!sub.str(10).empty() && "eEfFgGn%"s.find(sub.str(10)) != std::string::npos)
       {
-        return negative ? format(r, static_cast<float>(-target), dst) : format(r, static_cast<float>(-target), dst);
+        return negative ? format(r, static_cast<float>(-target), dst) : format(r, static_cast<float>(target), dst);
       }
       else //sub.str(10) == "d"
       {
@@ -373,16 +371,8 @@ public:
     {
       bool negative = target < 0;
       target = negative ? -target : target;
-      char fill_char = ' ';
-      if (!sub.str(2).empty())
-      {
-        fill_char = sub.str(2).at(0);
-      }
-      size_t pad_size = 0;
-      if (!sub.str(7).empty())
-      {
-        pad_size = std::stoul(sub.str(7));
-      }
+      char fill_char = util::_get_fill_char(sub.str(2));
+      size_t pad_size = util::_get_size(sub.str(7));
       size_t dp = 6;
       if (!sub.str(9).empty())
       {
@@ -469,7 +459,7 @@ private:
   template <class Head, class... Tail>
   basic_string<_Elme> _format_automatic(basic_string<_Elme> &_Str, Head head, Tail... tail) const
   {
-    std::basic_string<_Elme> str;
+    basic_string<_Elme> str;
     std::smatch sub;
     static std::regex match("\\{(![^:])?(:(.+?)?)?\\}");
     if (std::regex_search(_Str, sub, match))
@@ -485,7 +475,7 @@ private:
   template <size_t N, class Head, class... Tail>
   basic_string<_Elme> _format(basic_string<_Elme> &_Str, Head head, Tail... tail) const //format_numbaring
   {
-    std::basic_string<_Elme> str;
+    basic_string<_Elme> str;
     std::basic_stringstream<_Elme> num;
     std::smatch sub;
     num << N;
@@ -518,15 +508,17 @@ public:
   using std::basic_string<_Elme>::basic_string;
   using std::basic_string<_Elme>::operator+=;
   using std::basic_string<_Elme>::operator=;
-  basic_string<_Elme>() : std::basic_string<_Elme>(){};
-  basic_string<_Elme>(std::basic_string<_Elme> &&_Str) : std::basic_string<_Elme>(_Str){};
-  basic_string<_Elme>(std::basic_string<_Elme> &_Str) : std::basic_string<_Elme>(_Str){};
-  basic_string<_Elme>(_Elme _Chr) : std::basic_string<_Elme>(1, _Chr){};
+  explicit basic_string<_Elme>() : std::basic_string<_Elme>(){};
+  basic_string<_Elme>(const std::basic_string<_Elme> &&_Str) : std::basic_string<_Elme>(_Str){};
+  basic_string<_Elme>(const std::basic_string<_Elme> &_Str) : std::basic_string<_Elme>(_Str){};
+  explicit basic_string<_Elme>(const _Elme _Chr) : std::basic_string<_Elme>(1, _Chr){};
   //override//
   const _Elme &at(int _Index) const { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
   _Elme &at(int _Index) { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
   const _Elme &operator[](int _Index) const { return this->at(_Index); }
   _Elme &operator[](int _Index) { return this->at(_Index); }
+  basic_string<_Elme> substr(const size_type pos = 0, const size_type n = npos) const { return basic_string<_Elme>(*this, pos, n, get_allocator()); }
+
   /////
 
   basic_string<_Elme> operator*(size_t i);
@@ -648,12 +640,9 @@ basic_string<_Elme> operator+(basic_string<_Elme> r, basic_string<_Elme> l)
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::operator*(size_t i)
 {
-  basic_string<_Elme> str(*this);
   if (i == 0)
-  {
-    str.clear();
-    return str;
-  }
+    return "";
+  basic_string<_Elme> str(*this);
   str.reserve(str.size() * i);
   for (; --i;)
   {

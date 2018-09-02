@@ -400,9 +400,10 @@ public:
   using std::basic_string<_Elme>::operator+=;
   using std::basic_string<_Elme>::operator=;
   basic_string<_Elme>() : std::basic_string<_Elme>(){};
-  basic_string<_Elme>(const std::basic_string<_Elme> &&_Str) : std::basic_string<_Elme>(_Str){};
+  basic_string<_Elme>(std::basic_string<_Elme> &&_Str) : std::basic_string<_Elme>(_Str){};
   basic_string<_Elme>(const std::basic_string<_Elme> &_Str) : std::basic_string<_Elme>(_Str){};
   basic_string<_Elme>(const _Elme _Chr) : std::basic_string<_Elme>(1, _Chr){};
+
   //override//
   const _Elme &at(int _Index) const { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
   _Elme &at(int _Index) { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }

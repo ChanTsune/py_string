@@ -27,9 +27,9 @@ private:
   bool null_m;
 
 public:
-  null_allow<T>(nullptr_t _Null) : null_m(true) {}
+  null_allow<T>(std::nullptr_t _Null) : null_m(true) {}
   null_allow<T>(T _Value) : value_m(_Value), null_m(false) {}
-  null_allow<T> &operator=(nullptr_t _Null)
+  null_allow<T> &operator=(std::nullptr_t _Null)
   {
     null_m = true;
     return *this;
@@ -37,14 +37,24 @@ public:
   null_allow<T> &operator=(T _Value)
   {
     value_m = _Value;
+    null_m = false;
     return *this;
   }
-  bool operator==(nullptr_t _Null) { return null_m; }
-  bool operator!=(nullptr_t _Null) { return !null_m; }
+  bool operator==(std::nullptr_t _Null) { return null_m; }
+  bool operator!=(std::nullptr_t _Null) { return !null_m; }
+  //  bool operator<(std::nullptr_t _Null){ return !null_m; }
+  //  bool operator>(std::nullptr_t _Null){ return !null_m; }
+  //  bool operator<=(std::nullptr_t _Null){ return null_m; }
+  //  bool operator>=(std::nullptr_t _Null){ return null_m; }
   bool operator==(T _Value) { return value_m == _Value; }
   bool operator!=(T _Value) { return value_m != _Value; }
+  //  bool operator<(T _Value){ return value_m < _Value; }
+  //  bool operator>(T _Value){ return value_m > _Value; }
+  //  bool operator<=(T _Value){ return value_m <= _Value; }
+  //  bool operator>=(T _Value){ return value_m >= _Value; }
+
   operator T() const { return value_m; }
-  operator nullptr_t() const { return nullptr; }
+  operator std::nullptr_t() const { return nullptr; }
 };
 
 } // namespace null_allow
@@ -104,8 +114,8 @@ inline bool isbindigit(_Elme c)
 }
 */
 
-template<class T>
-inline std::string __to_string(T _Val,const char *_Format)
+template <class T>
+inline std::string __to_string(T _Val, const char *_Format)
 {
   char buf[std::numeric_limits<T>::digits + 3];
   std::sprintf(buf, _Format, _Val);
@@ -243,11 +253,22 @@ inline size_t decimal_place(T x)
 
 inline void adjust_index(null_int_t &start, null_int_t &end, int len)
 {
-  start = start == nullptr ? 0 : start;
-  start = start < 0 ? len - start : start;
-
-  end = (end == nullptr) || (end > len) ? len : end;
-  end = (end < 0) ? len - end : end;
+  if (start == nullptr)
+  {
+    start = 0;
+  }
+  if (start < 0)
+  {
+    start = len - start;
+  }
+  if ((end == nullptr) || (end > len))
+  {
+    end = len;
+  }
+  if (end < 0)
+  {
+    end = len - end;
+  }
 }
 template <class T>
 inline std::string itobin(T n)
@@ -259,7 +280,7 @@ inline std::string itobin(T n)
   auto pos = str.find('1');
   if (pos != std::string::npos)
     return str.substr(pos);
-  return "0"s;
+  return "0";
 }
 inline void sepinsert(std::string &str, const std::string sep, size_t len)
 {
@@ -290,12 +311,12 @@ inline void __format_eq(std::string &str, char c, size_t len)
   str = sub.str(1) + std::string((len - sub.str(1).size()) - sub.str(4).size(), c) + sub.str(4);
 }
 
-constexpr char _get_fill_char(std::string &str)
+inline char _get_fill_char(std::string str)
 {
-  return str.empty() ? ' ':str[0];
+  return str.empty() ? ' ' : str[0];
 }
 
-constexpr size_t _get_size(std::string &str,size_t def=0)
+inline size_t _get_size(std::string str)
 {
   return str.empty() ? 0 : std::stoul(str);
 }
@@ -303,245 +324,21 @@ constexpr size_t _get_size(std::string &str,size_t def=0)
 } // namespace util
 #endif
 
-template <class _Elme>
-class basic_string;
-using string = basic_string<char>;
-using wstring = basic_string<wchar_t>;
 
-class format_parser
+namespace format_parser
 {
-private:
-  static std::regex &format_spce_regex(void)
-  {
-    static std::regex format_spce("((.?)(<|>|=|\\^))?(\\+|-| )?(#)?(0)?(\\d+?)?(,|_)?([.]\\d+?)?([bcdeEfFgGnosxX%])?");
-    return format_spce;
-  }
-  template <typename T = string>
-  static void _sign_format(T &str, std::string sign, bool negative)
-  {
-    if (sign == "+")
-    {
-      str.insert(0, (negative ? "-" : "+"));
-    }
-    else if (sign == " ")
-    {
-      str.insert(0, (negative ? "-" : " "));
-    }
-    else //sub.str(4) == "-"
-    {
-      str.insert(0, (negative ? "-" : ""));
-    }
-  }
+  template<typename T>
+  void _sign_format(T &str, std::string sign, bool negative);
 
-public:
   template <typename T, typename std::enable_if_t<!std::is_integral<T>::value && !std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
-  static bool format(std::string r, T target, std::string &dst)
-  {
-    std::smatch sub;
-    std::stringstream stm;
-    stm << target;
-    string str = stm.str();
-    bool result = std::regex_match(r, sub, format_spce_regex());
-    if (result)
-    {
-      char fill_char = util::_get_fill_char(sub.str(2));
-      size_t pad_size = util::_get_size(sub.str(7));
+  bool format(std::string r, T target, std::string &dst);
 
-      if (sub.str(3) == "^")
-      {
-        dst.swap(str.center(pad_size, fill_char));
-      }
-      else if (sub.str(3) == ">")
-      {
-        dst.swap(str.rjust(pad_size, fill_char));
-      }
-      else
-      {
-        dst.swap(str.ljust(pad_size, fill_char));
-      }
-    }
-    return result;
-  }
   template <typename T, typename std::enable_if_t<std::is_integral<T>::value, std::nullptr_t> = nullptr>
-  static bool format(std::string r, T target, std::string &dst)
-  {
-    std::smatch sub;
-    string str;
-    bool result = std::regex_match(r, sub, format_spce_regex());
-    if (result)
-    {
-      bool negative = target < 0;
-      target = negative ? -target : target;
-      char fill_char = util::_get_fill_char(sub.str(2));
-      size_t pad_size = util::_get_size(sub.str(7));
-      if (sub.str(10) == "b")
-      {
-        str = util::itobin(target);
-        util::sepinsert(str, sub.str(8), 4);
-      }
-      else if (sub.str(10) == "c")
-      {
-        str = static_cast<char>(target);
-      }
-      else if (sub.str(10) == "o")
-      {
-        str = util::to_string_oct(target);
-        util::sepinsert(str, sub.str(8), 4);
-      }
-      else if (sub.str(10) == "x")
-      {
-        str = util::to_string_hex(target);
-        util::sepinsert(str, sub.str(8), 4);
-      }
-      else if (sub.str(10) == "X")
-      {
-        str = util::to_string_HEX(target);
-        util::sepinsert(str, sub.str(8), 4);
-      }
-      else if (!sub.str(10).empty() && "eEfFgGn%"s.find(sub.str(10)) != std::string::npos)
-      {
-        return negative ? format(r, static_cast<float>(-target), dst) : format(r, static_cast<float>(target), dst);
-      }
-      else //sub.str(10) == "d"
-      {
-        str = std::to_string(target);
-        util::sepinsert(str, sub.str(8), 3);
-      }
+  bool format(std::string r, T target, std::string &dst);
 
-      if (!sub.str(5).empty())
-      {
-        if (sub.str(10) == "b")
-        {
-          str.insert(0, "0b");
-        }
-        else if (sub.str(10) == "o")
-        {
-          str.insert(0, "0o");
-        }
-        else if (sub.str(10) == "x")
-        {
-          str.insert(0, "0x");
-        }
-        else if (sub.str(10) == "X")
-        {
-          str.insert(0, "0X");
-        }
-      }
-
-      _sign_format(str, sub.str(4), negative);
-
-      if (!sub.str(6).empty())
-      {
-        fill_char = '0';
-        util::__format_eq(str, fill_char, pad_size);
-        dst.swap(str);
-      }
-      else if (sub.str(3) == "=")
-      {
-        util::__format_eq(str, fill_char, pad_size);
-        dst.swap(str);
-      }
-      else if (sub.str(3) == "<")
-      {
-        dst.swap(str.ljust(pad_size, fill_char));
-      }
-      else if (sub.str(3) == "^")
-      {
-        dst.swap(str.center(pad_size, fill_char));
-      }
-      else
-      {
-        dst.swap(str.rjust(pad_size, fill_char));
-      }
-    }
-    return result;
-  }
   template <typename T, typename std::enable_if_t<std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
-  static bool format(std::string r, T target, std::string &dst)
-  {
-    std::smatch sub;
-    std::stringstream stm;
-    string str;
-    bool result = std::regex_match(r, sub, format_spce_regex());
-    if (result)
-    {
-      bool negative = target < 0;
-      target = negative ? -target : target;
-      char fill_char = util::_get_fill_char(sub.str(2));
-      size_t pad_size = util::_get_size(sub.str(7));
-      size_t dp = 6;
-      if (!sub.str(9).empty())
-      {
-        dp = std::stoul(sub.str(9).substr(1));
-      }
-
-      if (sub.str(10) == "e")
-      {
-        stm << std::scientific << std::setprecision(dp) << target;
-        str = stm.str();
-      }
-      else if (sub.str(10) == "E")
-      {
-        stm << std::scientific << std::uppercase << std::setprecision(dp) << target;
-        str = stm.str();
-      }
-      else if (sub.str(10) == "f" || sub.str(10) == "F")
-      {
-        stm << std::fixed << std::setprecision(dp) << target;
-        str = stm.str();
-      }
-      else if (!sub.str(10).empty() && (sub.str(10) == "g" || sub.str(10) == "n"))
-      {
-        stm << std::fixed << std::setprecision(dp) << target;
-        str = stm.str();
-      }
-      else if (sub.str(10) == "G")
-      {
-        stm << std::scientific << std::uppercase << std::setprecision(dp) << target;
-        str = stm.str();
-      }
-      else if (sub.str(10) == "%")
-      {
-        stm << std::fixed << std::setprecision(dp) << target * 100 << "%";
-        str = stm.str();
-      }
-      else
-      {
-        dp = util::decimal_place(target);
-        dp = dp == 0 ? 1 : dp;
-        stm << std::fixed << std::setprecision(dp) << target;
-        str = stm.str();
-      }
-
-      _sign_format(str, sub.str(4), negative);
-
-      if (!sub.str(6).empty())
-      {
-        fill_char = '0';
-        util::__format_eq(str, fill_char, pad_size);
-        dst = str;
-      }
-      else if (sub.str(3) == "=")
-      {
-        util::__format_eq(str, fill_char, pad_size);
-        dst = str;
-      }
-      else if (sub.str(3) == "<")
-      {
-        dst = str.ljust(pad_size, fill_char);
-      }
-      else if (sub.str(3) == "^")
-      {
-        dst = str.center(pad_size, fill_char);
-      }
-      else
-      {
-        dst = str.rjust(pad_size, fill_char);
-      }
-    }
-    return result;
-  }
-};
+  bool format(std::string r, T target, std::string &dst);
+} // namespace format_parser
 
 template <class _Elme>
 class basic_string : public std::basic_string<_Elme>
@@ -723,6 +520,9 @@ public:
     return table;
   }
 };
+
+using string = basic_string<char>;
+using wstring = basic_string<wchar_t>;
 
 template <class _Elme>
 basic_string<_Elme> operator+(basic_string<_Elme> r, basic_string<_Elme> l)
@@ -1641,6 +1441,235 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end,
   }
   return str;
 }
+
+namespace format_parser
+{
+static std::regex format_spce_regex("((.?)(<|>|=|\\^))?(\\+|-| )?(#)?(0)?(\\d+?)?(,|_)?([.]\\d+?)?([bcdeEfFgGnosxX%])?");
+template <typename T = string>
+void _sign_format(T &str, std::string sign, bool negative)
+{
+  if (sign == "+")
+  {
+    str.insert(0, (negative ? "-" : "+"));
+  }
+  else if (sign == " ")
+  {
+    str.insert(0, (negative ? "-" : " "));
+  }
+  else //sub.str(4) == "-"
+  {
+    str.insert(0, (negative ? "-" : ""));
+  }
+}
+
+template <typename T, typename std::enable_if_t<!std::is_integral<T>::value && !std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
+bool format(std::string r, T target, std::string &dst)
+{
+  std::smatch sub;
+  std::stringstream stm;
+  stm << target;
+  string str = stm.str();
+  bool result = std::regex_match(r, sub, format_spce_regex);
+  if (result)
+  {
+    char fill_char = util::_get_fill_char(sub.str(2));
+    size_t pad_size = util::_get_size(sub.str(7));
+
+    if (sub.str(3) == "^")
+    {
+      dst.swap(str.center(pad_size, fill_char));
+    }
+    else if (sub.str(3) == ">")
+    {
+      dst.swap(str.rjust(pad_size, fill_char));
+    }
+    else
+    {
+      dst.swap(str.ljust(pad_size, fill_char));
+    }
+  }
+  return result;
+}
+template <typename T, typename std::enable_if_t<std::is_integral<T>::value, std::nullptr_t> = nullptr>
+bool format(std::string r, T target, std::string &dst)
+{
+  std::smatch sub;
+  string str;
+  bool result = std::regex_match(r, sub, format_spce_regex);
+  if (result)
+  {
+    bool negative = target < 0;
+    target = negative ? -target : target;
+    char fill_char = util::_get_fill_char(sub.str(2));
+    size_t pad_size = util::_get_size(sub.str(7));
+    if (sub.str(10) == "b")
+    {
+      str = util::itobin(target);
+      util::sepinsert(str, sub.str(8), 4);
+    }
+    else if (sub.str(10) == "c")
+    {
+      str = static_cast<char>(target);
+    }
+    else if (sub.str(10) == "o")
+    {
+      str = util::to_string_oct(target);
+      util::sepinsert(str, sub.str(8), 4);
+    }
+    else if (sub.str(10) == "x")
+    {
+      str = util::to_string_hex(target);
+      util::sepinsert(str, sub.str(8), 4);
+    }
+    else if (sub.str(10) == "X")
+    {
+      str = util::to_string_HEX(target);
+      util::sepinsert(str, sub.str(8), 4);
+    }
+    else if (!sub.str(10).empty() && "eEfFgGn%"s.find(sub.str(10)) != std::string::npos)
+    {
+      return negative ? format(r, static_cast<float>(-target), dst) : format(r, static_cast<float>(target), dst);
+    }
+    else //sub.str(10) == "d"
+    {
+      str = std::to_string(target);
+      util::sepinsert(str, sub.str(8), 3);
+    }
+
+    if (!sub.str(5).empty())
+    {
+      if (sub.str(10) == "b")
+      {
+        str.insert(0, "0b");
+      }
+      else if (sub.str(10) == "o")
+      {
+        str.insert(0, "0o");
+      }
+      else if (sub.str(10) == "x")
+      {
+        str.insert(0, "0x");
+      }
+      else if (sub.str(10) == "X")
+      {
+        str.insert(0, "0X");
+      }
+    }
+
+    _sign_format(str, sub.str(4), negative);
+
+    if (!sub.str(6).empty())
+    {
+      fill_char = '0';
+      util::__format_eq(str, fill_char, pad_size);
+      dst.swap(str);
+    }
+    else if (sub.str(3) == "=")
+    {
+      util::__format_eq(str, fill_char, pad_size);
+      dst.swap(str);
+    }
+    else if (sub.str(3) == "<")
+    {
+      dst.swap(str.ljust(pad_size, fill_char));
+    }
+    else if (sub.str(3) == "^")
+    {
+      dst.swap(str.center(pad_size, fill_char));
+    }
+    else
+    {
+      dst.swap(str.rjust(pad_size, fill_char));
+    }
+  }
+  return result;
+}
+template <typename T, typename std::enable_if_t<std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
+bool format(std::string r, T target, std::string &dst)
+{
+  std::smatch sub;
+  std::stringstream stm;
+  string str;
+  bool result = std::regex_match(r, sub, format_spce_regex);
+  if (result)
+  {
+    bool negative = target < 0;
+    target = negative ? -target : target;
+    char fill_char = util::_get_fill_char(sub.str(2));
+    size_t pad_size = util::_get_size(sub.str(7));
+    size_t dp = 6;
+    if (!sub.str(9).empty())
+    {
+      dp = std::stoul(sub.str(9).substr(1));
+    }
+
+    if (sub.str(10) == "e")
+    {
+      stm << std::scientific << std::setprecision(dp) << target;
+      str = stm.str();
+    }
+    else if (sub.str(10) == "E")
+    {
+      stm << std::scientific << std::uppercase << std::setprecision(dp) << target;
+      str = stm.str();
+    }
+    else if (sub.str(10) == "f" || sub.str(10) == "F")
+    {
+      stm << std::fixed << std::setprecision(dp) << target;
+      str = stm.str();
+    }
+    else if (!sub.str(10).empty() && (sub.str(10) == "g" || sub.str(10) == "n"))
+    {
+      stm << std::fixed << std::setprecision(dp) << target;
+      str = stm.str();
+    }
+    else if (sub.str(10) == "G")
+    {
+      stm << std::scientific << std::uppercase << std::setprecision(dp) << target;
+      str = stm.str();
+    }
+    else if (sub.str(10) == "%")
+    {
+      stm << std::fixed << std::setprecision(dp) << target * 100 << "%";
+      str = stm.str();
+    }
+    else
+    {
+      dp = util::decimal_place(target);
+      dp = dp == 0 ? 1 : dp;
+      stm << std::fixed << std::setprecision(dp) << target;
+      str = stm.str();
+    }
+
+    _sign_format(str, sub.str(4), negative);
+
+    if (!sub.str(6).empty())
+    {
+      fill_char = '0';
+      util::__format_eq(str, fill_char, pad_size);
+      dst = str;
+    }
+    else if (sub.str(3) == "=")
+    {
+      util::__format_eq(str, fill_char, pad_size);
+      dst = str;
+    }
+    else if (sub.str(3) == "<")
+    {
+      dst = str.ljust(pad_size, fill_char);
+    }
+    else if (sub.str(3) == "^")
+    {
+      dst = str.center(pad_size, fill_char);
+    }
+    else
+    {
+      dst = str.rjust(pad_size, fill_char);
+    }
+  }
+  return result;
+}
+} // namespace format_parser
 
 } // namespace py
 using py_string = py::string;

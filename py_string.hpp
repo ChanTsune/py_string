@@ -370,7 +370,7 @@ private:
   {
     basic_string<_Elme> str;
     std::smatch sub;
-    std::regex num_match("\\{"s + std::to_string(N) + "(![^:])?(:(.+?)?)?\\}"s);
+    std::regex num_match(std::string("\\{") + std::to_string(N) + std::string("(![^:])?(:(.+?)?)?\\}"));
     while (std::regex_search(_Str, sub, num_match))
     {
       format_parser::format(sub.str(4), head, str);
@@ -408,7 +408,7 @@ public:
   _Elme &at(int _Index) { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
   const _Elme &operator[](int _Index) const { return this->at(_Index); }
   _Elme &operator[](int _Index) { return this->at(_Index); }
-  basic_string<_Elme> substr(const size_type pos = 0, const size_type n = npos) const { return basic_string<_Elme>(*this, pos, n, get_allocator()); }
+  basic_string<_Elme> substr(const typename std::basic_string<_Elme>::size_type pos = 0, const typename std::basic_string<_Elme>::size_type n = std::basic_string<_Elme>::npos) const { return basic_string<_Elme>(*this, pos, n, std::basic_string<_Elme>::get_allocator()); }
 
   /////
 
@@ -667,7 +667,7 @@ int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start, int end) con
 {
   util::adjust_index(start, end, this->size());
   int result = this->find(sub, start);
-  if (result == npos || (result + sub.size() > end))
+  if (result == std::basic_string<_Elme>::npos || (result + sub.size() > end))
   {
     return -1;
   }
@@ -912,7 +912,7 @@ basic_string<_Elme> basic_string<_Elme>::lstrip(basic_string<_Elme> chars) const
   if (chars.empty())
     return this->lstrip();
   auto itr = this->begin();
-  while (chars.find(*itr) != npos)
+  while (chars.find(*itr) != std::basic_string<_Elme>::npos)
     ++itr;
   return this->substr(std::distance(this->begin(), itr));
 }
@@ -920,7 +920,7 @@ template <class _Elme>
 void basic_string<_Elme>::partition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3) const
 {
   size_t index = this->find(sep);
-  if (index == npos)
+  if (index == std::basic_string<_Elme>::npos)
   {
     dst1 = *this;
     dst2 = "";
@@ -948,7 +948,7 @@ basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basi
   basic_string<_Elme> s(*this);
   size_t oldlen = old.size(), newlen = _new.size();
   cursor = s.find(old, cursor);
-  while (cursor != npos && cursor <= s.size())
+  while (cursor != std::basic_string<_Elme>::npos && cursor <= s.size())
   {
     s.replace(cursor, oldlen, _new);
     cursor += newlen;
@@ -970,7 +970,7 @@ basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basi
   basic_string<_Elme> s(*this);
   size_t oldlen = old.size(), newlen = _new.size();
   cursor = s.find(old, cursor);
-  while (cursor != npos && cursor <= s.size() && count > 0)
+  while (cursor != std::basic_string<_Elme>::npos && cursor <= s.size() && count > 0)
   {
     s.replace(cursor, oldlen, _new);
     cursor += newlen;
@@ -1069,7 +1069,7 @@ void basic_string<_Elme>::rsplit(_Iterable &result, int maxsplit) const
   basic_string<_Elme> tmp;
   if (maxsplit < 0)
   {
-    maxsplit = INT_MAX;
+    maxsplit = std::numeric_limits<int>::max();
   }
   for (; start != end && maxsplit; ++start)
   {
@@ -1105,15 +1105,15 @@ void basic_string<_Elme>::rsplit(_Iterable &result, basic_string<_Elme> sep, int
     return this->rsplit(result, maxsplit);
   if (result.size() != 0)
     result.clear();
-  size_t index, pre_index = npos, sep_len = sep.size();
+  size_t index, pre_index = std::basic_string<_Elme>::npos, sep_len = sep.size();
   if (maxsplit < 0)
   {
-    maxsplit = INT_MAX;
+    maxsplit = std::numeric_limits<int>::max();
   }
   for (; maxsplit--;)
   {
     index = this->rfind(sep, pre_index);
-    if (index == npos)
+    if (index == std::basic_string<_Elme>::npos)
       break;
     index += sep_len;
     result.insert(result.begin(), this->substr(index, ++pre_index - index));
@@ -1140,7 +1140,7 @@ basic_string<_Elme> basic_string<_Elme>::rstrip(basic_string<_Elme> chars) const
   if (chars.empty())
     return this->rstrip();
   basic_string<_Elme> str(*this);
-  while (chars.find(str.back()) != npos)
+  while (chars.find(str.back()) != std::basic_string<_Elme>::npos)
     str.pop_back();
   return str;
 }
@@ -1157,7 +1157,7 @@ void basic_string<_Elme>::split(_Iterable &result, int maxsplit) const
   basic_string<_Elme> tmp;
   if (maxsplit < 0)
   {
-    maxsplit = INT_MAX;
+    maxsplit = std::numeric_limits<int>::max();
   }
   for (; start != end && maxsplit; ++start)
   {
@@ -1195,12 +1195,12 @@ void basic_string<_Elme>::split(_Iterable &result, basic_string<_Elme> sep, int 
   size_t index, pre_index = 0, sep_len = sep.size();
   if (maxsplit < 0)
   {
-    maxsplit = INT_MAX;
+    maxsplit = std::numeric_limits<int>::max();
   }
   for (; maxsplit--;)
   {
     index = this->find(sep, pre_index);
-    if (index == npos)
+    if (index == std::basic_string<_Elme>::npos)
       break;
     result.push_back(this->substr(pre_index, index - pre_index));
     pre_index = index + sep_len;
@@ -1287,7 +1287,7 @@ basic_string<_Elme> basic_string<_Elme>::strip(basic_string<_Elme> chars) const
   if (this->empty())
     return *this;
   basic_string<_Elme> str(*this);
-  while (chars.find(str.back()) != npos)
+  while (chars.find(str.back()) != std::basic_string<_Elme>::npos)
     str.pop_back();
   return str.lstrip(chars);
 }
@@ -1462,7 +1462,7 @@ void _sign_format(T &str, std::string sign, bool negative)
   }
 }
 
-template <typename T, typename std::enable_if_t<!std::is_integral<T>::value && !std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
+template <typename T, typename std::enable_if_t<!std::is_integral<T>::value && !std::is_floating_point<T>::value, std::nullptr_t>>
 bool format(std::string r, T target, std::string &dst)
 {
   std::smatch sub;
@@ -1477,20 +1477,20 @@ bool format(std::string r, T target, std::string &dst)
 
     if (sub.str(3) == "^")
     {
-      dst.swap(str.center(pad_size, fill_char));
+      dst = str.center(pad_size, fill_char);
     }
     else if (sub.str(3) == ">")
     {
-      dst.swap(str.rjust(pad_size, fill_char));
+      dst = str.rjust(pad_size, fill_char);
     }
     else
     {
-      dst.swap(str.ljust(pad_size, fill_char));
+      dst = str.ljust(pad_size, fill_char);
     }
   }
   return result;
 }
-template <typename T, typename std::enable_if_t<std::is_integral<T>::value, std::nullptr_t> = nullptr>
+template <typename T, typename std::enable_if_t<std::is_integral<T>::value, std::nullptr_t>>
 bool format(std::string r, T target, std::string &dst)
 {
   std::smatch sub;
@@ -1526,7 +1526,7 @@ bool format(std::string r, T target, std::string &dst)
       str = util::to_string_HEX(target);
       util::sepinsert(str, sub.str(8), 4);
     }
-    else if (!sub.str(10).empty() && "eEfFgGn%"s.find(sub.str(10)) != std::string::npos)
+    else if (!sub.str(10).empty() && std::string("eEfFgGn%").find(sub.str(10)) != std::string::npos)
     {
       return negative ? format(r, static_cast<float>(-target), dst) : format(r, static_cast<float>(target), dst);
     }
@@ -1562,29 +1562,29 @@ bool format(std::string r, T target, std::string &dst)
     {
       fill_char = '0';
       util::__format_eq(str, fill_char, pad_size);
-      dst.swap(str);
+      dst = str;
     }
     else if (sub.str(3) == "=")
     {
       util::__format_eq(str, fill_char, pad_size);
-      dst.swap(str);
+      dst = str;
     }
     else if (sub.str(3) == "<")
     {
-      dst.swap(str.ljust(pad_size, fill_char));
+      dst = str.ljust(pad_size, fill_char);
     }
     else if (sub.str(3) == "^")
     {
-      dst.swap(str.center(pad_size, fill_char));
+      dst = str.center(pad_size, fill_char);
     }
     else
     {
-      dst.swap(str.rjust(pad_size, fill_char));
+      dst = str.rjust(pad_size, fill_char);
     }
   }
   return result;
 }
-template <typename T, typename std::enable_if_t<std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
+template <typename T, typename std::enable_if_t<std::is_floating_point<T>::value, std::nullptr_t>>
 bool format(std::string r, T target, std::string &dst)
 {
   std::smatch sub;

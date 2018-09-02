@@ -103,6 +103,113 @@ inline bool isbindigit(_Elme c)
   return c == 48 || c == 49;
 }
 */
+
+template<class T>
+inline std::string __to_string(T _Val,const char *_Format)
+{
+  char buf[std::numeric_limits<T>::digits + 3];
+  std::sprintf(buf, _Format, _Val);
+  return buf;
+}
+inline std::string to_string_oct(short _Val)
+{
+  return __to_string(_Val, "%o");
+}
+inline std::string to_string_oct(unsigned short _Val)
+{
+  return __to_string(_Val, "%o");
+}
+inline std::string to_string_oct(int _Val)
+{
+  return __to_string(_Val, "%o");
+}
+inline std::string to_string_oct(unsigned int _Val)
+{
+  return __to_string(_Val, "%o");
+}
+inline std::string to_string_oct(long _Val)
+{
+  return __to_string(_Val, "%lo");
+}
+inline std::string to_string_oct(unsigned long _Val)
+{
+  return __to_string(_Val, "%lo");
+}
+inline std::string to_string_oct(long long _Val)
+{
+  return __to_string(_Val, "%llo");
+}
+inline std::string to_string_oct(unsigned long long _Val)
+{
+  return __to_string(_Val, "%llo");
+}
+
+//
+inline std::string to_string_hex(short _Val)
+{
+  return __to_string(_Val, "%x");
+}
+inline std::string to_string_hex(unsigned short _Val)
+{
+  return __to_string(_Val, "%x");
+}
+inline std::string to_string_hex(int _Val)
+{
+  return __to_string(_Val, "%x");
+}
+inline std::string to_string_hex(unsigned int _Val)
+{
+  return __to_string(_Val, "%x");
+}
+inline std::string to_string_hex(long _Val)
+{
+  return __to_string(_Val, "%lx");
+}
+inline std::string to_string_hex(unsigned long _Val)
+{
+  return __to_string(_Val, "%lx");
+}
+inline std::string to_string_hex(long long _Val)
+{
+  return __to_string(_Val, "%llx");
+}
+inline std::string to_string_hex(unsigned long long _Val)
+{
+  return __to_string(_Val, "%llx");
+}
+inline std::string to_string_HEX(short _Val)
+{
+  return __to_string(_Val, "%X");
+}
+inline std::string to_string_HEX(unsigned short _Val)
+{
+  return __to_string(_Val, "%X");
+}
+inline std::string to_string_HEX(int _Val)
+{
+  return __to_string(_Val, "%X");
+}
+inline std::string to_string_HEX(unsigned int _Val)
+{
+  return __to_string(_Val, "%X");
+}
+inline std::string to_string_HEX(long _Val)
+{
+  return __to_string(_Val, "%lX");
+}
+inline std::string to_string_HEX(unsigned long _Val)
+{
+  return __to_string(_Val, "%lX");
+}
+inline std::string to_string_HEX(long long _Val)
+{
+  return __to_string(_Val, "%llX");
+}
+inline std::string to_string_HEX(unsigned long long _Val)
+{
+  return __to_string(_Val, "%llX");
+}
+
 inline void adjust_index(int &start, int &end, int len)
 {
   if (end > len)
@@ -145,15 +252,13 @@ inline void adjust_index(null_int_t &start, null_int_t &end, int len)
 template <class T>
 inline std::string itobin(T n)
 {
-  bool negative = n < 0;
-  n = negative ? -n : n;
   std::string str;
   T p = 1;
   for (T i = sizeof(T) * 8; i--;)
     str.push_back(n & (p << i) ? '1' : '0');
   auto pos = str.find('1');
   if (pos != std::string::npos)
-    return negative ? "-" + str.substr(pos) : str.substr(pos);
+    return str.substr(pos);
   return "0"s;
 }
 inline void sepinsert(std::string &str, const std::string sep, size_t len)
@@ -185,18 +290,14 @@ inline void __format_eq(std::string &str, char c, size_t len)
   str = sub.str(1) + std::string((len - sub.str(1).size()) - sub.str(4).size(), c) + sub.str(4);
 }
 
-inline char _get_fill_char(std::string &str)
+constexpr char _get_fill_char(std::string &str)
 {
-  if(str.empty())
-    return ' ';
-  return str[0];
+  return str.empty() ? ' ':str[0];
 }
 
-inline size_t _get_size(std::string &str)
+constexpr size_t _get_size(std::string &str,size_t def=0)
 {
-  if(str.empty())
-    return 0;
-  return std::stoul(str);
+  return str.empty() ? 0 : std::stoul(str);
 }
 
 } // namespace util
@@ -265,7 +366,6 @@ public:
   static bool format(std::string r, T target, std::string &dst)
   {
     std::smatch sub;
-    std::stringstream stm;
     string str;
     bool result = std::regex_match(r, sub, format_spce_regex());
     if (result)
@@ -285,20 +385,17 @@ public:
       }
       else if (sub.str(10) == "o")
       {
-        stm << std::oct << target;
-        str = stm.str();
+        str = util::to_string_oct(target);
         util::sepinsert(str, sub.str(8), 4);
       }
       else if (sub.str(10) == "x")
       {
-        stm << std::hex << target;
-        str = stm.str();
+        str = util::to_string_hex(target);
         util::sepinsert(str, sub.str(8), 4);
       }
       else if (sub.str(10) == "X")
       {
-        stm << std::uppercase << std::hex << target;
-        str = stm.str();
+        str = util::to_string_HEX(target);
         util::sepinsert(str, sub.str(8), 4);
       }
       else if (!sub.str(10).empty() && "eEfFgGn%"s.find(sub.str(10)) != std::string::npos)
@@ -307,8 +404,7 @@ public:
       }
       else //sub.str(10) == "d"
       {
-        stm << target;
-        str = stm.str();
+        str = std::to_string(target);
         util::sepinsert(str, sub.str(8), 3);
       }
 
@@ -476,10 +572,8 @@ private:
   basic_string<_Elme> _format(basic_string<_Elme> &_Str, Head head, Tail... tail) const //format_numbaring
   {
     basic_string<_Elme> str;
-    std::basic_stringstream<_Elme> num;
     std::smatch sub;
-    num << N;
-    std::regex num_match("\\{"s + num.str() + "(![^:])?(:(.+?)?)?\\}"s);
+    std::regex num_match("\\{"s + std::to_string(N) + "(![^:])?(:(.+?)?)?\\}"s);
     while (std::regex_search(_Str, sub, num_match))
     {
       format_parser::format(sub.str(4), head, str);

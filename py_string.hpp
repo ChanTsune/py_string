@@ -14,6 +14,21 @@
 #include <iomanip>
 #include <regex>
 
+
+#ifdef __GNUC__
+namespace std
+{
+  template <class T>
+  struct hash
+  {
+    size_t operator()(T x) const noexcept
+    {
+      using type = typename underlying_type<T>::type;
+      return hash<type>{}(static_cast<type>(x));
+    }
+  };
+} // namespace std
+#endif
 namespace py
 {
 
@@ -396,27 +411,27 @@ private:
   }
 
 public:
-  using std::basic_string<_Elme>::basic_string;
-  using std::basic_string<_Elme>::operator+=;
-  using std::basic_string<_Elme>::operator=;
   basic_string<_Elme>() : std::basic_string<_Elme>(){};
   basic_string<_Elme>(std::basic_string<_Elme> &&_Str) : std::basic_string<_Elme>(_Str){};
   basic_string<_Elme>(const std::basic_string<_Elme> &_Str) : std::basic_string<_Elme>(_Str){};
-  basic_string<_Elme>(const _Elme _Chr) : std::basic_string<_Elme>(1, _Chr){};
+  using std::basic_string<_Elme>::basic_string;
+  using std::basic_string<_Elme>::operator=;
+  using std::basic_string<_Elme>::operator+=;
 
   //override//
   const _Elme &at(int _Index) const { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
   _Elme &at(int _Index) { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
   const _Elme &operator[](int _Index) const { return this->at(_Index); }
   _Elme &operator[](int _Index) { return this->at(_Index); }
-  basic_string<_Elme> substr(const typename std::basic_string<_Elme>::size_type pos = 0, const typename std::basic_string<_Elme>::size_type n = std::basic_string<_Elme>::npos) const { return basic_string<_Elme>(*this, pos, n, std::basic_string<_Elme>::get_allocator()); }
+  basic_string<_Elme> substr(const typename std::basic_string<_Elme>::size_type pos = 0, const typename std::basic_string<_Elme>::size_type n = std::basic_string<_Elme>::npos) const noexcept { return basic_string<_Elme>(*this, pos, n, std::basic_string<_Elme>::get_allocator()); }
 
   /////
+
 
   basic_string<_Elme> operator*(size_t i);
   basic_string<_Elme> &operator*=(size_t i);
   basic_string<_Elme> operator[](std::initializer_list<null_allow::null_allow<int>> slice);
-  basic_string<_Elme> capitalize(void) const;
+  basic_string<_Elme> capitalize(void) const noexcept;
   basic_string<_Elme> center(size_t width, _Elme fillchar = ' ') const;
   size_t count(basic_string<_Elme> sub) const;
   size_t count(basic_string<_Elme> sub, int start) const;
@@ -448,7 +463,7 @@ public:
   template <typename _Iterable>
   basic_string<_Elme> join(_Iterable iterable) const;
   basic_string<_Elme> ljust(size_t width, _Elme fillchar = ' ') const;
-  basic_string<_Elme> lower(void) const;
+  basic_string<_Elme> lower(void) const noexcept;
   basic_string<_Elme> lstrip(void) const;
   basic_string<_Elme> lstrip(basic_string<_Elme> chars) const;
   void partition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3) const;
@@ -573,7 +588,7 @@ basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<null_a
   }
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::capitalize(void) const
+basic_string<_Elme> basic_string<_Elme>::capitalize(void) const noexcept
 {
   basic_string<_Elme> str = this->lower();
   str[0] = std::toupper(str[0]);
@@ -884,7 +899,7 @@ basic_string<_Elme> basic_string<_Elme>::ljust(size_t width, _Elme fillchar) con
   return *this + basic_string<_Elme>(width - this->size(), fillchar);
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::lower(void) const
+basic_string<_Elme> basic_string<_Elme>::lower(void) const noexcept
 {
   {
     basic_string<_Elme> str(*this);
@@ -1397,7 +1412,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t index) const
   }
   else
   {
-    return this->at(index);
+    return basic_string<_Elme>(1, this->at(index));
   }
 }
 template <class _Elme>

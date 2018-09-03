@@ -59,7 +59,7 @@ int main(int argc, char const *argv[])
     {
         cout << s << endl;
     }
-    /*
+    
 
     //translate
     py::string tstr = "text abc so cool.";
@@ -74,7 +74,7 @@ int main(int argc, char const *argv[])
     cout << tstr.translate(table) << endl;
 
     cout << tstr.translate(table2) << endl;
-    */
+    
 
     return 0;
 }

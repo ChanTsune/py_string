@@ -682,7 +682,7 @@ template <class _Elme>
 int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start, int end) const
 {
   util::adjust_index(start, end, this->size());
-  int result = this->find(sub, start);
+  size_t result = this->find(sub, start);
   if (result == std::basic_string<_Elme>::npos || (result + sub.size() > end))
   {
     return -1;
@@ -717,10 +717,10 @@ inline basic_string<_Elme> basic_string<_Elme>::_format_map(Map &map)
 {
   basic_string<_Elme> str(*this);
   basic_string<_Elme> key, val;
-  int s_cursor = str.pyfind("{");
-  int e_cursor = str.pyfind("}", s_cursor);
-  int key_len;
-  while (s_cursor != -1 && e_cursor != -1)
+  size_t s_cursor = str.find("{");
+  size_t e_cursor = str.find("}", s_cursor);
+  size_t key_len;
+  while (s_cursor != std::basic_string<_Elme>::npos && e_cursor != std::basic_string<_Elme>::npos)
   {
     key_len = e_cursor - s_cursor - 1;
     key = str.substr(s_cursor + 1, key_len);
@@ -732,8 +732,8 @@ inline basic_string<_Elme> basic_string<_Elme>::_format_map(Map &map)
       e_cursor -= key_len + 2;
       e_cursor += val.size();
     }
-    s_cursor = str.pyfind("{", e_cursor);
-    e_cursor = str.pyfind("}", s_cursor);
+    s_cursor = str.find("{", e_cursor);
+    e_cursor = str.find("}", s_cursor);
   }
   return str;
 }

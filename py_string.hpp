@@ -3,7 +3,6 @@
 #define PY_STRING_HPP
 
 #include <string>
-#include <cstring>
 #include <cctype>
 #include <cwctype>
 #include <algorithm>
@@ -44,6 +43,10 @@ private:
 public:
   null_allow<T>(std::nullptr_t _Null) : null_m(true) {}
   null_allow<T>(T _Value) : value_m(_Value), null_m(false) {}
+
+  operator T() const { return value_m; }
+  operator std::nullptr_t() const { return nullptr; }
+
   null_allow<T> &operator=(std::nullptr_t _Null)
   {
     null_m = true;
@@ -68,8 +71,6 @@ public:
   //  bool operator<=(T _Value){ return value_m <= _Value; }
   //  bool operator>=(T _Value){ return value_m >= _Value; }
 
-  operator T() const { return value_m; }
-  operator std::nullptr_t() const { return nullptr; }
 };
 
 } // namespace null_allow
@@ -1420,7 +1421,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end)
 {
   util::adjust_index(start, end, this->size());
 
-  if (start >= end)
+  if (start >= (int)end)
   {
     return "";
   }
@@ -1436,7 +1437,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end,
 
   util::adjust_index(start, end, this->size());
 
-  if (start >= end)
+  if (start >= (int)end)
   {
     return "";
   }

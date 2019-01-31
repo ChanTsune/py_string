@@ -59,22 +59,12 @@ int main(int argc, char const *argv[])
     {
         cout << s << endl;
     }
-    
+    // Check ASCII character string
+    py::string ascii = "Hello World!";
+    cout << std::boolalpha << ascii.isascii() << endl;
 
-    //translate
-    py::string tstr = "text abc so cool.";
-    auto table = py::string::maketrans("abcd", "ABCD", ".");
-    std::map<py::string, py::string> _t;
-    _t["."] = "!!";
-    _t["s"] = "";
-    _t["o"] = "O";
-
-    auto table2 = py::string::maketrans(_t);
-
-    cout << tstr.translate(table) << endl;
-
-    cout << tstr.translate(table2) << endl;
-    
+    py::string not_ascii = "ハローワールド！";
+    cout << std::boolalpha << not_ascii.isascii() << endl;
 
     return 0;
 }

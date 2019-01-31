@@ -112,6 +112,11 @@ inline bool isspace(_Elme c)
 {
   return ((9 <= c) && (c <= 13)) || ((28 <= c) && (c <= 32));
 }
+template <class _Elme>
+inline bool isascii(_Elme c)
+{
+  return (0 <= c && c <= 127);
+}
 /*
 template <class _Elme>
 inline bool ishexdigit(_Elme c)
@@ -453,6 +458,7 @@ public:
   int index(basic_string<_Elme> sub, int start, int end) const;
   bool isalnum(void) const;
   bool isalpha(void) const;
+  bool isascii(void) const;
   bool isdecimal(void) const;
   bool isdigit(void) const;
   bool islower(void) const;
@@ -772,6 +778,17 @@ bool basic_string<_Elme>::isalpha(void) const
       return false;
   }
   return this->size() > 0;
+}
+template <class _Elme>
+bool basic_string<_Elme>::isascii(void) const
+{
+  if(this->empty())return true;
+  for(auto s : *this)
+  {
+    if(!util::isascii(s))
+      return false;
+  }
+  return true;
 }
 template <class _Elme>
 bool basic_string<_Elme>::isdecimal(void) const

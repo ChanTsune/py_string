@@ -744,7 +744,7 @@ inline int basic_string<_Elme>::index(basic_string<_Elme> sub, int start, int en
 template <class _Elme>
 bool basic_string<_Elme>::isalnum(void) const
 {
-  for (auto s : *this)
+  for (auto &&s : *this)
   {
     if (!std::isalnum(s))
       return false;
@@ -754,7 +754,7 @@ bool basic_string<_Elme>::isalnum(void) const
 template <class _Elme>
 bool basic_string<_Elme>::isalpha(void) const
 {
-  for (auto s : *this)
+  for (auto &&s : *this)
   {
     if (!std::isalpha(s))
       return false;
@@ -765,7 +765,7 @@ template <class _Elme>
 bool basic_string<_Elme>::isascii(void) const
 {
   if(this->empty())return true;
-  for(auto s : *this)
+  for(auto &&s : *this)
   {
     if(!util::isascii(s))
       return false;
@@ -775,7 +775,7 @@ bool basic_string<_Elme>::isascii(void) const
 template <class _Elme>
 bool basic_string<_Elme>::isdecimal(void) const
 {
-  for (auto s : *this)
+  for (auto &&s : *this)
   {
     if (!std::isdigit(s))
       return false;
@@ -790,7 +790,7 @@ bool basic_string<_Elme>::isdigit(void) const
 template <class _Elme>
 bool basic_string<_Elme>::islower(void) const
 {
-  for (auto s : *this)
+  for (auto &&s : *this)
   {
     if (!std::islower(s))
       return false;
@@ -805,7 +805,7 @@ bool basic_string<_Elme>::isnumeric(void) const
 template <class _Elme>
 bool basic_string<_Elme>::isprintable(void) const
 {
-  for (auto s : *this)
+  for (auto &&s : *this)
   {
     if (!util::isprintable<_Elme>(s))
       return false;
@@ -815,7 +815,7 @@ bool basic_string<_Elme>::isprintable(void) const
 template <class _Elme>
 bool basic_string<_Elme>::isspace(void) const
 {
-  for (auto s : *this)
+  for (auto &&s : *this)
   {
     if (!util::isspace<_Elme>(s))
       return false;
@@ -830,7 +830,7 @@ bool basic_string<_Elme>::istitle(void) const
   if (this->size() == 1)
     return std::isupper(this->at(0));
   bool cased = false, previous_is_cased = false;
-  for (auto s : *this)
+  for (auto &&s : *this)
   {
     if (std::isupper(s))
     {
@@ -861,7 +861,7 @@ template <class _Elme>
 bool basic_string<_Elme>::isupper(void) const
 {
   {
-    for (auto s : *this)
+    for (auto &&s : *this)
     {
       if (!std::isupper(s))
         return false;
@@ -877,7 +877,7 @@ basic_string<_Elme> basic_string<_Elme>::join(_Iterable iterable) const
   basic_string<_Elme> str;
   size_t count, size = iterable.size();
   count = 0;
-  for (auto &i : iterable)
+  for (auto &&i : iterable)
   {
     str += i;
     ++count;
@@ -903,7 +903,7 @@ basic_string<_Elme> basic_string<_Elme>::lower(void) const noexcept
 {
   {
     basic_string<_Elme> str(*this);
-    for (auto &s : str)
+    for (auto &&s : str)
     {
       s = std::tolower(s);
     }
@@ -1312,7 +1312,7 @@ template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::swapcase(void) const
 {
   basic_string<_Elme> str(*this);
-  for (auto &s : str)
+  for (auto &&s : str)
   {
     if (std::islower(s))
     {
@@ -1330,7 +1330,7 @@ basic_string<_Elme> basic_string<_Elme>::title(void) const
 {
   basic_string<_Elme> str(*this);
   bool previous_is_cased = false;
-  for (auto &s : str)
+  for (auto &&s : str)
   {
     if (std::islower(s))
     {
@@ -1359,7 +1359,7 @@ template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::translate(transtable_t &table) const
 {
   basic_string<_Elme> str;
-  for (auto s : *this)
+  for (auto &&s : *this)
   {
     if (table.count(s))
     {
@@ -1377,7 +1377,7 @@ template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::upper(void) const
 {
   basic_string<_Elme> str(*this);
-  for (auto &s : str)
+  for (auto &&s : str)
   {
     s = std::toupper(s);
   }

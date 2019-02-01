@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <regex>
 #include <functional>
+#include <limits>
 
 namespace py
 {
@@ -421,23 +422,15 @@ public:
   basic_string<_Elme> operator[](std::initializer_list<null_allow::null_allow<int>> slice);
   basic_string<_Elme> capitalize(void) const noexcept;
   basic_string<_Elme> center(size_t width, _Elme fillchar = ' ') const;
-  size_t count(basic_string<_Elme> sub) const;
-  size_t count(basic_string<_Elme> sub, int start) const;
-  size_t count(basic_string<_Elme> sub, int start, int end) const;
-  bool endswith(basic_string<_Elme> suffix) const;
-  bool endswith(basic_string<_Elme> suffix, int start) const;
-  bool endswith(basic_string<_Elme> suffix, int start, int end) const;
+  size_t count(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
+  bool endswith(basic_string<_Elme> suffix, int start=0, int end=std::numeric_limits<int>::max()) const;
   basic_string<_Elme> expandtabs(size_t tabsize = 8) const;
-  int pyfind(basic_string<_Elme> sub) const;
-  int pyfind(basic_string<_Elme> sub, int start) const;
-  int pyfind(basic_string<_Elme> sub, int start, int end) const;
+  int pyfind(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
   template <class... Args>
   basic_string<_Elme> format(Args... args);
   basic_string<_Elme> format_map(std::map<basic_string<_Elme>, basic_string<_Elme>> map);
   basic_string<_Elme> format_map(std::unordered_map<basic_string<_Elme>, basic_string<_Elme>> map);
-  int index(basic_string<_Elme> sub) const;
-  int index(basic_string<_Elme> sub, int start) const;
-  int index(basic_string<_Elme> sub, int start, int end) const;
+  int index(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
   bool isalnum(void) const;
   bool isalpha(void) const;
   bool isascii(void) const;
@@ -458,14 +451,9 @@ public:
   void partition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3) const;
   template <typename _Iterable>
   void partition(basic_string<_Elme> sep, _Iterable &iterable) const;
-  basic_string<_Elme> pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new) const;
-  basic_string<_Elme> pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count) const;
-  int pyrfind(basic_string<_Elme> sub) const;
-  int pyrfind(basic_string<_Elme> sub, int start) const;
-  int pyrfind(basic_string<_Elme> sub, int start, int end) const;
-  int rindex(basic_string<_Elme> sub) const;
-  int rindex(basic_string<_Elme> sub, int start) const;
-  int rindex(basic_string<_Elme> sub, int start, int end) const;
+  basic_string<_Elme> pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count=std::numeric_limits<size_t>::max()) const;
+  int pyrfind(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
+  int rindex(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
   basic_string<_Elme> rjust(size_t width, _Elme fillchar = ' ') const;
   void rpartition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3) const;
   template <typename _Iterable>
@@ -486,9 +474,7 @@ public:
 
   template <typename _Iterable>
   void splitlines(_Iterable &dst, bool keepends = false) const;
-  bool startswith(basic_string<_Elme> suffix) const;
-  bool startswith(basic_string<_Elme> suffix, int start) const;
-  bool startswith(basic_string<_Elme> suffix, int start, int end) const;
+  bool startswith(basic_string<_Elme> suffix, int start=0, int end=std::numeric_limits<int>::max()) const;
   basic_string<_Elme> strip(void) const;
   basic_string<_Elme> strip(basic_string<_Elme> chars) const;
   basic_string<_Elme> swapcase(void) const;
@@ -595,16 +581,6 @@ basic_string<_Elme> basic_string<_Elme>::center(size_t width, _Elme fillchar) co
   return basic_string<_Elme>(l - r, fillchar) + *this + basic_string<_Elme>(r, fillchar);
 }
 template <class _Elme>
-inline size_t basic_string<_Elme>::count(basic_string<_Elme> sub) const
-{
-  return this->count(sub, 0);
-}
-template <class _Elme>
-inline size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start) const
-{
-  return this->count(sub, start, this->size());
-}
-template <class _Elme>
 size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start, int end) const
 {
   util::adjust_index(start, end, this->size());
@@ -620,16 +596,6 @@ size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start, int end) c
   }
 
   return nummatches;
-}
-template <class _Elme>
-inline bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix) const
-{
-  return this->endswith(suffix, 0);
-}
-template <class _Elme>
-inline bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix, int start) const
-{
-  return this->endswith(suffix, start, this->size());
 }
 template <class _Elme>
 bool basic_string<_Elme>::endswith(basic_string<_Elme> suffix, int start, int end) const
@@ -656,16 +622,6 @@ template <class _Elme>
 inline basic_string<_Elme> basic_string<_Elme>::expandtabs(size_t tabsize) const
 {
   return this->pyreplace("\t", basic_string<_Elme>(tabsize, ' '));
-}
-template <class _Elme>
-inline int basic_string<_Elme>::pyfind(basic_string<_Elme> sub) const
-{
-  return this->pyfind(sub, 0);
-}
-template <class _Elme>
-inline int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start) const
-{
-  return this->pyfind(sub, start, this->size());
 }
 template <class _Elme>
 int basic_string<_Elme>::pyfind(basic_string<_Elme> sub, int start, int end) const
@@ -725,16 +681,6 @@ inline basic_string<_Elme> basic_string<_Elme>::_format_map(Map &map)
     e_cursor = str.find("}", s_cursor);
   }
   return str;
-}
-template <class _Elme>
-inline int basic_string<_Elme>::index(basic_string<_Elme> sub) const
-{
-  return this->index(sub, 0);
-}
-template <class _Elme>
-inline int basic_string<_Elme>::index(basic_string<_Elme> sub, int start) const
-{
-  return this->index(sub, start, this->size());
 }
 template <class _Elme>
 inline int basic_string<_Elme>::index(basic_string<_Elme> sub, int start, int end) const
@@ -958,28 +904,6 @@ void basic_string<_Elme>::partition(basic_string<_Elme> sep, _Iterable &iterable
   iterable = {dst1, dst2, dst3};
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new) const
-{
-  size_t cursor = 0;
-  basic_string<_Elme> s(*this);
-  size_t oldlen = old.size(), newlen = _new.size();
-  cursor = s.find(old, cursor);
-  while (cursor != std::basic_string<_Elme>::npos && cursor <= s.size())
-  {
-    s.replace(cursor, oldlen, _new);
-    cursor += newlen;
-    if (oldlen != 0)
-    {
-      cursor = s.find(old, cursor);
-    }
-    else
-    {
-      ++cursor;
-    }
-  }
-  return s;
-}
-template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count) const
 {
   size_t cursor = 0;
@@ -1003,17 +927,7 @@ basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old, basi
   return s;
 }
 template <class _Elme>
-inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub) const
-{
-  return this->pyrfind(sub, 0);
-}
-template <class _Elme>
-inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start) const
-{
-  return this->pyrfind(sub, start, this->size());
-}
-template <class _Elme>
-inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start, int end) const
+int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start, int end) const
 {
   util::adjust_index(start, end, this->size());
   int result = this->rfind(sub, end);
@@ -1022,16 +936,6 @@ inline int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start, int 
     return -1;
   }
   return result;
-}
-template <class _Elme>
-inline int basic_string<_Elme>::rindex(basic_string<_Elme> sub) const
-{
-  return this->rindex(sub, 0);
-}
-template <class _Elme>
-inline int basic_string<_Elme>::rindex(basic_string<_Elme> sub, int start) const
-{
-  return this->rindex(sub, start, this->size());
 }
 template <class _Elme>
 inline int basic_string<_Elme>::rindex(basic_string<_Elme> sub, int start, int end) const
@@ -1257,16 +1161,6 @@ void basic_string<_Elme>::splitlines(_Iterable &dst, bool keepends) const
   {
     dst.push_back(this->substr(j, len - j));
   }
-}
-template <class _Elme>
-inline bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix) const
-{
-  return this->startswith(suffix, 0);
-}
-template <class _Elme>
-inline bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix, int start) const
-{
-  return this->startswith(suffix, start, this->size());
 }
 template <class _Elme>
 bool basic_string<_Elme>::startswith(basic_string<_Elme> suffix, int start, int end) const

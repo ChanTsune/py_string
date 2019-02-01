@@ -589,10 +589,10 @@ basic_string<_Elme> basic_string<_Elme>::center(size_t width, _Elme fillchar) co
   size_t r, l, len = this->size();
   if (width <= len)
     return *this;
-  r = width - len;
-  l = r / 2 + r % 2;
+  l = width - len;
+  r = l / 2 + l % 2;
 
-  return basic_string<_Elme>(l, fillchar) + *this + basic_string<_Elme>(r - l, fillchar);
+  return basic_string<_Elme>(l - r, fillchar) + *this + basic_string<_Elme>(r, fillchar);
 }
 template <class _Elme>
 inline size_t basic_string<_Elme>::count(basic_string<_Elme> sub) const

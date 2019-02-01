@@ -1,14 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <deque>
-#include <map>
+#include <unordered_map>
 #include "py_string.hpp"
 
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
-
     //string multiplication
     py::string multiplication = "hello world!";
 
@@ -65,6 +64,22 @@ int main(int argc, char const *argv[])
 
     py::string not_ascii = "ハローワールド！";
     cout << std::boolalpha << not_ascii.isascii() << endl;
+
+
+    //translate
+    py::string tstr = "text abc so cool.";
+    auto table = py::string::maketrans("abcd", "ABCD", ".");
+    std::unordered_map<char, py::string> _t;
+    _t['.'] = "!!";
+    _t['s'] = "";
+    _t['o'] = "O";
+
+    auto table2 = py::string::maketrans(_t);
+
+    cout << tstr.translate(table) << endl;
+
+    cout << tstr.translate(table2) << endl;
+    
 
     return 0;
 }

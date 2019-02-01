@@ -12,22 +12,8 @@
 #include <sstream>
 #include <iomanip>
 #include <regex>
+#include <functional>
 
-
-#ifdef __GNUC__
-namespace std
-{
-  template <class T>
-  struct hash
-  {
-    size_t operator()(T x) const noexcept
-    {
-      using type = typename underlying_type<T>::type;
-      return hash<type>{}(static_cast<type>(x));
-    }
-  };
-} // namespace std
-#endif
 namespace py
 {
 
@@ -405,13 +391,9 @@ private:
   static transtable_t _maketrans(Map &table_map)
   {
     transtable_t table;
-    for (auto m : table_map)
+    for (auto &&m : table_map)
     {
-      if (m.first.size() != 0)
-      {
-        basic_string<_Elme> key = m.first;
-        table[key[0]] = m.second;
-      }
+      table[m.first] = m.second;
     }
     return table;
   }
@@ -517,11 +499,11 @@ public:
   basic_string<_Elme> slice(null_int_t index) const;
   basic_string<_Elme> slice(null_int_t start, null_int_t end) const;
   basic_string<_Elme> slice(null_int_t start, null_int_t end, null_int_t step) const;
-  static transtable_t maketrans(std::unordered_map<basic_string<_Elme>, basic_string<_Elme>> table_map)
+  static transtable_t maketrans(std::unordered_map<_Elme, basic_string<_Elme>> table_map)
   {
     return basic_string<_Elme>::_maketrans(table_map);
   }
-  static transtable_t maketrans(std::map<basic_string<_Elme>, basic_string<_Elme>> table_map)
+  static transtable_t maketrans(std::map<_Elme, basic_string<_Elme>> table_map)
   {
     return basic_string<_Elme>::_maketrans(table_map);
   }
@@ -536,7 +518,7 @@ public:
     {
       table[from[i]] = to[i];
     }
-    for (auto s : delchars)
+    for (auto &&s : delchars)
     {
       table[s] = "";
     }

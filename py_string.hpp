@@ -57,7 +57,6 @@ public:
   //  bool operator>(T _Value){ return value_m > _Value; }
   //  bool operator<=(T _Value){ return value_m <= _Value; }
   //  bool operator>=(T _Value){ return value_m >= _Value; }
-
 };
 
 } // namespace null_allow
@@ -324,20 +323,19 @@ inline size_t _get_size(std::string str)
 } // namespace util
 #endif
 
-
 namespace format_parser
 {
-  template<typename T>
-  void _sign_format(T &str, std::string sign, bool negative);
+template <typename T>
+void _sign_format(T &str, std::string sign, bool negative);
 
-  template <typename T, typename std::enable_if_t<!std::is_integral<T>::value && !std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
-  bool format(std::string r, T target, std::string &dst);
+template <typename T, typename std::enable_if_t<!std::is_integral<T>::value && !std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
+bool format(std::string r, T target, std::string &dst);
 
-  template <typename T, typename std::enable_if_t<std::is_integral<T>::value, std::nullptr_t> = nullptr>
-  bool format(std::string r, T target, std::string &dst);
+template <typename T, typename std::enable_if_t<std::is_integral<T>::value, std::nullptr_t> = nullptr>
+bool format(std::string r, T target, std::string &dst);
 
-  template <typename T, typename std::enable_if_t<std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
-  bool format(std::string r, T target, std::string &dst);
+template <typename T, typename std::enable_if_t<std::is_floating_point<T>::value, std::nullptr_t> = nullptr>
+bool format(std::string r, T target, std::string &dst);
 } // namespace format_parser
 
 template <class _Elme>
@@ -408,21 +406,20 @@ public:
 
   /////
 
-
   basic_string<_Elme> operator*(size_t i);
   basic_string<_Elme> &operator*=(size_t i);
   basic_string<_Elme> operator[](std::initializer_list<null_allow::null_allow<int>> slice);
   basic_string<_Elme> capitalize(void) const noexcept;
   basic_string<_Elme> center(size_t width, _Elme fillchar = ' ') const;
-  size_t count(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
-  bool endswith(basic_string<_Elme> suffix, int start=0, int end=std::numeric_limits<int>::max()) const;
+  size_t count(basic_string<_Elme> sub, int start = 0, int end = std::numeric_limits<int>::max()) const;
+  bool endswith(basic_string<_Elme> suffix, int start = 0, int end = std::numeric_limits<int>::max()) const;
   basic_string<_Elme> expandtabs(size_t tabsize = 8) const;
-  int pyfind(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
+  int pyfind(basic_string<_Elme> sub, int start = 0, int end = std::numeric_limits<int>::max()) const;
   template <class... Args>
   basic_string<_Elme> format(Args... args);
   basic_string<_Elme> format_map(std::map<basic_string<_Elme>, basic_string<_Elme>> map);
   basic_string<_Elme> format_map(std::unordered_map<basic_string<_Elme>, basic_string<_Elme>> map);
-  int index(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
+  int index(basic_string<_Elme> sub, int start = 0, int end = std::numeric_limits<int>::max()) const;
   bool isalnum(void) const;
   bool isalpha(void) const;
   bool isascii(void) const;
@@ -443,9 +440,9 @@ public:
   void partition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3) const;
   template <typename _Iterable>
   void partition(basic_string<_Elme> sep, _Iterable &iterable) const;
-  basic_string<_Elme> pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count=std::numeric_limits<size_t>::max()) const;
-  int pyrfind(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
-  int rindex(basic_string<_Elme> sub, int start=0, int end=std::numeric_limits<int>::max()) const;
+  basic_string<_Elme> pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new, size_t count = std::numeric_limits<size_t>::max()) const;
+  int pyrfind(basic_string<_Elme> sub, int start = 0, int end = std::numeric_limits<int>::max()) const;
+  int rindex(basic_string<_Elme> sub, int start = 0, int end = std::numeric_limits<int>::max()) const;
   basic_string<_Elme> rjust(size_t width, _Elme fillchar = ' ') const;
   void rpartition(basic_string<_Elme> sep, basic_string<_Elme> &dst1, basic_string<_Elme> &dst2, basic_string<_Elme> &dst3) const;
   template <typename _Iterable>
@@ -466,7 +463,7 @@ public:
 
   template <typename _Iterable>
   void splitlines(_Iterable &dst, bool keepends = false) const;
-  bool startswith(basic_string<_Elme> suffix, int start=0, int end=std::numeric_limits<int>::max()) const;
+  bool startswith(basic_string<_Elme> suffix, int start = 0, int end = std::numeric_limits<int>::max()) const;
   basic_string<_Elme> strip(void) const;
   basic_string<_Elme> strip(basic_string<_Elme> chars) const;
   basic_string<_Elme> swapcase(void) const;
@@ -578,10 +575,10 @@ size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start, int end) c
   util::adjust_index(start, end, this->size());
   size_t nummatches = 0;
   size_t sublen = sub.size();
-  size_t cursor = this->find(sub,start);
-  while( (cursor != std::basic_string<_Elme>::npos) && (cursor + sublen <= end) )
+  size_t cursor = this->find(sub, start);
+  while ((cursor != std::basic_string<_Elme>::npos) && (cursor + sublen <= end))
   {
-    cursor = this->find(sub,cursor+sublen);
+    cursor = this->find(sub, cursor + sublen);
     ++nummatches;
   }
   return nummatches;
@@ -699,10 +696,11 @@ bool basic_string<_Elme>::isalpha(void) const
 template <class _Elme>
 bool basic_string<_Elme>::isascii(void) const
 {
-  if(this->empty())return true;
-  for(auto &&s : *this)
+  if (this->empty())
+    return true;
+  for (auto &&s : *this)
   {
-    if(!util::isascii(s))
+    if (!util::isascii(s))
       return false;
   }
   return true;

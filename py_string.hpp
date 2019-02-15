@@ -577,16 +577,13 @@ size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start, int end) c
 {
   util::adjust_index(start, end, this->size());
   size_t nummatches = 0;
-  int cursor = start;
-  while (true)
+  size_t sublen = sub.size();
+  size_t cursor = this->find(sub,start);
+  while( (cursor != std::basic_string<_Elme>::npos) && (cursor + sublen <= end) )
   {
-    cursor = this->pyfind(sub, cursor, end);
-    if (cursor < 0)
-      break;
-    cursor += sub.size();
+    cursor = this->find(sub,cursor+sublen);
     ++nummatches;
   }
-
   return nummatches;
 }
 template <class _Elme>

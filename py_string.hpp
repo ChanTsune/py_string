@@ -262,21 +262,13 @@ inline size_t decimal_place(T x)
 inline void adjust_index(null_int_t &start, null_int_t &end, int len)
 {
   if (start == nullptr)
-  {
     start = 0;
-  }
   if (start < 0)
-  {
     start = len - start;
-  }
   if ((end == nullptr) || (end > len))
-  {
     end = len;
-  }
   if (end < 0)
-  {
     end = len - end;
-  }
 }
 template <class T>
 inline std::string itobin(T n)

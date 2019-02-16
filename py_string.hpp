@@ -6,6 +6,7 @@
 #include <cctype>
 #include <cwctype>
 #include <algorithm>
+#include <cmath>
 #include <map>
 #include <unordered_map>
 #include <initializer_list>
@@ -227,6 +228,20 @@ inline std::string to_string_HEX(unsigned long long _Val)
   return __to_string(_Val, "%llX");
 }
 
+template <class T>
+inline size_t decimal_place(T x)
+{
+  size_t i = 0, j = 10;
+  T t = x;
+  while (t != std::floor(t))
+  {
+    t = x * j;
+    j *= 10;
+    ++i;
+  }
+  return i;
+}
+
 inline void adjust_index(int &start, int &end, int len)
 {
   if (end > len)
@@ -246,18 +261,6 @@ inline void adjust_index(int &start, int &end, int len)
       start = 0;
   }
 }
-template <class T>
-inline size_t decimal_place(T x)
-{
-  size_t i = 0;
-  while (x != (long long)x)
-  {
-    x *= 10;
-    i++;
-  }
-  return i;
-}
-
 inline void adjust_index(null_int_t &start, null_int_t &end, int len)
 {
   if (start == nullptr)
@@ -531,7 +534,7 @@ basic_string<_Elme> &basic_string<_Elme>::operator*=(size_t i)
   return *this;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<null_allow::null_allow<int>> slice)
+basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<null_int_t> slice)
 {
   basic_string<_Elme> str;
   auto in = slice.begin();
@@ -681,7 +684,7 @@ bool basic_string<_Elme>::isalnum(void) const
     if (!std::isalnum(s))
       return false;
   }
-  return this->size() > 0;
+  return !this->empty();
 }
 template <class _Elme>
 bool basic_string<_Elme>::isalpha(void) const
@@ -691,7 +694,7 @@ bool basic_string<_Elme>::isalpha(void) const
     if (!std::isalpha(s))
       return false;
   }
-  return this->size() > 0;
+  return !this->empty();
 }
 template <class _Elme>
 bool basic_string<_Elme>::isascii(void) const
@@ -713,7 +716,7 @@ bool basic_string<_Elme>::isdecimal(void) const
     if (!std::isdigit(s))
       return false;
   }
-  return this->size() > 0;
+  return !this->empty();
 }
 template <class _Elme>
 bool basic_string<_Elme>::isdigit(void) const
@@ -728,7 +731,7 @@ bool basic_string<_Elme>::islower(void) const
     if (!std::islower(s))
       return false;
   }
-  return this->size() > 0;
+  return !this->empty();
 }
 template <class _Elme>
 bool basic_string<_Elme>::isnumeric(void) const
@@ -743,7 +746,7 @@ bool basic_string<_Elme>::isprintable(void) const
     if (!util::isprintable<_Elme>(s))
       return false;
   }
-  return this->size() > 0;
+  return !this->empty();
 }
 template <class _Elme>
 bool basic_string<_Elme>::isspace(void) const
@@ -753,7 +756,7 @@ bool basic_string<_Elme>::isspace(void) const
     if (!util::isspace<_Elme>(s))
       return false;
   }
-  return this->size() > 0;
+  return !this->empty();
 }
 template <class _Elme>
 bool basic_string<_Elme>::istitle(void) const
@@ -799,7 +802,7 @@ bool basic_string<_Elme>::isupper(void) const
       if (!std::isupper(s))
         return false;
     }
-    return this->size() > 0;
+    return !this->empty();
   }
 }
 
@@ -1118,7 +1121,7 @@ template <class _Elme>
 template <typename _Iterable>
 void basic_string<_Elme>::splitlines(_Iterable &dst, bool keepends) const
 {
-  if (dst.size() != 0)
+  if (!dst.empty())
   {
     dst.clear();
   }

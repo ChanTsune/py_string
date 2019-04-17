@@ -1,5 +1,5 @@
 # py_string
-A library that provides methods equivalent to Python 3's str class in C ++
+A library that provides methods equivalent to Python 3's str class in C ++  
 A class that reproduced the Python str class
 
 ## Installation

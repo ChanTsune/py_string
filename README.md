@@ -1,5 +1,6 @@
 # py_string
-A class that reproduced the Python str type in C ++
+A library that provides methods equivalent to Python 3's str class in C ++
+A class that reproduced the Python str class
 
 ## Installation
 Since this is a single header library, it is easy to use by include only.
@@ -48,6 +49,11 @@ std::cout << str3.format("let's","!") << std::endl;
 py::string str4 = "{}{}{}";
 std::cout << str4.format("1",2,"3") << std::endl;
 //123
+
+py::string str = "{0},{1},{0}";
+std::cout << str.format("apple","banana") << std::endl;
+//apple,banana,apple
+
 ```
 
 ### string slicing

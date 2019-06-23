@@ -54,6 +54,8 @@ int main(int argc, char const *argv[])
     equal(cnt.count("str", -10), 3);
     equal(cnt.count("str", -11), 3);
     equal(cnt.count("str", -12), 4);
+    py::string aaa = "a";aaa *= 10;
+    equal(aaa.count("a"),10);
 
     //    cout << "endswish" << endl;
     equal(cnt.endswith("r"), true);

@@ -810,17 +810,13 @@ template <class _Elme>
 template <typename _Iterable>
 basic_string<_Elme> basic_string<_Elme>::join(_Iterable iterable) const
 {
-  basic_string<_Elme> str;
-  size_t count, size = iterable.size();
-  count = 0;
+  basic_string<_Elme> str = "";
+  const basic_string<_Elme> *sep = &str;
   for (auto &&i : iterable)
   {
+    str += *sep;
     str += i;
-    ++count;
-    if (count != size)
-    {
-      str += *this;
-    }
+    sep = this;
   }
   return str;
 }

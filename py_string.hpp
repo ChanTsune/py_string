@@ -948,9 +948,9 @@ void basic_string<_Elme>::rpartition(basic_string<_Elme> sep, basic_string<_Elme
   int index = this->pyrfind(sep);
   if (index == -1)
   {
-    dst1 = *this;
+    dst1 = "";
     dst2 = "";
-    dst3 = "";
+    dst3 = *this;
   }
   else
   {

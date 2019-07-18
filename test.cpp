@@ -1,6 +1,8 @@
 #include "py_string.hpp"
 #include <iostream>
+#include <vector>
 
+using std::vector;
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -74,6 +76,12 @@ int main(int argc, char const *argv[])
     equal(cnt.startswith("tr", 1), true);
     equal(cnt.startswith("str", 3), true);
     equal(cnt.startswith("str", 1), false);
+
+    // join
+    py::string sep = "-";
+    vector<py::string> items = {"a","b","c"};
+    equal(sep.join(items),"a-b-c");
+    equal(sep.join(vector<py::string>{"a", "b", "c"}), "a-b-c");
 
     return 0;
 }

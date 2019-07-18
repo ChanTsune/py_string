@@ -61,7 +61,7 @@ public:
 };
 
 } // namespace null_allow
-using null_int_t = null_allow::null_allow<int>;
+using optional_int = null_allow::null_allow<int>;
 
 #ifndef PY_STR_UTIL
 #define PY_STR_UTIL
@@ -261,7 +261,7 @@ inline void adjust_index(int &start, int &end, int len)
       start = 0;
   }
 }
-inline void adjust_index(null_int_t &start, null_int_t &end, int len)
+inline void adjust_index(optional_int &start, optional_int &end, int len)
 {
   if (start == nullptr)
     start = 0;
@@ -474,9 +474,9 @@ public:
   basic_string<_Elme> translate(transtable_t &table) const;
   basic_string<_Elme> upper(void) const;
   basic_string<_Elme> zfill(size_t width) const;
-  basic_string<_Elme> slice(null_int_t index) const;
-  basic_string<_Elme> slice(null_int_t start, null_int_t end) const;
-  basic_string<_Elme> slice(null_int_t start, null_int_t end, null_int_t step) const;
+  basic_string<_Elme> slice(optional_int index) const;
+  basic_string<_Elme> slice(optional_int start, optional_int end) const;
+  basic_string<_Elme> slice(optional_int start, optional_int end, optional_int step) const;
   static transtable_t maketrans(std::unordered_map<_Elme, basic_string<_Elme>> table_map)
   {
     return basic_string<_Elme>::_maketrans(table_map);
@@ -534,13 +534,13 @@ basic_string<_Elme> &basic_string<_Elme>::operator*=(size_t i)
   return *this;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<null_int_t> slice)
+basic_string<_Elme> basic_string<_Elme>::operator[](std::initializer_list<optional_int> slice)
 {
   basic_string<_Elme> str;
   auto in = slice.begin();
-  null_int_t index1 = *in++;
-  null_int_t index2 = *in++;
-  null_int_t index3 = *in;
+  optional_int index1 = *in++;
+  optional_int index2 = *in++;
+  optional_int index3 = *in;
 
   switch (slice.size())
   {
@@ -1284,7 +1284,7 @@ basic_string<_Elme> basic_string<_Elme>::zfill(size_t width) const
   return str;
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::slice(null_int_t index) const
+basic_string<_Elme> basic_string<_Elme>::slice(optional_int index) const
 {
   if (index == nullptr)
   {
@@ -1296,7 +1296,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t index) const
   }
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end) const
+basic_string<_Elme> basic_string<_Elme>::slice(optional_int start, optional_int end) const
 {
   util::adjust_index(start, end, this->size());
 
@@ -1307,7 +1307,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end)
   return this->substr(start, end - start);
 }
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::slice(null_int_t start, null_int_t end, null_int_t step) const
+basic_string<_Elme> basic_string<_Elme>::slice(optional_int start, optional_int end, optional_int step) const
 {
   if (step == 0)
     return "";

@@ -435,7 +435,7 @@ public:
   bool istitle(void) const;
   bool isupper(void) const;
   template <typename _Iterable>
-  basic_string<_Elme> join(_Iterable iterable) const;
+  basic_string<_Elme> join(_Iterable &&iterable) const;
   basic_string<_Elme> ljust(size_t width, _Elme fillchar = ' ') const;
   basic_string<_Elme> lower(void) const noexcept;
   basic_string<_Elme> lstrip(void) const;
@@ -808,7 +808,7 @@ bool basic_string<_Elme>::isupper(void) const
 
 template <class _Elme>
 template <typename _Iterable>
-basic_string<_Elme> basic_string<_Elme>::join(_Iterable iterable) const
+basic_string<_Elme> basic_string<_Elme>::join(_Iterable &&iterable) const
 {
   basic_string<_Elme> str = "";
   const basic_string<_Elme> *sep = &str;

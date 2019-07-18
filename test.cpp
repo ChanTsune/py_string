@@ -81,6 +81,7 @@ int main(int argc, char const *argv[])
     py::string sep = "-";
     vector<py::string> items = {"a","b","c"};
     equal(sep.join(items),"a-b-c");
+    equal(sep.join(vector<py::string>{"a", "b", "c"}), "a-b-c");
 
     return 0;
 }

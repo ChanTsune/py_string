@@ -18,6 +18,84 @@
 
 namespace py
 {
+namespace before_cpp17
+{
+  struct nullopt_t {};
+  constexpr nullopt_t nullopt {};
+  template <class T>
+  class optional {
+    public:
+      using value_type = T;
+    private:
+      T m_value;
+      bool m_has_value;
+    public:
+      constexpr optional():m_has_value(false){};
+      constexpr optional(nullopt_t):optional(){};
+      constexpr optional(const optional &rhs){
+        *this = rhs;
+      };
+      constexpr optional(optional &&rhs){
+        *this = rhs;
+      }
+      template <class U = T>
+      constexpr optional(U &&rhs){
+        this->m_has_value = true;
+        this->m_value = rhs;
+      }
+      template <class U>
+      constexpr optional(U &rhs)
+      {
+        this->m_has_value = true;
+        this->m_value = rhs;
+      }
+      template <class U>
+      optional(const optional<U> &rhs)
+      {
+        this->m_has_value = rhs.m_has_value;
+        this->m_value = rhs.m_value;
+      }
+      template <class U>
+      optional(optional<U> &&rhs){
+        this->m_has_value = rhs.m_has_value;
+        this->m_value = rhs.m_value;
+      }
+      optional<T> &operator=(nullopt_t rhs) noexcept{
+        this->m_has_value = false;
+      };
+      optional &operator=(const optional &rhs){
+        this->m_value = rhs.m_value;
+        this->m_has_value = rhs.m_has_value;
+      }
+      optional &operator=(optional &&rhs){
+        this->m_value = rhs.m_value;
+        this->m_has_value = rhs.m_has_value;
+      }
+
+      optional &operator=(T &&rhs){
+        this->m_value = rhs;
+        this->m_has_value = true;
+      }
+
+      template <class U>
+      optional &operator=(const optional<U> &rhs){
+        this->m_value = rhs.m_value;
+        this->m_has_value = rhs.m_has_value;
+      }
+      template <class U>
+      optional &operator=(optional<U> &&rhs){
+        this->m_value = rhs.m_value;
+        this->m_has_value = rhs.m_has_value;
+      }
+
+      T value(){
+        return this->m_value;
+      }
+      bool has_value(){
+        return this->m_has_value;
+      }
+  };
+} // namespace beforecpp17
 
 namespace null_allow
 {

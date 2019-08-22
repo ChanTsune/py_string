@@ -79,7 +79,11 @@ int main(int argc, char const *argv[])
     cout << tstr.translate(table) << endl;
 
     cout << tstr.translate(table2) << endl;
-    
+    using py::before_cpp17::optional;
+
+    optional<int> optint{};
+    cout << optint.value() << endl;
+    cout << optint.has_value() << endl;
 
     return 0;
 }

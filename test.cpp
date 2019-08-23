@@ -18,6 +18,31 @@ int equal(T a, U b)
     cerr << "Invalid : " << a << " != " << b << endl;
     return -1;
 }
+template <class T, class U>
+int not_equal(T a, U b) {
+    if (a != b) {
+        cout << "pass    : " << a << " != " << b << endl;
+        return 0;
+    }
+    cerr << "Invalid : " << a << " == " << b << endl;
+    return -1;
+}
+int test_true(bool a){
+    if (a) {
+        cout << "pass    : true == " << a << endl;
+        return 0;
+    }
+    cerr << "Invalid : true != " << a << endl;
+    return -1;
+}
+int test_false(bool a){
+    if (!a) {
+        cout << "pass    : false == " << a << endl;
+        return 0;
+    }
+    cerr << "Invalid : false != " << a << endl;
+    return -1;
+}
 
 int main(int argc, char const *argv[])
 {

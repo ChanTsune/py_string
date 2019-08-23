@@ -18,6 +18,7 @@
 
 namespace py
 {
+#if (__cplusplus < 201703L)
 namespace before_cpp17
 {
   struct nullopt_t {};
@@ -62,40 +63,69 @@ namespace before_cpp17
       }
       optional<T> &operator=(nullopt_t rhs) noexcept{
         this->m_has_value = false;
+        return *this;
       };
       optional &operator=(const optional &rhs){
         this->m_value = rhs.m_value;
         this->m_has_value = rhs.m_has_value;
+        return *this;
       }
       optional &operator=(optional &&rhs){
         this->m_value = rhs.m_value;
         this->m_has_value = rhs.m_has_value;
+        return *this;
       }
 
       optional &operator=(T &&rhs){
         this->m_value = rhs;
         this->m_has_value = true;
+        return *this;
       }
 
       template <class U>
       optional &operator=(const optional<U> &rhs){
         this->m_value = rhs.m_value;
         this->m_has_value = rhs.m_has_value;
+        return *this;
       }
       template <class U>
       optional &operator=(optional<U> &&rhs){
         this->m_value = rhs.m_value;
         this->m_has_value = rhs.m_has_value;
+        return *this;
       }
-
-      T value(){
+      operator bool() const noexcept{
+        return this->m_has_value;
+      }
+      T value() const {
         return this->m_value;
       }
-      bool has_value(){
-        return this->m_has_value;
+      template <class U>
+      constexpr T value_or(U &&v) const &{
+        return has_value() ? value() : static_cast<T>(std::forward<U>(v));
+      }
+      template <class U>
+      constexpr T value_or(U &&v) &&{
+        return has_value() ? value() : static_cast<T>(std::forward<U>(v));
+      }
+      bool has_value() const {
+      return this->m_has_value;
       }
   };
 } // namespace beforecpp17
+template<class T>
+using optional = before_cpp17::optional<T>;
+using nullopt_t = before_cpp17::nullopt_t;
+using before_cpp17::nullopt;
+#else
+
+#include <optional>
+
+template<class T>
+using optional = std::optional<T>;
+using std::nullopt_t;
+using std::nullopt;
+#endif
 
 namespace null_allow
 {
@@ -489,7 +519,7 @@ public:
 
   basic_string<_Elme> operator*(size_t i);
   basic_string<_Elme> &operator*=(size_t i);
-  basic_string<_Elme> operator[](std::initializer_list<null_allow::null_allow<int>> slice);
+  basic_string<_Elme> operator[](std::initializer_list<optional_int> slice);
   basic_string<_Elme> capitalize(void) const noexcept;
   basic_string<_Elme> center(size_t width, _Elme fillchar = ' ') const;
   size_t count(basic_string<_Elme> sub, int start = 0, int end = std::numeric_limits<int>::max()) const;

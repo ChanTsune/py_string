@@ -1676,5 +1676,28 @@ bool format(std::string r, T target, std::string &dst)
 } // namespace format_parser
 
 } // namespace py
+
+
+#define PYS_DEBUG
+#ifdef PYS_DEBUG
+
+#include <typeinfo>
+#include <cxxabi.h>
+
+template <class T>
+std::ostream &operator<<(std::ostream &dst, const py::optional<T> &i) {
+  dst << "optional(";
+  if (i.has_value()) {
+    dst << i.value();
+  } else {
+    dst << "nullpot";
+  }
+  return dst << ")";
+}
+
+
+
+#endif
+
 using py_string = py::string;
 #endif //include garde PY_STRING_HPP

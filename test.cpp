@@ -44,13 +44,12 @@ int test_false(bool a){
     return -1;
 }
 
-int main(int argc, char const *argv[])
-{
+void test_str() {
     //    cout << "multiplication" << endl;
     py::string mul = "str";
     equal(mul * 2, "strstr");
     mul *= 2;
-    equal(mul,"strstr");
+    equal(mul, "strstr");
 
     //    cout << "pyfind" << endl;
     equal(mul.pyfind("t"), 1);
@@ -81,8 +80,9 @@ int main(int argc, char const *argv[])
     equal(cnt.count("str", -10), 3);
     equal(cnt.count("str", -11), 3);
     equal(cnt.count("str", -12), 4);
-    py::string aaa = "a";aaa *= 10;
-    equal(aaa.count("a"),10);
+    py::string aaa = "a";
+    aaa *= 10;
+    equal(aaa.count("a"), 10);
 
     //    cout << "endswish" << endl;
     equal(cnt.endswith("r"), true);
@@ -104,10 +104,30 @@ int main(int argc, char const *argv[])
 
     // join
     py::string sep = "-";
-    vector<py::string> items = {"a","b","c"};
-    equal(sep.join(items),"a-b-c");
+    vector<py::string> items = {"a", "b", "c"};
+    equal(sep.join(items), "a-b-c");
     equal(sep.join(vector<py::string>{"a", "b", "c"}), "a-b-c");
+}
 
+void test_null_allow(){
+    using py::optional_int;
+    optional_int null = nullptr;
+    optional_int i = 1;
+    optional_int null2 = nullptr;
+
+    equal(null,null);
+    equal(null,null2);
+    equal(null,nullptr);
+    not_equal(null,i);
+    equal(i,i);
+
+    equal(i,1);
+    not_equal(i,2);
+}
+
+int main(int argc, char const *argv[])
+{
+    test_null_allow();
     return 0;
 }
 

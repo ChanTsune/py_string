@@ -80,7 +80,11 @@ public:
 };
 
 } // namespace null_allow
-using optional_int = null_allow::null_allow<int>;
+
+template<class T>
+using optional = null_allow::null_allow<T>;
+
+using optional_int = optional<int>;
 
 #ifndef PY_STR_UTIL
 #define PY_STR_UTIL
@@ -259,6 +263,78 @@ inline size_t decimal_place(T x)
     ++i;
   }
   return i;
+}
+
+template <class T>
+T sign(T n) {
+  return (n > 0) - (n < 0);
+}
+
+template <class T>
+inline std::tuple<T, T, T, T> adjust_index(optional<T> _start, optional<T> _stop, optional<T> _step, T _length) {
+  T start,stop,step,upper,lower;
+  T step_sign = sign(step);
+  bool step_is_negative = step_sign < 0;
+  step = _step.value_or(1);
+  /* Find lower and upper bounds for start and stop. */
+  if (step_is_negative) {
+      lower = -1;
+      upper = _length + lower;
+  }
+  else {
+      lower = 0;
+      upper = _length;
+  }
+  // Compute start.
+  if (_start.has_value()) {
+      start = _start.value();
+      if (sign(start) < 0) {
+          start += _length;
+
+          if (start < lower /* Py_LT */) {
+              start = lower;
+          }
+      }
+      else {
+          if (start > upper /* Py_GT */) {
+              start = upper;
+          }
+      }
+  }
+  else {
+      start = step_is_negative ? upper : lower;
+  }
+  // Compute stop.
+  if (_stop.has_value()) {
+      stop = _stop.value();
+
+      if (sign(stop) < 0) {
+          stop += _length;
+          if (stop < lower /* Py_LT */) {
+              stop = lower;
+          }
+      }
+      else {
+          if (stop > upper /* Py_GT */) {
+              stop = upper;
+          }
+      }
+  }
+  else {
+      stop = step_is_negative ? lower : upper;
+  }
+  T len = 0;
+  if (step < 0) {
+      if (stop < start) {
+          len = (start - stop - 1) / (-step) + 1;
+      }
+  }
+  else {
+      if (start < stop) {
+          len = (stop - start - 1) / step + 1;
+      }
+  }
+  return (start, stop, step, len);
 }
 
 inline void adjust_index(int &start, int &end, int len)

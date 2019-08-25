@@ -1,6 +1,7 @@
 #include "py_string.hpp"
 #include <iostream>
 #include <vector>
+#include <deque>
 
 using std::vector;
 using std::cout;
@@ -125,9 +126,17 @@ void test_null_allow(){
     not_equal(i,2);
 }
 
+void test_sing() {
+    using py::util::sign;
+
+    equal(sign(0),0);
+    equal(sign(-2),-1);
+    equal(sign(3),1);
+}
+
 int main(int argc, char const *argv[])
 {
-    test_null_allow();
+    test_sing();
     return 0;
 }
 

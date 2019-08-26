@@ -18,114 +18,74 @@
 
 namespace py
 {
-#if (__cplusplus < 201703L)
-namespace before_cpp17
+namespace null_allow
 {
-  struct nullopt_t {};
-  constexpr nullopt_t nullopt {};
-  template <class T>
-  class optional {
-    public:
-      using value_type = T;
-    private:
-      T m_value;
-      bool m_has_value;
-    public:
-      constexpr optional():m_has_value(false){};
-      constexpr optional(nullopt_t):optional(){};
-      constexpr optional(const optional &rhs){
-        *this = rhs;
-      };
-      constexpr optional(optional &&rhs){
-        *this = rhs;
-      }
-      template <class U = T>
-      constexpr optional(U &&rhs){
-        this->m_has_value = true;
-        this->m_value = rhs;
-      }
-      template <class U>
-      constexpr optional(U &rhs)
-      {
-        this->m_has_value = true;
-        this->m_value = rhs;
-      }
-      template <class U>
-      optional(const optional<U> &rhs)
-      {
-        this->m_has_value = rhs.m_has_value;
-        this->m_value = rhs.m_value;
-      }
-      template <class U>
-      optional(optional<U> &&rhs){
-        this->m_has_value = rhs.m_has_value;
-        this->m_value = rhs.m_value;
-      }
-      optional<T> &operator=(nullopt_t rhs) noexcept{
-        this->m_has_value = false;
-        return *this;
-      };
-      optional &operator=(const optional &rhs){
-        this->m_value = rhs.m_value;
-        this->m_has_value = rhs.m_has_value;
-        return *this;
-      }
-      optional &operator=(optional &&rhs){
-        this->m_value = rhs.m_value;
-        this->m_has_value = rhs.m_has_value;
-        return *this;
-      }
+template <class T>
+class null_allow
+{
+private:
+  T m_value;
+  bool m_has_value;
 
-      optional &operator=(T &&rhs){
-        this->m_value = rhs;
-        this->m_has_value = true;
-        return *this;
-      }
+public:
+  null_allow<T>(std::nullptr_t _Null) : m_has_value(false) {}
+  null_allow<T>(T _Value) : m_value(_Value), m_has_value(true) {}
 
-      template <class U>
-      optional &operator=(const optional<U> &rhs){
-        this->m_value = rhs.m_value;
-        this->m_has_value = rhs.m_has_value;
-        return *this;
-      }
-      template <class U>
-      optional &operator=(optional<U> &&rhs){
-        this->m_value = rhs.m_value;
-        this->m_has_value = rhs.m_has_value;
-        return *this;
-      }
-      operator bool() const noexcept{
-        return this->m_has_value;
-      }
-      T value() const {
-        return this->m_value;
-      }
-      template <class U>
-      constexpr T value_or(U &&v) const &{
-        return has_value() ? value() : static_cast<T>(std::forward<U>(v));
-      }
-      template <class U>
-      constexpr T value_or(U &&v) &&{
-        return has_value() ? value() : static_cast<T>(std::forward<U>(v));
-      }
-      bool has_value() const {
-      return this->m_has_value;
-      }
+  operator T() const { return m_value; }
+  operator std::nullptr_t() const { return nullptr; }
+
+  null_allow<T> &operator=(std::nullptr_t _Null)
+  {
+    m_has_value = false;
+    return *this;
+  }
+  null_allow<T> &operator=(T _Value)
+  {
+    m_value = _Value;
+    m_has_value = true;
+    return *this;
+  }
+  bool operator==(null_allow<T> rhs) const {
+    return (m_has_value && rhs.m_has_value) ? (m_value == rhs.m_value) : (m_has_value == rhs.m_has_value);
   };
-} // namespace beforecpp17
-template<class T>
-using optional = before_cpp17::optional<T>;
-using nullopt_t = before_cpp17::nullopt_t;
-using before_cpp17::nullopt;
-#else
+  bool operator!=(null_allow<T> rhs) const {
+    return !(this->operator==(rhs));
+  };
+  // bool operator<(null_allow<T> rhs){};
+  // bool operator>(null_allow<T> rhs){};
+  // bool operator<=(null_allow<T> rhs){};
+  // bool operator>=(null_allow<T> rhs){};
 
-#include <optional>
+  bool operator==(std::nullptr_t _Null) const { return !m_has_value; }
+  bool operator!=(std::nullptr_t _Null) const { return m_has_value; }
+  //  bool operator<(std::nullptr_t _Null){ return !m_has_value; }
+  //  bool operator>(std::nullptr_t _Null){ return !m_has_value; }
+  //  bool operator<=(std::nullptr_t _Null){ return m_has_value; }
+  //  bool operator>=(std::nullptr_t _Null){ return m_has_value; }
+  bool operator==(T _Value) const { return m_value == _Value; }
+  bool operator!=(T _Value) const { return m_value != _Value; }
+  //  bool operator<(T _Value){ return m_value < _Value; }
+  //  bool operator>(T _Value){ return m_value > _Value; }
+  //  bool operator<=(T _Value){ return m_value <= _Value; }
+  //  bool operator>=(T _Value){ return m_value >= _Value; }
+  bool has_value() const {
+    return m_has_value;
+  }
+  T value() const {
+    return m_value;
+  }
+  T value_or(T v) const {
+    return m_has_value ? m_value : v;
+  }
+};
+
+} // namespace null_allow
 
 template<class T>
-using optional = std::optional<T>;
-using std::nullopt_t;
-using std::nullopt;
-#endif
+using optional = null_allow::null_allow<T>;
+
+using optional_int = optional<int>;
+
 
 template <class T>
 class slice {
@@ -145,49 +105,8 @@ class slice {
 
   std::tuple<T,T,T,T> adjust_index(T length) const;
 };
-namespace null_allow
-{
-template <class T>
-class null_allow
-{
-private:
-  T value_m;
-  bool null_m;
 
-public:
-  null_allow<T>(std::nullptr_t _Null) : null_m(true) {}
-  null_allow<T>(T _Value) : value_m(_Value), null_m(false) {}
 
-  operator T() const { return value_m; }
-  operator std::nullptr_t() const { return nullptr; }
-
-  null_allow<T> &operator=(std::nullptr_t _Null)
-  {
-    null_m = true;
-    return *this;
-  }
-  null_allow<T> &operator=(T _Value)
-  {
-    value_m = _Value;
-    null_m = false;
-    return *this;
-  }
-  bool operator==(std::nullptr_t _Null) { return null_m; }
-  bool operator!=(std::nullptr_t _Null) { return !null_m; }
-  //  bool operator<(std::nullptr_t _Null){ return !null_m; }
-  //  bool operator>(std::nullptr_t _Null){ return !null_m; }
-  //  bool operator<=(std::nullptr_t _Null){ return null_m; }
-  //  bool operator>=(std::nullptr_t _Null){ return null_m; }
-  bool operator==(T _Value) { return value_m == _Value; }
-  bool operator!=(T _Value) { return value_m != _Value; }
-  //  bool operator<(T _Value){ return value_m < _Value; }
-  //  bool operator>(T _Value){ return value_m > _Value; }
-  //  bool operator<=(T _Value){ return value_m <= _Value; }
-  //  bool operator>=(T _Value){ return value_m >= _Value; }
-};
-
-} // namespace null_allow
-using optional_int = null_allow::null_allow<int>;
 
 #ifndef PY_STR_UTIL
 #define PY_STR_UTIL
@@ -368,6 +287,78 @@ inline size_t decimal_place(T x)
   return i;
 }
 
+template <class T>
+T sign(T n) {
+  return (n > 0) - (n < 0);
+}
+
+template <class T>
+inline std::tuple<T, T, T, T> adjust_index(optional<T> _start, optional<T> _stop, optional<T> _step, T _length) {
+  T start,stop,step,upper,lower;
+  T step_sign = sign(step);
+  bool step_is_negative = step_sign < 0;
+  step = _step.value_or(1);
+  /* Find lower and upper bounds for start and stop. */
+  if (step_is_negative) {
+      lower = -1;
+      upper = _length + lower;
+  }
+  else {
+      lower = 0;
+      upper = _length;
+  }
+  // Compute start.
+  if (_start.has_value()) {
+      start = _start.value();
+      if (sign(start) < 0) {
+          start += _length;
+
+          if (start < lower /* Py_LT */) {
+              start = lower;
+          }
+      }
+      else {
+          if (start > upper /* Py_GT */) {
+              start = upper;
+          }
+      }
+  }
+  else {
+      start = step_is_negative ? upper : lower;
+  }
+  // Compute stop.
+  if (_stop.has_value()) {
+      stop = _stop.value();
+
+      if (sign(stop) < 0) {
+          stop += _length;
+          if (stop < lower /* Py_LT */) {
+              stop = lower;
+          }
+      }
+      else {
+          if (stop > upper /* Py_GT */) {
+              stop = upper;
+          }
+      }
+  }
+  else {
+      stop = step_is_negative ? lower : upper;
+  }
+  T len = 0;
+  if (step < 0) {
+      if (stop < start) {
+          len = (start - stop - 1) / (-step) + 1;
+      }
+  }
+  else {
+      if (start < stop) {
+          len = (stop - start - 1) / step + 1;
+      }
+  }
+  return (start, stop, step, len);
+}
+
 inline void adjust_index(int &start, int &end, int len)
 {
   if (end > len)
@@ -535,7 +526,7 @@ public:
 
   /////
 
-  basic_string<_Elme> operator*(size_t i);
+  basic_string<_Elme> operator*(size_t i) const;
   basic_string<_Elme> &operator*=(size_t i);
   basic_string<_Elme> operator[](std::initializer_list<optional_int> slice);
   basic_string<_Elme> capitalize(void) const noexcept;
@@ -641,7 +632,7 @@ basic_string<_Elme> operator+(basic_string<_Elme> r, basic_string<_Elme> l)
 }
 
 template <class _Elme>
-basic_string<_Elme> basic_string<_Elme>::operator*(size_t i)
+basic_string<_Elme> basic_string<_Elme>::operator*(size_t i) const
 {
   if (i == 0)
     return "";
@@ -1694,5 +1685,30 @@ bool format(std::string r, T target, std::string &dst)
 } // namespace format_parser
 
 } // namespace py
+
+
+#define PYS_DEBUG
+#ifdef PYS_DEBUG
+
+template <typename T, std::enable_if_t<std::is_same<T, std::nullptr_t>{}, std::nullptr_t> = nullptr>
+std::ostream &operator<<(std::ostream &dst, T i)
+{
+  return dst << "nullptr";
+}
+
+template <class T>
+std::ostream &operator<<(std::ostream &dst, const py::null_allow::null_allow<T> &i) {
+  dst << "optional(";
+  if (i.has_value()) {
+    dst << i.value();
+  } else {
+    dst << nullptr;
+  }
+  return dst << ")";
+}
+
+
+#endif
+
 using py_string = py::string;
 #endif //include garde PY_STRING_HPP

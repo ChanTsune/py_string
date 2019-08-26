@@ -501,8 +501,8 @@ public:
   //override//
   const _Elme &at(int _Index) const { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
   _Elme &at(int _Index) { return (_Index < 0) ? std::basic_string<_Elme>::at(_back_index(_Index)) : std::basic_string<_Elme>::at(_Index); }
-  const _Elme &operator[](int _Index) const { return this->at(_Index); }
-  _Elme &operator[](int _Index) { return this->at(_Index); }
+  const _Elme &operator[](int _Index) const { return (_Index < 0) ? std::string::operator[](_back_index(_Index)) : std::string::operator[](_Index); }
+  _Elme &operator[](int _Index) { return (_Index < 0) ? std::string::operator[](_back_index(_Index)) : std::string::operator[](_Index); }
   basic_string<_Elme> substr(const typename std::basic_string<_Elme>::size_type pos = 0, const typename std::basic_string<_Elme>::size_type n = std::basic_string<_Elme>::npos) const noexcept { return basic_string<_Elme>(*this, pos, n, std::basic_string<_Elme>::get_allocator()); }
 
   /////
@@ -1411,13 +1411,12 @@ basic_string<_Elme> basic_string<_Elme>::slice(optional_int start, optional_int 
 
   using std::get;
   auto t = util::adjust_index<int>(start, end, step, this->size());
-  start = get<0>(t),end = get<1>(t),step = get<2>(t);
-  int len = get<3>(t);
+  int start_i = get<0>(t), step_i = get<2>(t), len_i = get<3>(t);
   basic_string<_Elme> str = "";
-  for (int i = 0; i < len; i += 1)
+  for (int i = 0; i < len_i; i += 1)
   {
-    str.push_back(this->at(start));
-    start = start.value() + step.value();
+    str.push_back(this->at(start_i));
+    start_i += step_i;
   }
   return str;
 }
@@ -1657,7 +1656,7 @@ bool format(std::string r, T target, std::string &dst)
 #define PYS_DEBUG
 #ifdef PYS_DEBUG
 
-template <typename T, std::enable_if_t<std::is_same<T, std::nullptr_t>{}, std::nullptr_t> = nullptr>
+template <typename T, typename std::enable_if_t<std::is_same<T, std::nullptr_t>::value, std::nullptr_t> = nullptr>
 std::ostream &operator<<(std::ostream &dst, T i)
 {
   return dst << "nullptr";

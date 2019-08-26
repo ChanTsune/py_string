@@ -294,10 +294,9 @@ T sign(T n) {
 
 template <class T>
 inline std::tuple<T, T, T, T> adjust_index(optional<T> _start, optional<T> _stop, optional<T> _step, T _length) {
-  T start,stop,step,upper,lower;
+  T start,stop,step = _step.value_or(1),upper,lower;
   T step_sign = sign(step);
   bool step_is_negative = step_sign < 0;
-  step = _step.value_or(1);
   /* Find lower and upper bounds for start and stop. */
   if (step_is_negative) {
       lower = -1;
@@ -356,38 +355,20 @@ inline std::tuple<T, T, T, T> adjust_index(optional<T> _start, optional<T> _stop
           len = (stop - start - 1) / step + 1;
       }
   }
-  return (start, stop, step, len);
+  return {start, stop, step, len};
 }
 
 inline void adjust_index(int &start, int &end, int len)
 {
-  if (end > len)
-  {
-    end = len;
-  }
-  else if (end < 0)
-  {
-    end += len;
-    if (end < 0)
-      end = 0;
-  }
-  if (start < 0)
-  {
-    start += len;
-    if (start < 0)
-      start = 0;
-  }
+  using std::get;
+  auto t = adjust_index<int>(start,end,1,len);
+  start = get<0>(t),end = get<1>(t);
 }
 inline void adjust_index(optional_int &start, optional_int &end, int len)
 {
-  if (start == nullptr)
-    start = 0;
-  if (start < 0)
-    start = len - start;
-  if ((end == nullptr) || (end > len))
-    end = len;
-  if (end < 0)
-    end = len - end;
+  using std::get;
+  auto t = adjust_index<int>(start,end,1,len);
+  start = get<0>(t),end = get<1>(t);
 }
 template <class T>
 inline std::string itobin(T n)
@@ -1407,10 +1388,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(optional_int index) const
   {
     return *this;
   }
-  else
-  {
-    return basic_string<_Elme>(1, this->at(index));
-  }
+  return basic_string<_Elme>(1, this->at(index));
 }
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::slice(optional_int start, optional_int end) const
@@ -1431,26 +1409,15 @@ basic_string<_Elme> basic_string<_Elme>::slice(optional_int start, optional_int 
   if (step == nullptr || step == 1)
     return this->slice(start, end);
 
-  util::adjust_index(start, end, this->size());
-
-  if (start >= (int)end)
+  using std::get;
+  auto t = util::adjust_index<int>(start, end, step, this->size());
+  start = get<0>(t),end = get<1>(t),step = get<2>(t);
+  int len = get<3>(t);
+  basic_string<_Elme> str = "";
+  for (int i = 0; i < len; i += 1)
   {
-    return "";
-  }
-  basic_string<_Elme> str;
-  if (step > 0)
-  {
-    for (int i = start; i < end; i += step)
-    {
-      str.push_back(this->at(i));
-    }
-  }
-  else //the case of the 3ed number is negative
-  {
-    for (int i = end - 1; i > start - 1; i += step)
-    {
-      str.push_back(this->at(i));
-    }
+    str.push_back(this->at(start));
+    start = start.value() + step.value();
   }
   return str;
 }

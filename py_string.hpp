@@ -127,6 +127,24 @@ using std::nullopt_t;
 using std::nullopt;
 #endif
 
+template <class T>
+class slice {
+  using value_type = T;
+  private:
+  optional<T> m_start;
+  optional<T> m_stop;
+  optional<T> m_step;
+  public:
+  slice():m_start(),m_stop(),m_step(){};
+  template<class U>
+  slice(U stop):m_start(),m_stop(stop),m_step(){};
+  template<class U ,class V>
+  slice(U start, V stop):m_start(start),m_stop(stop),m_step(){};
+  template<class U, class V, class W>
+  slice(U start,V stop, W step):m_start(start),m_stop(stop),m_step(step){};
+
+  std::tuple<T,T,T,T> adjust_index(T length) const;
+};
 namespace null_allow
 {
 template <class T>

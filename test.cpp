@@ -8,6 +8,40 @@ using std::cout;
 using std::endl;
 using std::cerr;
 
+namespace aux
+{
+template <std::size_t...>
+struct seq
+{
+};
+
+template <std::size_t N, std::size_t... Is>
+struct gen_seq : gen_seq<N - 1, N - 1, Is...>
+{
+};
+
+template <std::size_t... Is>
+struct gen_seq<0, Is...> : seq<Is...>
+{
+};
+
+template <class Ch, class Tr, class Tuple, std::size_t... Is>
+void print_tuple(std::basic_ostream<Ch, Tr> &os, Tuple const &t, seq<Is...>)
+{
+    using swallow = int[];
+    (void)swallow{0, (void(os << (Is == 0 ? "" : ", ") << std::get<Is>(t)), 0)...};
+}
+} // namespace aux
+
+template <class Ch, class Tr, class... Args>
+auto operator<<(std::basic_ostream<Ch, Tr> &os, std::tuple<Args...> const &t)
+    -> std::basic_ostream<Ch, Tr> &
+{
+    os << "(";
+    aux::print_tuple(os, t, aux::gen_seq<sizeof...(Args)>());
+    return os << ")";
+}
+
 template <class T, class U>
 int equal(T a, U b)
 {
@@ -134,9 +168,27 @@ void test_sing() {
     equal(sign(3),1);
 }
 
+void test_adjust_index() {
+    cout << py::util::adjust_index<int>(nullptr, nullptr, 1, 5) << endl;
+    cout << py::util::adjust_index<int>(nullptr, nullptr, 2, 5) << endl;
+    cout << py::util::adjust_index<int>(nullptr, nullptr, -1, 5) << endl;
+    cout << py::util::adjust_index<int>(1, 2, 3, 5) << endl;
+    cout << py::util::adjust_index<int>(-5, -1, -2, 6) << endl;
+    py::string s = "01234";
+    py::string t = "012345";
+    cout << s[{nullptr, nullptr, -1}] << endl;
+    cout << s[{nullptr, nullptr, -2}] << endl;
+    cout << t[{nullptr, nullptr, -1}] << endl;
+    cout << t[{nullptr, nullptr, -2}] << endl;
+    cout << t[{-5,-1,1}] << endl;
+    cout << s[{1,5,-2}] << endl;
+
+    cout << is_streamable<int>::value << endl;
+}
+
 int main(int argc, char const *argv[])
 {
-    test_sing();
+    test_adjust_index();
     return 0;
 }
 

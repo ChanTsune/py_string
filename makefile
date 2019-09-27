@@ -1,17 +1,21 @@
 CXX = clang++
 CXX_OPTIONS = -Wall --std=c++14
 
+BUILD_DIR = build
 
 .PHONY:all
 
-all:example
+all:example test
 
-example:example.cpp
-	$(CXX) $(CXX_OPTIONS) $^ -o $@
+example:example.cpp py_string.hpp
+	mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXX_OPTIONS) $< -o $(BUILD_DIR)/$@
+	./$(BUILD_DIR)/$@
 
-test:test.cpp
-	$(CXX) $(CXX_OPTIONS) $^ -o $@
-	./$@
+test:test.cpp py_string.hpp
+	mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXX_OPTIONS) $< -o $(BUILD_DIR)/$@
+	./$(BUILD_DIR)/$@
 
 clean:
-	rm example
+	rm $(BUILD_DIR)/example $(BUILD_DIR)/test

@@ -9,11 +9,9 @@ install:
   - "pushd ."
   - "cd googletest && mkdir build && cd build && cmake .. && make"
   - "popd"
-  - "pwd"
-  - "ls -al"
   - "sudo cp -r ./googletest/googlemock/include/gmock /usr/local/include/gmock"
   - "sudo cp -r ./googletest/googletest/include/gtest /usr/local/include/gtest"
   - "sudo cp ./googletest/build/lib/*.a /usr/local/lib/"
 
 script:
-  - make googletest
+  - make -B googletest

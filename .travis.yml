@@ -18,4 +18,4 @@ matrix:
       compiler: gcc
 
 script:
-  - make -B googletest
+  - make -B test

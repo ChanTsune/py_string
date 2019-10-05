@@ -191,14 +191,14 @@ void test_adjust_index() {
 
 }
 
-BOOST_AUTO_TEST_SUITE(sample)
+BOOST_AUTO_TEST_SUITE(pyString)
 
-BOOST_AUTO_TEST_CASE(hoge)
+BOOST_AUTO_TEST_CASE(adjustIndex)
 {
     BOOST_CHECK_EQUAL(2*2, 4);
 }
 
-BOOST_AUTO_TEST_CASE(fuga)
+BOOST_AUTO_TEST_CASE(slice)
 {
     BOOST_CHECK_EQUAL(2*3, 6);
 }

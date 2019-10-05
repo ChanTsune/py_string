@@ -1,4 +1,7 @@
-CXX = clang++
+ifdef CXX
+else
+	CXX = clang++
+endif
 CXX_OPTIONS = -Wall --std=c++14
 
 BUILD_DIR = build

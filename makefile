@@ -25,11 +25,12 @@ clean:
 
 googletest_install:
 	git clone https://github.com/google/googletest.git
+	pushd .
 	cd googletest
 	mkdir build && cd build
 	cmake ..
 	make
-	cd ../../
+	popd
 	sudo cp -r ./googletest/googlemock/include/gmock /usr/local/include/gmock
 	sudo cp -r ./googletest/googletest/include/gtest /usr/local/include/gtest
 	sudo cp ./googletest/build/lib/*.a /usr/local/lib/

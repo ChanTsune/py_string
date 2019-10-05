@@ -5,6 +5,11 @@ compiler:
   - gcc
 
 install:
-  - "make googletest_install"
+  - "git clone https://github.com/google/googletest.git"
+  - "cd googletest && mkdir build && cd build && cmake .. && make"
+  - "cp -r ./googletest/googlemock/include/gmock /usr/local/include/gmock"
+  - "cp -r ./googletest/googletest/include/gtest /usr/local/include/gtest"
+  - "cp ./googletest/build/lib/*.a /usr/local/lib/"
+
 script:
   - make googletest

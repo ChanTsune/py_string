@@ -1,21 +1,21 @@
 language: cpp
 
-os:
- - linux
- - osx
-
-compiler:
-  - clang
-  - gcc
-
-install:
-  - "git clone https://github.com/google/googletest.git"
-  - "pushd ."
-  - "cd googletest && mkdir build && cd build && cmake .. && make"
-  - "popd"
-  - "sudo cp -r ./googletest/googlemock/include/gmock /usr/local/include/gmock"
-  - "sudo cp -r ./googletest/googletest/include/gtest /usr/local/include/gtest"
-  - "sudo cp ./googletest/build/lib/*.a /usr/local/lib/"
+matrix:
+  include:
+    - os: linux
+      compiler: clang
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: gcc
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: osx
+      compiler: clang
+    - os: osx
+      compiler: gcc
 
 script:
-  - make -B googletest
+  - make -B test

@@ -1,7 +1,14 @@
-#include "py_string.hpp"
 #include <iostream>
 #include <vector>
 #include <deque>
+
+/* this test project useing googletest
+ * https://github.com/google/googletest.git
+ * 
+ */
+#include <gtest/gtest.h>
+
+#include "py_string.hpp"
 
 using std::vector;
 using std::cout;
@@ -183,7 +190,6 @@ void test_adjust_index() {
     cout << t[{-5,-1,1}] << endl;
     cout << s[{1,5,-2}] << endl;
 
-    cout << is_streamable<int>::value << endl;
 }
 
 int main(int argc, char const *argv[])

@@ -355,7 +355,7 @@ inline std::tuple<T, T, T, T> adjust_index(optional<T> _start, optional<T> _stop
           len = (stop - start - 1) / step + 1;
       }
   }
-  return {start, stop, step, len};
+  return std::make_tuple(start, stop, step, len);
 }
 
 inline void adjust_index(int &start, int &end, int len)

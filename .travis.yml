@@ -6,7 +6,9 @@ compiler:
 
 install:
   - "git clone https://github.com/google/googletest.git"
+  - "pushd ."
   - "cd googletest && mkdir build && cd build && cmake .. && make"
+  - "popd"
   - "pwd"
   - "ls -al"
   - "cp -r ./googletest/googlemock/include/gmock /usr/local/include/gmock"

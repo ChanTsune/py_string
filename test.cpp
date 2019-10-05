@@ -1,12 +1,10 @@
+#define BOOST_TEST_MAIN 
+
 #include <iostream>
 #include <vector>
 #include <deque>
 
-/* this test project useing googletest
- * https://github.com/google/googletest.git
- * 
- */
-#include <gtest/gtest.h>
+#include <boost/test/included/unit_test.hpp>
 
 #include "py_string.hpp"
 
@@ -86,9 +84,6 @@ int test_false(bool a){
     return -1;
 }
 
-TEST(SliceTest, Constructor){
-    EXPECT_EQ(2,1+1);
-}
 
 void test_str() {
     //    cout << "multiplication" << endl;
@@ -196,9 +191,16 @@ void test_adjust_index() {
 
 }
 
-int main(int argc, char const *argv[])
+BOOST_AUTO_TEST_SUITE(sample)
+
+BOOST_AUTO_TEST_CASE(hoge)
 {
-    test_adjust_index();
-    return 0;
+    BOOST_CHECK_EQUAL(2*2, 4);
 }
 
+BOOST_AUTO_TEST_CASE(fuga)
+{
+    BOOST_CHECK_EQUAL(2*3, 6);
+}
+
+BOOST_AUTO_TEST_SUITE_END()

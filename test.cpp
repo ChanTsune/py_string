@@ -86,6 +86,10 @@ int test_false(bool a){
     return -1;
 }
 
+TEST(SliceTest, Constructor){
+    EXPECT_EQ(2,1+1);
+}
+
 void test_str() {
     //    cout << "multiplication" << endl;
     py::string mul = "str";

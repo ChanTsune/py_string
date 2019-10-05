@@ -9,7 +9,7 @@ compiler:
   - gcc
 
 install:
-  - "git clone https://github.com/google/googletest.git"
+  - "git clone https://github.com/google/googletest.git" --depth 1
   - "pushd ."
   - "cd googletest && mkdir build && cd build && cmake .. && make"
   - "popd"

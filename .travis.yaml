@@ -46,10 +46,6 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
-before_install:
-    - eval "${MATRIX_EVAL}"
-matrix:
-  include:
     - os: osx
       osx_image: xcode8
       env:
@@ -70,10 +66,6 @@ matrix:
       env:
         - MATRIX_EVAL="brew install gcc && CC=gcc-7 && CXX=g++-7"
 
-before_install:
-    - eval "${MATRIX_EVAL}"
-matrix:
-  include:
     # works on Precise and Trusty
     - os: linux
       addons:
@@ -143,15 +135,14 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
-before_install:
-    - eval "${MATRIX_EVAL}"
-matrix:
-  include:
     - os: osx
       osx_image: xcode10.1
     
     - os: osx
       osx_image: xcode9.4
+
+before_install:
+    - eval "${MATRIX_EVAL}"
 
 install:
   - "make googletest_install"

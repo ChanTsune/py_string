@@ -1,6 +1,5 @@
 SHELL := /bin/bash
 ifdef CXX
-	CXX = clang++
 else
 	CXX = clang++
 endif

@@ -175,11 +175,6 @@ void test_sing() {
 }
 
 void test_adjust_index() {
-    cout << py::util::adjust_index<int>(nullptr, nullptr, 1, 5) << endl;
-    cout << py::util::adjust_index<int>(nullptr, nullptr, 2, 5) << endl;
-    cout << py::util::adjust_index<int>(nullptr, nullptr, -1, 5) << endl;
-    cout << py::util::adjust_index<int>(1, 2, 3, 5) << endl;
-    cout << py::util::adjust_index<int>(-5, -1, -2, 6) << endl;
     py::string s = "01234";
     py::string t = "012345";
     cout << s[{nullptr, nullptr, -1}] << endl;
@@ -195,9 +190,15 @@ BOOST_AUTO_TEST_SUITE(pyString)
 
 BOOST_AUTO_TEST_CASE(adjustIndex)
 {
-    BOOST_CHECK_EQUAL(2*2, 4);
-}
+    using py::util::adjust_index;
+    using std::make_tuple;
 
+    BOOST_CHECK(adjust_index<int>(nullptr, nullptr, 1, 5) == make_tuple(0, 5, 1, 5));
+    BOOST_CHECK(adjust_index<int>(nullptr, nullptr, 2, 5) == make_tuple(0, 5, 2, 3));
+    BOOST_CHECK(adjust_index<int>(nullptr, nullptr, -1, 5) == make_tuple(4, -1, -1, 5));
+    BOOST_CHECK(adjust_index<int>(1, 2, 3, 5) == make_tuple(1,2,3,1));
+    BOOST_CHECK(adjust_index<int>(-5, -1, -2, 6) == make_tuple(1, 5, -2, 0));
+}
 BOOST_AUTO_TEST_CASE(slice)
 {
     BOOST_CHECK_EQUAL(2*3, 6);

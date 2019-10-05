@@ -11,9 +11,9 @@ install:
   - "popd"
   - "pwd"
   - "ls -al"
-  - "cp -r ./googletest/googlemock/include/gmock /usr/local/include/gmock"
-  - "cp -r ./googletest/googletest/include/gtest /usr/local/include/gtest"
-  - "cp ./googletest/build/lib/*.a /usr/local/lib/"
+  - "sudo cp -r ./googletest/googlemock/include/gmock /usr/local/include/gmock"
+  - "sudo cp -r ./googletest/googletest/include/gtest /usr/local/include/gtest"
+  - "sudo cp ./googletest/build/lib/*.a /usr/local/lib/"
 
 script:
   - make googletest

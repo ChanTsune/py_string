@@ -1,14 +1,22 @@
 language: cpp
 
-compiler:
-  - clang
-  - gcc
-
 matrix:
   include:
     - os: linux
-      install: "sudo apt install -qq libboost-all-dev"
+      compiler: clang
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: gcc
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
     - os: osx
+      compiler: clang
+      install: "brew install boost"
+    - os: osx
+      compiler: gcc
       install: "brew install boost"
 
 script:

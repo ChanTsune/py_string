@@ -615,7 +615,7 @@ basic_string<_Elme> operator+(basic_string<_Elme> r, basic_string<_Elme> l)
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::operator*(size_t i) const
 {
-  if (i == 0)
+  if (i <= 0)
     return "";
   basic_string<_Elme> str(*this);
   str.reserve(str.size() * i);

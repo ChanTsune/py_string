@@ -7,45 +7,13 @@
 #include <boost/test/included/unit_test.hpp>
 
 #include "py_string.hpp"
+#include "tupleplus.hpp"
 
 using std::vector;
 using std::cout;
 using std::endl;
 using std::cerr;
 
-namespace aux
-{
-template <std::size_t...>
-struct seq
-{
-};
-
-template <std::size_t N, std::size_t... Is>
-struct gen_seq : gen_seq<N - 1, N - 1, Is...>
-{
-};
-
-template <std::size_t... Is>
-struct gen_seq<0, Is...> : seq<Is...>
-{
-};
-
-template <class Ch, class Tr, class Tuple, std::size_t... Is>
-void print_tuple(std::basic_ostream<Ch, Tr> &os, Tuple const &t, seq<Is...>)
-{
-    using swallow = int[];
-    (void)swallow{0, (void(os << (Is == 0 ? "" : ", ") << std::get<Is>(t)), 0)...};
-}
-} // namespace aux
-
-template <class Ch, class Tr, class... Args>
-auto operator<<(std::basic_ostream<Ch, Tr> &os, std::tuple<Args...> const &t)
-    -> std::basic_ostream<Ch, Tr> &
-{
-    os << "(";
-    aux::print_tuple(os, t, aux::gen_seq<sizeof...(Args)>());
-    return os << ")";
-}
 
 template <class T, class U>
 int equal(T a, U b)
@@ -67,30 +35,10 @@ int not_equal(T a, U b) {
     cerr << "Invalid : " << a << " == " << b << endl;
     return -1;
 }
-int test_true(bool a){
-    if (a) {
-        cout << "pass    : true == " << a << endl;
-        return 0;
-    }
-    cerr << "Invalid : true != " << a << endl;
-    return -1;
-}
-int test_false(bool a){
-    if (!a) {
-        cout << "pass    : false == " << a << endl;
-        return 0;
-    }
-    cerr << "Invalid : false != " << a << endl;
-    return -1;
-}
-
 
 void test_str() {
     //    cout << "multiplication" << endl;
     py::string mul = "str";
-    equal(mul * 2, "strstr");
-    mul *= 2;
-    equal(mul, "strstr");
 
     //    cout << "pyfind" << endl;
     equal(mul.pyfind("t"), 1);
@@ -150,41 +98,32 @@ void test_str() {
     equal(sep.join(vector<py::string>{"a", "b", "c"}), "a-b-c");
 }
 
-void test_null_allow(){
+BOOST_AUTO_TEST_SUITE(pyUtil)
+
+BOOST_AUTO_TEST_CASE(sign){
+    using py::util::sign;
+
+    BOOST_CHECK_EQUAL(sign(0), 0);
+    BOOST_CHECK_EQUAL(sign(-2), -1);
+    BOOST_CHECK_EQUAL(sign(3), 1);
+}
+BOOST_AUTO_TEST_CASE(optional){
     using py::optional_int;
     optional_int null = nullptr;
     optional_int i = 1;
     optional_int null2 = nullptr;
 
-    equal(null,null);
-    equal(null,null2);
-    equal(null,nullptr);
-    not_equal(null,i);
-    equal(i,i);
+    BOOST_CHECK(null == null);
+    BOOST_CHECK(null == null2);
+    BOOST_CHECK(null == nullptr);
+    BOOST_CHECK(null != i);
+    BOOST_CHECK(i = i);
 
-    equal(i,1);
-    not_equal(i,2);
+    BOOST_CHECK(i == 1);
+    BOOST_CHECK(i != 2);
 }
 
-void test_sing() {
-    using py::util::sign;
-
-    equal(sign(0),0);
-    equal(sign(-2),-1);
-    equal(sign(3),1);
-}
-
-void test_adjust_index() {
-    py::string s = "01234";
-    py::string t = "012345";
-    cout << s[{nullptr, nullptr, -1}] << endl;
-    cout << s[{nullptr, nullptr, -2}] << endl;
-    cout << t[{nullptr, nullptr, -1}] << endl;
-    cout << t[{nullptr, nullptr, -2}] << endl;
-    cout << t[{-5,-1,1}] << endl;
-    cout << s[{1,5,-2}] << endl;
-
-}
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(pyString)
 
@@ -201,7 +140,33 @@ BOOST_AUTO_TEST_CASE(adjustIndex)
 }
 BOOST_AUTO_TEST_CASE(slice)
 {
-    BOOST_CHECK_EQUAL(2*3, 6);
+    using py::string;
+    string s = "01234";
+    string t = "012345";
+
+    BOOST_CHECK_EQUAL( (s[{nullptr, nullptr, -1}]), "43210");
+
+    BOOST_CHECK_EQUAL( (s[{nullptr, nullptr, -2}]), "420");
+
+    BOOST_CHECK_EQUAL( (t[{nullptr, nullptr, -1}]), "543210");
+
+    BOOST_CHECK_EQUAL( (t[{nullptr, nullptr, -2}]), "531");
+
+    BOOST_CHECK_EQUAL( (t[{-5, -1, 1}]), "1234");
+
+    BOOST_CHECK_EQUAL( (s[{1, 5, -2}]), "");
+}
+
+BOOST_AUTO_TEST_CASE(repeat){
+    using py::string;
+    string str = "str";
+    BOOST_CHECK_EQUAL(str * 2, "strstr");
+    str *= 2;
+    BOOST_CHECK_EQUAL(str, "strstr");
+
+    BOOST_CHECK_EQUAL(str * 0, "");
+
+    BOOST_CHECK_EQUAL(str * -2, "");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

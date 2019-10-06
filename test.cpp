@@ -39,9 +39,6 @@ int not_equal(T a, U b) {
 void test_str() {
     //    cout << "multiplication" << endl;
     py::string mul = "str";
-    equal(mul * 2, "strstr");
-    mul *= 2;
-    equal(mul, "strstr");
 
     //    cout << "pyfind" << endl;
     equal(mul.pyfind("t"), 1);
@@ -158,6 +155,18 @@ BOOST_AUTO_TEST_CASE(slice)
     BOOST_CHECK_EQUAL( (t[{-5, -1, 1}]), "1234");
 
     BOOST_CHECK_EQUAL( (s[{1, 5, -2}]), "");
+}
+
+BOOST_AUTO_TEST_CASE(repeat){
+    using py::string;
+    string str = "str";
+    BOOST_CHECK_EQUAL(str * 2, "strstr");
+    str *= 2;
+    BOOST_CHECK_EQUAL(str, "strstr");
+
+    BOOST_CHECK_EQUAL(str * 0, "");
+
+    BOOST_CHECK_EQUAL(str * -2, "");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

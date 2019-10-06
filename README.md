@@ -13,6 +13,10 @@ Since this is a single header library, it is easy to use by include only.
 
 Since it inherits std::string, it can be handled like std::string. Think that you can use python's str type method with std::string.
 
+```cpp
+#include "py_string.hpp"
+```
+
 ### multipication
 
 ```cpp

@@ -67,23 +67,6 @@ int not_equal(T a, U b) {
     cerr << "Invalid : " << a << " == " << b << endl;
     return -1;
 }
-int test_true(bool a){
-    if (a) {
-        cout << "pass    : true == " << a << endl;
-        return 0;
-    }
-    cerr << "Invalid : true != " << a << endl;
-    return -1;
-}
-int test_false(bool a){
-    if (!a) {
-        cout << "pass    : false == " << a << endl;
-        return 0;
-    }
-    cerr << "Invalid : false != " << a << endl;
-    return -1;
-}
-
 
 void test_str() {
     //    cout << "multiplication" << endl;
@@ -150,22 +133,6 @@ void test_str() {
     equal(sep.join(vector<py::string>{"a", "b", "c"}), "a-b-c");
 }
 
-void test_null_allow(){
-    using py::optional_int;
-    optional_int null = nullptr;
-    optional_int i = 1;
-    optional_int null2 = nullptr;
-
-    equal(null,null);
-    equal(null,null2);
-    equal(null,nullptr);
-    not_equal(null,i);
-    equal(i,i);
-
-    equal(i,1);
-    not_equal(i,2);
-}
-
 BOOST_AUTO_TEST_SUITE(pyUtil)
 
 BOOST_AUTO_TEST_CASE(sign){
@@ -174,6 +141,21 @@ BOOST_AUTO_TEST_CASE(sign){
     BOOST_CHECK_EQUAL(sign(0), 0);
     BOOST_CHECK_EQUAL(sign(-2), -1);
     BOOST_CHECK_EQUAL(sign(3), 1);
+}
+BOOST_AUTO_TEST_CASE(optional){
+    using py::optional_int;
+    optional_int null = nullptr;
+    optional_int i = 1;
+    optional_int null2 = nullptr;
+
+    BOOST_CHECK(null == null);
+    BOOST_CHECK(null == null2);
+    BOOST_CHECK(null == nullptr);
+    BOOST_CHECK(null != i);
+    BOOST_CHECK(i = i);
+
+    BOOST_CHECK(i == 1);
+    BOOST_CHECK(i != 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

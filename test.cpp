@@ -161,12 +161,16 @@ BOOST_AUTO_TEST_CASE(repeat){
     using py::string;
     string str = "str";
     BOOST_CHECK_EQUAL(str * 2, "strstr");
-    str *= 2;
-    BOOST_CHECK_EQUAL(str, "strstr");
 
     BOOST_CHECK_EQUAL(str * 0, "");
 
-    BOOST_CHECK_EQUAL(str * -2, "");
+    BOOST_CHECK_EQUAL(str * 1, "str");
+
+    str *= 2;
+    BOOST_CHECK_EQUAL(str, "strstr");
+
+    BOOST_CHECK_THROW(str * -1, std::length_error);
+    /* Exceeds buffer length that can be held by string class */
 }
 
 BOOST_AUTO_TEST_SUITE_END()

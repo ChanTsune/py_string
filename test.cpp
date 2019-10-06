@@ -166,25 +166,17 @@ void test_null_allow(){
     not_equal(i,2);
 }
 
-void test_sing() {
+BOOST_AUTO_TEST_SUITE(pyUtil)
+
+BOOST_AUTO_TEST_CASE(sign){
     using py::util::sign;
 
-    equal(sign(0),0);
-    equal(sign(-2),-1);
-    equal(sign(3),1);
+    BOOST_CHECK_EQUAL(sign(0), 0);
+    BOOST_CHECK_EQUAL(sign(-2), -1);
+    BOOST_CHECK_EQUAL(sign(3), 1);
 }
 
-void test_adjust_index() {
-    py::string s = "01234";
-    py::string t = "012345";
-    cout << s[{nullptr, nullptr, -1}] << endl;
-    cout << s[{nullptr, nullptr, -2}] << endl;
-    cout << t[{nullptr, nullptr, -1}] << endl;
-    cout << t[{nullptr, nullptr, -2}] << endl;
-    cout << t[{-5,-1,1}] << endl;
-    cout << s[{1,5,-2}] << endl;
-
-}
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(pyString)
 
@@ -201,7 +193,21 @@ BOOST_AUTO_TEST_CASE(adjustIndex)
 }
 BOOST_AUTO_TEST_CASE(slice)
 {
-    BOOST_CHECK_EQUAL(2*3, 6);
+    using py::string;
+    string s = "01234";
+    string t = "012345";
+
+    BOOST_CHECK_EQUAL( (s[{nullptr, nullptr, -1}]), "43210");
+
+    BOOST_CHECK_EQUAL( (s[{nullptr, nullptr, -2}]), "420");
+
+    BOOST_CHECK_EQUAL( (t[{nullptr, nullptr, -1}]), "543210");
+
+    BOOST_CHECK_EQUAL( (t[{nullptr, nullptr, -2}]), "531");
+
+    BOOST_CHECK_EQUAL( (t[{-5, -1, 1}]), "1234");
+
+    BOOST_CHECK_EQUAL( (s[{1, 5, -2}]), "");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

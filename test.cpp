@@ -52,9 +52,6 @@ void test_str() {
     equal(mul.pyfind("t", -4), 4);
 
     mul = "str";
-    //    cout << "array subscription" << endl;
-    equal(mul.at(-1), 'r');
-    equal(mul[-1], 'r');
 
     //    cout << "capitalize" << endl;
     equal(mul.capitalize(), "Str");
@@ -171,6 +168,20 @@ BOOST_AUTO_TEST_CASE(repeat){
 
     BOOST_CHECK_THROW(str * -1, std::length_error);
     /* Exceeds buffer length that can be held by string class */
+}
+
+BOOST_AUTO_TEST_CASE(arraySubscript)
+{
+    using py::string;
+    string str = "012345";
+    BOOST_CHECK_EQUAL(str[0], '0');
+    BOOST_CHECK_EQUAL(str.at(0), '0');
+
+    BOOST_CHECK_EQUAL(str[-1], '5');
+    BOOST_CHECK_EQUAL(str.at(-1), '5');
+
+    BOOST_CHECK_NO_THROW(str[-10]);
+    BOOST_CHECK_THROW(str.at(-10), std::out_of_range);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

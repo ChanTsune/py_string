@@ -53,10 +53,6 @@ void test_str() {
 
     mul = "str";
 
-
-    //    cout << "center" << endl;
-    equal(mul.center(12, 'w'), "wwwwstrwwwww");
-
     //    cout << "count" << endl;
     py::string cnt = mul * 10;
     equal(cnt.count("str"), 10);
@@ -191,6 +187,22 @@ BOOST_AUTO_TEST_CASE(capitalize){
     BOOST_CHECK_EQUAL(str.capitalize(), "Str");
     BOOST_CHECK_EQUAL(Str.capitalize(), "Str");
     BOOST_CHECK_EQUAL(empty.capitalize(), "");
+}
+
+BOOST_AUTO_TEST_CASE(center){
+    using py::string;
+    string str = "string";
+    string empty = "";
+
+    BOOST_CHECK_EQUAL(str.center(10), "  string  ");
+    BOOST_CHECK_EQUAL(str.center(6), "string");
+    BOOST_CHECK_EQUAL(str.center(9), " string  ");
+    BOOST_CHECK_EQUAL(str.center(0), "string");
+    BOOST_CHECK_EQUAL(str.center(8,'Q'), "QstringQ");
+
+    BOOST_CHECK_EQUAL(empty.center(10), "          ");
+    BOOST_CHECK_EQUAL(empty.center(0), "");
+    BOOST_CHECK_EQUAL(empty.center(8, 'e'), "eeeeeeee");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -53,8 +53,6 @@ void test_str() {
 
     mul = "str";
 
-    //    cout << "capitalize" << endl;
-    equal(mul.capitalize(), "Str");
 
     //    cout << "center" << endl;
     equal(mul.center(12, 'w'), "wwwwstrwwwww");
@@ -182,6 +180,17 @@ BOOST_AUTO_TEST_CASE(arraySubscript)
 
     BOOST_CHECK_NO_THROW(str[-10]);
     BOOST_CHECK_THROW(str.at(-10), std::out_of_range);
+}
+
+BOOST_AUTO_TEST_CASE(capitalize){
+    using py::string;
+    string str = "str";
+    string Str = "Str";
+    string empty = "";
+    
+    BOOST_CHECK_EQUAL(str.capitalize(), "Str");
+    BOOST_CHECK_EQUAL(Str.capitalize(), "Str");
+    BOOST_CHECK_EQUAL(empty.capitalize(), "");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

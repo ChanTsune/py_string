@@ -673,9 +673,12 @@ basic_string<_Elme> basic_string<_Elme>::center(size_t width, _Elme fillchar) co
 template <class _Elme>
 size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start, int end) const
 {
+  size_t sublen = sub.size();
+  if (sublen == 0){
+    return this->size() + 1;
+  }
   util::adjust_index(start, end, this->size());
   size_t nummatches = 0;
-  size_t sublen = sub.size();
   size_t cursor = this->find(sub, start);
   while ((cursor != std::basic_string<_Elme>::npos) && (cursor + sublen <= end))
   {

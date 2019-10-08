@@ -205,4 +205,23 @@ BOOST_AUTO_TEST_CASE(center){
     BOOST_CHECK_EQUAL(empty.center(8, 'e'), "eeeeeeee");
 }
 
+BOOST_AUTO_TEST_CASE(count){
+    using py::string;
+    string str = "str";
+    string empty = "";
+    string one = "a";
+    string two = "ab";
+    string three = "aba";
+
+    BOOST_CHECK_EQUAL((str * 10).count("str"), 10);
+    BOOST_CHECK_EQUAL(str.count(""), 4);
+    BOOST_CHECK_EQUAL(empty.count("a"), 0);
+    BOOST_CHECK_EQUAL(empty.count(""), 1);
+    BOOST_CHECK_EQUAL((one * 10).count("a"), 10);
+    BOOST_CHECK_EQUAL((two * 10).count("ab"), 10);
+    BOOST_CHECK_EQUAL((two * 10).count("ba"), 9);
+    BOOST_CHECK_EQUAL((three * 10).count("aba"), 10);
+    BOOST_CHECK_EQUAL((three * 10).count("aa"), 9);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

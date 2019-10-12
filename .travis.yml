@@ -14,6 +14,34 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
+            - g++-5
+      env:
+        - CXX=g++-5
+        - CXX_VERSION=c++14
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CXX=g++-5
+        - CXX_VERSION=c++17
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
             - g++-6
       env:
         - CXX=g++-6

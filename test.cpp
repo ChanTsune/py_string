@@ -9,7 +9,6 @@
 #include "py_string.hpp"
 #include "tupleplus.hpp"
 
-using std::vector;
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -41,38 +40,9 @@ void test_str() {
     py::string mul = "str";
 
     //    cout << "pyfind" << endl;
-    equal(mul.pyfind("t"), 1);
-    equal(mul.pyfind("t", 1), 1);
-    equal(mul.pyfind("t", 2), 4);
-    equal(mul.pyfind("t", 3), 4);
-    equal(mul.pyfind("t", 4), 4);
-    equal(mul.pyfind("t", -1), -1);
-    equal(mul.pyfind("t", -2), 4);
-    equal(mul.pyfind("t", -3), 4);
-    equal(mul.pyfind("t", -4), 4);
 
     mul = "str";
-    //    cout << "array subscription" << endl;
-    equal(mul.at(-1), 'r');
-    equal(mul[-1], 'r');
-
-    //    cout << "capitalize" << endl;
-    equal(mul.capitalize(), "Str");
-
-    //    cout << "center" << endl;
-    equal(mul.center(12, 'w'), "wwwwstrwwwww");
-
-    //    cout << "count" << endl;
     py::string cnt = mul * 10;
-    equal(cnt.count("str"), 10);
-    equal(cnt.count("str", 3, -3), 8);
-    equal(cnt.count("str", -10), 3);
-    equal(cnt.count("str", -11), 3);
-    equal(cnt.count("str", -12), 4);
-    py::string aaa = "a";
-    aaa *= 10;
-    equal(aaa.count("a"), 10);
-
     //    cout << "endswish" << endl;
     equal(cnt.endswith("r"), true);
     equal(cnt.endswith("st", 0, -1), true);
@@ -91,11 +61,6 @@ void test_str() {
     equal(cnt.startswith("str", 3), true);
     equal(cnt.startswith("str", 1), false);
 
-    // join
-    py::string sep = "-";
-    vector<py::string> items = {"a", "b", "c"};
-    equal(sep.join(items), "a-b-c");
-    equal(sep.join(vector<py::string>{"a", "b", "c"}), "a-b-c");
 }
 
 BOOST_AUTO_TEST_SUITE(pyUtil)
@@ -161,12 +126,127 @@ BOOST_AUTO_TEST_CASE(repeat){
     using py::string;
     string str = "str";
     BOOST_CHECK_EQUAL(str * 2, "strstr");
-    str *= 2;
-    BOOST_CHECK_EQUAL(str, "strstr");
 
     BOOST_CHECK_EQUAL(str * 0, "");
 
-    BOOST_CHECK_EQUAL(str * -2, "");
+    BOOST_CHECK_EQUAL(str * 1, "str");
+
+    str *= 2;
+    BOOST_CHECK_EQUAL(str, "strstr");
+
+    BOOST_CHECK_THROW(str * -1, std::length_error);
+    /* Exceeds buffer length that can be held by string class */
+}
+
+BOOST_AUTO_TEST_CASE(arraySubscript)
+{
+    using py::string;
+    string str = "012345";
+    BOOST_CHECK_EQUAL(str[0], '0');
+    BOOST_CHECK_EQUAL(str.at(0), '0');
+
+    BOOST_CHECK_EQUAL(str[-1], '5');
+    BOOST_CHECK_EQUAL(str.at(-1), '5');
+
+    BOOST_CHECK_NO_THROW(str[-10]);
+    BOOST_CHECK_THROW(str.at(-10), std::out_of_range);
+}
+
+BOOST_AUTO_TEST_CASE(capitalize){
+    using py::string;
+    string str = "str";
+    string Str = "Str";
+    string empty = "";
+    
+    BOOST_CHECK_EQUAL(str.capitalize(), "Str");
+    BOOST_CHECK_EQUAL(Str.capitalize(), "Str");
+    BOOST_CHECK_EQUAL(empty.capitalize(), "");
+}
+
+BOOST_AUTO_TEST_CASE(center){
+    using py::string;
+    string str = "string";
+    string empty = "";
+
+    BOOST_CHECK_EQUAL(str.center(10), "  string  ");
+    BOOST_CHECK_EQUAL(str.center(6), "string");
+    BOOST_CHECK_EQUAL(str.center(9), " string  ");
+    BOOST_CHECK_EQUAL(str.center(0), "string");
+    BOOST_CHECK_EQUAL(str.center(8,'Q'), "QstringQ");
+
+    BOOST_CHECK_EQUAL(empty.center(10), "          ");
+    BOOST_CHECK_EQUAL(empty.center(0), "");
+    BOOST_CHECK_EQUAL(empty.center(8, 'e'), "eeeeeeee");
+}
+
+BOOST_AUTO_TEST_CASE(count){
+    using py::string;
+    string str = "str";
+    string empty = "";
+    string one = "a";
+    string two = "ab";
+    string three = "aba";
+
+    BOOST_CHECK_EQUAL((str * 10).count("str"), 10);
+    BOOST_CHECK_EQUAL(str.count(""), 4);
+    BOOST_CHECK_EQUAL(empty.count("a"), 0);
+    BOOST_CHECK_EQUAL(empty.count(""), 1);
+    BOOST_CHECK_EQUAL((one * 10).count("a"), 10);
+    BOOST_CHECK_EQUAL((two * 10).count("ab"), 10);
+    BOOST_CHECK_EQUAL((two * 10).count("ba"), 9);
+    BOOST_CHECK_EQUAL((three * 10).count("aba"), 10);
+    BOOST_CHECK_EQUAL((three * 10).count("aa"), 9);
+
+    BOOST_CHECK_EQUAL(empty.count("", 1, 2), 1);
+    BOOST_CHECK_EQUAL(str.count("t", 1, 3), 1);
+}
+
+BOOST_AUTO_TEST_CASE(expandtabs){
+    using py::string;
+    string tab = "\t\t";
+    string empty = "";
+    string tab2 = "\t as\t";
+    BOOST_CHECK_EQUAL(tab.expandtabs().size(), 16);
+    BOOST_CHECK_EQUAL(tab.expandtabs(4).size(), 8);
+    BOOST_CHECK_EQUAL(empty.expandtabs().size(), 0);
+    BOOST_CHECK_EQUAL(tab2.expandtabs(4).size(), 11);
+}
+
+BOOST_AUTO_TEST_CASE(find) {
+    using py::string;
+    string str = "strstr";
+    
+    BOOST_CHECK_EQUAL(str.pyfind("t"), 1);
+    BOOST_CHECK_EQUAL(str.pyfind("t", 1), 1);
+    BOOST_CHECK_EQUAL(str.pyfind("t", 2), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", 3), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", 4), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", -1), -1);
+    BOOST_CHECK_EQUAL(str.pyfind("t", -2), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", -3), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", -4), 4);
+
+    BOOST_CHECK_EQUAL(str.pyfind(""), 0);
+    BOOST_CHECK_EQUAL(str.pyfind("", 1), 1);
+}
+
+BOOST_AUTO_TEST_CASE(join){
+    using py::string;
+    using std::vector;
+    using std::deque;
+
+    string sep = "-";
+    string empty = "";
+    vector<string> items = {"a", "b", "c"};
+    vector<string> no_item = {};
+    deque<string> qitems = {"a", "b", "c"};
+
+    BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
+    BOOST_CHECK_EQUAL(sep.join(vector<string>{"a", "b", "c"}), "a-b-c");
+    BOOST_CHECK_EQUAL(sep.join(no_item), "");
+    BOOST_CHECK_EQUAL(empty.join(items), "abc");
+    BOOST_CHECK_EQUAL(empty.join(no_item), "");
+    BOOST_CHECK_EQUAL(sep.join(qitems), "a-b-c");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

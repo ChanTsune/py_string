@@ -3,7 +3,12 @@ ifdef CXX
 else
 	CXX = clang++
 endif
-CXX_OPTIONS = -Wall --std=c++14
+ifdef CXX_VERSION
+else
+	CXX_VERSION = c++14
+endif
+
+CXX_OPTIONS = -Wall --std=${CXX_VERSION}
 
 BUILD_DIR = build
 

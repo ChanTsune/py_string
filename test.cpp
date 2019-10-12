@@ -52,18 +52,7 @@ void test_str() {
     equal(mul.pyfind("t", -4), 4);
 
     mul = "str";
-
-    //    cout << "count" << endl;
     py::string cnt = mul * 10;
-    equal(cnt.count("str"), 10);
-    equal(cnt.count("str", 3, -3), 8);
-    equal(cnt.count("str", -10), 3);
-    equal(cnt.count("str", -11), 3);
-    equal(cnt.count("str", -12), 4);
-    py::string aaa = "a";
-    aaa *= 10;
-    equal(aaa.count("a"), 10);
-
     //    cout << "endswish" << endl;
     equal(cnt.endswith("r"), true);
     equal(cnt.endswith("st", 0, -1), true);
@@ -222,6 +211,20 @@ BOOST_AUTO_TEST_CASE(count){
     BOOST_CHECK_EQUAL((two * 10).count("ba"), 9);
     BOOST_CHECK_EQUAL((three * 10).count("aba"), 10);
     BOOST_CHECK_EQUAL((three * 10).count("aa"), 9);
+
+    BOOST_CHECK_EQUAL(empty.count("", 1, 2), 1);
+    BOOST_CHECK_EQUAL(str.count("t", 1, 3), 1);
+}
+
+BOOST_AUTO_TEST_CASE(expandtabs){
+    using py::string;
+    string tab = "\t\t";
+    string empty = "";
+    string tab2 = "\t as\t";
+    BOOST_CHECK_EQUAL(tab.expandtabs().size(), 16);
+    BOOST_CHECK_EQUAL(tab.expandtabs(4).size(), 8);
+    BOOST_CHECK_EQUAL(empty.expandtabs().size(), 0);
+    BOOST_CHECK_EQUAL(tab2.expandtabs(4).size(), 11);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

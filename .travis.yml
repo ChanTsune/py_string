@@ -13,9 +13,9 @@ matrix:
         - "sudo apt update -qq"
         - "sudo apt install -qq libboost-all-dev"
     - os: osx
-      compiler: clang
-    - os: osx
-      compiler: gcc
+      compiler: 
+        - clang
+        - gcc
 
 script:
   - make -B test

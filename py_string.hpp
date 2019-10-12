@@ -1369,10 +1369,9 @@ basic_string<_Elme> basic_string<_Elme>::zfill(size_t width) const
 {
   int len = this->size();
   if (len >= width)
-  {
     return *this;
-  }
-
+  if (this->empty())
+    return basic_string<_Elme>(width, '0');
   basic_string<_Elme> str(*this);
   int fill = width - len;
   str = basic_string<_Elme>(fill, '0') + str;

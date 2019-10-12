@@ -427,4 +427,68 @@ BOOST_AUTO_TEST_CASE(startswith){
     BOOST_CHECK(!str.startswith("str", 0, 1));
 }
 
+BOOST_AUTO_TEST_CASE(strip){
+    using py::string;
+
+    string spacious = "    spacious    ";
+    string domain = "www.example.com";
+    string empty = "";
+    BOOST_CHECK_EQUAL(spacious.strip(), "spacious");
+    BOOST_CHECK_EQUAL(domain.strip("comwz."), "example");
+    BOOST_CHECK_EQUAL(domain.strip(""), domain);
+    BOOST_CHECK_EQUAL(empty.strip(), "");
+    BOOST_CHECK_EQUAL(empty.strip(""), "");
+}
+
+BOOST_AUTO_TEST_CASE(swapcase){
+    using py::string;
+
+    string str = "String";
+    string str2 = "py_string";
+
+    BOOST_CHECK_EQUAL(str.swapcase(),"sTRING");
+    BOOST_CHECK_EQUAL(str2.swapcase(),"PY_STRING");
+}
+
+BOOST_AUTO_TEST_CASE(title){
+    using py::string;
+
+    string str = "string is like vector<char>";
+
+    BOOST_CHECK_EQUAL(str.title(), "String Is Like Vector<Char>");
+}
+
+BOOST_AUTO_TEST_CASE(upper){
+    using py::string;
+
+    string upper = "STRING";
+    string lower = "string";
+    string empty = "";
+
+    BOOST_CHECK_EQUAL(upper.upper(), upper);
+    BOOST_CHECK_EQUAL(lower.upper(), upper);
+    BOOST_CHECK_EQUAL(empty.upper(), empty);
+}
+
+BOOST_AUTO_TEST_CASE(zfill){
+    using py::string;
+
+    string b = "100";
+    string c = "-100";
+    string d = "+100";
+    string e = "=100";
+    string empty = "";
+
+    BOOST_CHECK_EQUAL(b.zfill(5), "00100");
+    BOOST_CHECK_EQUAL(b.zfill(3), "100");
+    BOOST_CHECK_EQUAL(b.zfill(2), "100");
+    BOOST_CHECK_EQUAL(c.zfill(5), "-0100");
+    BOOST_CHECK_EQUAL(c.zfill(4), "-100");
+    BOOST_CHECK_EQUAL(c.zfill(3), "-100");
+    BOOST_CHECK_EQUAL(c.zfill(2), "-100");
+    BOOST_CHECK_EQUAL(d.zfill(5), "+0100");
+    BOOST_CHECK_EQUAL(e.zfill(5), "0=100");
+    BOOST_CHECK_EQUAL(empty.zfill(5),"00000");
+}
+
 BOOST_AUTO_TEST_SUITE_END()

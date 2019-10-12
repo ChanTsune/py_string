@@ -9,7 +9,6 @@
 #include "py_string.hpp"
 #include "tupleplus.hpp"
 
-using std::vector;
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -62,11 +61,6 @@ void test_str() {
     equal(cnt.startswith("str", 3), true);
     equal(cnt.startswith("str", 1), false);
 
-    // join
-    py::string sep = "-";
-    vector<py::string> items = {"a", "b", "c"};
-    equal(sep.join(items), "a-b-c");
-    equal(sep.join(vector<py::string>{"a", "b", "c"}), "a-b-c");
 }
 
 BOOST_AUTO_TEST_SUITE(pyUtil)
@@ -235,4 +229,24 @@ BOOST_AUTO_TEST_CASE(find) {
     BOOST_CHECK_EQUAL(str.pyfind(""), 0);
     BOOST_CHECK_EQUAL(str.pyfind("", 1), 1);
 }
+
+BOOST_AUTO_TEST_CASE(join){
+    using py::string;
+    using std::vector;
+    using std::deque;
+
+    string sep = "-";
+    string empty = "";
+    vector<string> items = {"a", "b", "c"};
+    vector<string> no_item = {};
+    deque<string> qitems = {"a", "b", "c"};
+
+    BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
+    BOOST_CHECK_EQUAL(sep.join(vector<string>{"a", "b", "c"}), "a-b-c");
+    BOOST_CHECK_EQUAL(sep.join(no_item), "");
+    BOOST_CHECK_EQUAL(empty.join(items), "abc");
+    BOOST_CHECK_EQUAL(empty.join(no_item), "");
+    BOOST_CHECK_EQUAL(sep.join(qitems), "a-b-c");
+}
+
 BOOST_AUTO_TEST_SUITE_END()

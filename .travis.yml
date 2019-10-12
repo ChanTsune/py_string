@@ -4,18 +4,139 @@ matrix:
   include:
     - os: linux
       compiler: clang
+      env: 
+        - CXX_VERSION=c++14
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: clang
+      env: 
+        - CXX_VERSION=c++17
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: clang
+      env: 
+        - CXX_VERSION=c++2a
       install:
         - "sudo apt update -qq"
         - "sudo apt install -qq libboost-all-dev"
     - os: linux
       compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CXX=g++-5
+        - CXX_VERSION=c++14
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CXX=g++-5
+        - CXX_VERSION=c++17
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env:
+        - CXX=g++-6
+        - CXX_VERSION=c++14
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env:
+        - CXX=g++-6
+        - CXX_VERSION=c++17
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - CXX=g++-7
+        - CXX_VERSION=c++14
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - CXX=g++-7
+        - CXX_VERSION=c++17
       install:
         - "sudo apt update -qq"
         - "sudo apt install -qq libboost-all-dev"
     - os: osx
+      osx_image: xcode9.4.1
       compiler: clang
+      env:
+        - CXX_VERSION=c++14
     - os: osx
-      compiler: gcc
+      osx_image: xcode9.4.1
+      compiler: clang
+      env:
+        - CXX_VERSION=c++17
+    - os: osx
+      osx_image: xcode10.3
+      compiler: clang
+      env:
+        - CXX_VERSION=c++14
+    - os: osx
+      osx_image: xcode10.3
+      compiler: clang
+      env:
+        - CXX_VERSION=c++17
+    - os: osx
+      osx_image: xcode11.1
+      compiler: clang
+      env:
+        - CXX_VERSION=c++14
+    - os: osx
+      osx_image: xcode11.1
+      compiler: clang
+      env:
+        - CXX_VERSION=c++17
 
 script:
   - make -B test

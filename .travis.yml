@@ -19,7 +19,7 @@ matrix:
     - os: linux
       compiler: clang
       env: 
-        - CXX_VERSION=c++20
+        - CXX_VERSION=c++2a
       install:
         - "sudo apt update -qq"
         - "sudo apt install -qq libboost-all-dev"

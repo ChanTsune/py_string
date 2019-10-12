@@ -1017,7 +1017,7 @@ template <class _Elme>
 int basic_string<_Elme>::pyrfind(basic_string<_Elme> sub, int start, int end) const
 {
   util::adjust_index(start, end, this->size());
-  int result = this->rfind(sub, end);
+  int result = this->rfind(sub, end-sub.size());
   if (result == std::string::npos || result < start || (result + sub.size() > end))
   {
     return -1;

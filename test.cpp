@@ -41,15 +41,6 @@ void test_str() {
     py::string mul = "str";
 
     //    cout << "pyfind" << endl;
-    equal(mul.pyfind("t"), 1);
-    equal(mul.pyfind("t", 1), 1);
-    equal(mul.pyfind("t", 2), 4);
-    equal(mul.pyfind("t", 3), 4);
-    equal(mul.pyfind("t", 4), 4);
-    equal(mul.pyfind("t", -1), -1);
-    equal(mul.pyfind("t", -2), 4);
-    equal(mul.pyfind("t", -3), 4);
-    equal(mul.pyfind("t", -4), 4);
 
     mul = "str";
     py::string cnt = mul * 10;
@@ -227,4 +218,21 @@ BOOST_AUTO_TEST_CASE(expandtabs){
     BOOST_CHECK_EQUAL(tab2.expandtabs(4).size(), 11);
 }
 
+BOOST_AUTO_TEST_CASE(find) {
+    using py::string;
+    string str = "strstr";
+    
+    BOOST_CHECK_EQUAL(str.pyfind("t"), 1);
+    BOOST_CHECK_EQUAL(str.pyfind("t", 1), 1);
+    BOOST_CHECK_EQUAL(str.pyfind("t", 2), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", 3), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", 4), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", -1), -1);
+    BOOST_CHECK_EQUAL(str.pyfind("t", -2), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", -3), 4);
+    BOOST_CHECK_EQUAL(str.pyfind("t", -4), 4);
+
+    BOOST_CHECK_EQUAL(str.pyfind(""), 0);
+    BOOST_CHECK_EQUAL(str.pyfind("", 1), 1);
+}
 BOOST_AUTO_TEST_SUITE_END()

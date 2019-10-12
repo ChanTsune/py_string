@@ -4,6 +4,22 @@ matrix:
   include:
     - os: linux
       compiler: clang
+      env: 
+        - CXX_VERSION=c++14
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: clang
+      env: 
+        - CXX_VERSION=c++17
+      install:
+        - "sudo apt update -qq"
+        - "sudo apt install -qq libboost-all-dev"
+    - os: linux
+      compiler: clang
+      env: 
+        - CXX_VERSION=c++20
       install:
         - "sudo apt update -qq"
         - "sudo apt install -qq libboost-all-dev"

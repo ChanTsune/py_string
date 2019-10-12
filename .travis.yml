@@ -16,7 +16,7 @@ matrix:
           packages:
             - g++-6
       env:
-        - CXX=g++6
+        - CXX=g++-6
         - CXX_VERSION=c++14
       install:
         - "sudo apt update -qq"
@@ -30,7 +30,7 @@ matrix:
           packages:
             - g++-6
       env:
-        - CXX=g++6
+        - CXX=g++-6
         - CXX_VERSION=c++17
       install:
         - "sudo apt update -qq"
@@ -44,7 +44,7 @@ matrix:
           packages:
             - g++-7
       env:
-        - CXX=g++7
+        - CXX=g++-7
         - CXX_VERSION=c++14
       install:
         - "sudo apt update -qq"
@@ -58,7 +58,7 @@ matrix:
           packages:
             - g++-7
       env:
-        - CXX=g++7
+        - CXX=g++-7
         - CXX_VERSION=c++17
       install:
         - "sudo apt update -qq"

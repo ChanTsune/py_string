@@ -1,6 +1,5 @@
 #define BOOST_TEST_MAIN
 
-#include <iostream>
 #include <vector>
 #include <deque>
 
@@ -9,34 +8,6 @@
 #include "py_string.hpp"
 #include "tupleplus.hpp"
 
-using std::cerr;
-using std::cout;
-using std::endl;
-
-template <class T, class U>
-int equal(T a, U b)
-{
-    if (a == b)
-    {
-        cout << "pass    : " << a << " == " << b << endl;
-        return 0;
-    }
-    cerr << "Invalid : " << a << " != " << b << endl;
-    return -1;
-}
-
-void test_str()
-{
-    //    cout << "multiplication" << endl;
-    py::string mul = "str";
-
-    py::string cnt = mul * 10;
-    //    cout << "endswish" << endl;
-    equal(cnt.endswith("r"), true);
-    equal(cnt.endswith("st", 0, -1), true);
-    equal(cnt.endswith("t"), false);
-
-}
 
 BOOST_AUTO_TEST_SUITE(pyUtil)
 
@@ -192,6 +163,19 @@ BOOST_AUTO_TEST_CASE(expandtabs)
     BOOST_CHECK_EQUAL(tab.expandtabs(4).size(), 8);
     BOOST_CHECK_EQUAL(empty.expandtabs().size(), 0);
     BOOST_CHECK_EQUAL(tab2.expandtabs(4).size(), 11);
+}
+
+BOOST_AUTO_TEST_CASE(endswith)
+{
+    using py::string;
+
+    string str = "strstr";
+
+    BOOST_CHECK(str.endswith("str"));
+    BOOST_CHECK(str.endswith("st", 0, -1));
+    BOOST_CHECK(str.endswith("str", 0,-3));
+    BOOST_CHECK(!str.endswith("str", 0,-1));
+    BOOST_CHECK(!str.endswith("str", 0, 1));
 }
 
 BOOST_AUTO_TEST_CASE(find)

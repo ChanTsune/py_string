@@ -79,7 +79,6 @@ int main(int argc, char const *argv[])
     cout << tstr.translate(table) << endl;
 
     cout << tstr.translate(table2) << endl;
-    
 
     return 0;
 }

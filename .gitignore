@@ -2,3 +2,7 @@
 *.exe
 *.obj
 .DS_Store
+build/
+
+# google test
+googletest/

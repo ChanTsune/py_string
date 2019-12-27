@@ -62,8 +62,8 @@ public:
   //  bool operator>(std::nullptr_t _Null){ return !m_has_value; }
   //  bool operator<=(std::nullptr_t _Null){ return m_has_value; }
   //  bool operator>=(std::nullptr_t _Null){ return m_has_value; }
-  bool operator==(T _Value) const { return m_value == _Value; }
-  bool operator!=(T _Value) const { return m_value != _Value; }
+  bool operator==(T&& _Value) const { return m_value == _Value; }
+  bool operator!=(T&& _Value) const { return m_value != _Value; }
   //  bool operator<(T _Value){ return m_value < _Value; }
   //  bool operator>(T _Value){ return m_value > _Value; }
   //  bool operator<=(T _Value){ return m_value <= _Value; }
@@ -74,7 +74,7 @@ public:
   T value() const {
     return m_value;
   }
-  T value_or(T v) const {
+  T value_or(T&& v) const {
     return m_has_value ? m_value : v;
   }
 };

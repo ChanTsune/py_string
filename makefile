@@ -24,17 +24,17 @@ example:example.cpp py_string.hpp
 clean:
 	rm $(BUILD_DIR)/example $(BUILD_DIR)/test
 
-test:test.cpp py_string.hpp
+test:test/test.cpp py_string.hpp
 	mkdir -p $(BUILD_DIR)
 	$(CXX) $(CXX_OPTIONS) $< -o $(BUILD_DIR)/$@
 	./$(BUILD_DIR)/$@
 
 prof_called:
-	g++ -g -pg $(CXX_OPTIONS) test.cpp
+	g++ -g -pg $(CXX_OPTIONS) test/test.cpp
 	./a.out
 	gprof a.out -A > prof_called.log
 
 prof_time:
-	g++ -pg $(CXX_OPTIONS) test.cpp
+	g++ -pg $(CXX_OPTIONS) test/test.cpp
 	./a.out
 	gprof a.out > prof_time.log

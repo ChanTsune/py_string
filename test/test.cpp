@@ -5,7 +5,7 @@
 
 #include <boost/test/included/unit_test.hpp>
 
-#include "py_string.hpp"
+#include "../py_string.hpp"
 #include "tupleplus.hpp"
 
 

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <deque>
+#include <forward_list>
 
 #include <boost/test/included/unit_test.hpp>
 
@@ -220,6 +221,36 @@ BOOST_AUTO_TEST_CASE(join_with_deque)
 
     string sep = "-";
     deque<string> items = {"a", "b", "c"};
+    BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
+}
+
+BOOST_AUTO_TEST_CASE(join_with_list)
+{
+    using py::string;
+    using std::list;
+
+    string sep = "-";
+    list<string> items = {"a", "b", "c"};
+    BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
+}
+
+BOOST_AUTO_TEST_CASE(join_with_forward_list)
+{
+    using py::string;
+    using std::forward_list;
+
+    string sep = "-";
+    forward_list<string> items = {"a", "b", "c"};
+    BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
+}
+
+BOOST_AUTO_TEST_CASE(join_with_array)
+{
+    using py::string;
+    using std::array;
+
+    string sep = "-";
+    array<string, 3> items = {"a", "b", "c"};
     BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
 }
 

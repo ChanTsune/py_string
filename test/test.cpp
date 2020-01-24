@@ -2,12 +2,12 @@
 
 #include <vector>
 #include <deque>
+#include <forward_list>
 
 #include <boost/test/included/unit_test.hpp>
 
-#include "py_string.hpp"
+#include "../py_string.hpp"
 #include "tupleplus.hpp"
-
 
 BOOST_AUTO_TEST_SUITE(pyUtil)
 
@@ -173,8 +173,8 @@ BOOST_AUTO_TEST_CASE(endswith)
 
     BOOST_CHECK(str.endswith("str"));
     BOOST_CHECK(str.endswith("st", 0, -1));
-    BOOST_CHECK(str.endswith("str", 0,-3));
-    BOOST_CHECK(!str.endswith("str", 0,-1));
+    BOOST_CHECK(str.endswith("str", 0, -3));
+    BOOST_CHECK(!str.endswith("str", 0, -1));
     BOOST_CHECK(!str.endswith("str", 0, 1));
 }
 
@@ -197,24 +197,61 @@ BOOST_AUTO_TEST_CASE(find)
     BOOST_CHECK_EQUAL(str.pyfind("", 1), 1);
 }
 
-BOOST_AUTO_TEST_CASE(join)
+BOOST_AUTO_TEST_CASE(join_with_vector)
 {
     using py::string;
-    using std::deque;
     using std::vector;
 
     string sep = "-";
     string empty = "";
     vector<string> items = {"a", "b", "c"};
     vector<string> no_item = {};
-    deque<string> qitems = {"a", "b", "c"};
 
     BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
     BOOST_CHECK_EQUAL(sep.join(vector<string>{"a", "b", "c"}), "a-b-c");
     BOOST_CHECK_EQUAL(sep.join(no_item), "");
     BOOST_CHECK_EQUAL(empty.join(items), "abc");
     BOOST_CHECK_EQUAL(empty.join(no_item), "");
-    BOOST_CHECK_EQUAL(sep.join(qitems), "a-b-c");
+}
+
+BOOST_AUTO_TEST_CASE(join_with_deque)
+{
+    using py::string;
+    using std::deque;
+
+    string sep = "-";
+    deque<string> items = {"a", "b", "c"};
+    BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
+}
+
+BOOST_AUTO_TEST_CASE(join_with_list)
+{
+    using py::string;
+    using std::list;
+
+    string sep = "-";
+    list<string> items = {"a", "b", "c"};
+    BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
+}
+
+BOOST_AUTO_TEST_CASE(join_with_forward_list)
+{
+    using py::string;
+    using std::forward_list;
+
+    string sep = "-";
+    forward_list<string> items = {"a", "b", "c"};
+    BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
+}
+
+BOOST_AUTO_TEST_CASE(join_with_array)
+{
+    using py::string;
+    using std::array;
+
+    string sep = "-";
+    array<string, 3> items = {"a", "b", "c"};
+    BOOST_CHECK_EQUAL(sep.join(items), "a-b-c");
 }
 
 BOOST_AUTO_TEST_CASE(ljust)
@@ -313,7 +350,8 @@ BOOST_AUTO_TEST_CASE(rpartition)
     BOOST_CHECK(tmp == (vector<string>{"", "", "1-2-3-4-5"}));
 }
 
-BOOST_AUTO_TEST_CASE(rsplit){
+BOOST_AUTO_TEST_CASE(rsplit)
+{
     using py::string;
     using std::vector;
     string str = "1,1,1,1,1,";
@@ -323,20 +361,19 @@ BOOST_AUTO_TEST_CASE(rsplit){
     vector<string> ep = {};
 
     empty.rsplit(tmp);
-    BOOST_CHECK(tmp == ep );
+    BOOST_CHECK(tmp == ep);
 
-    str.rsplit(tmp,",");
+    str.rsplit(tmp, ",");
     BOOST_CHECK(tmp == (vector<string>{"1", "1", "1", "1", "1", ""}));
 
-    str.rsplit(tmp,",",2);
-    BOOST_CHECK(tmp == (vector<string>{"1,1,1,1","1",""}));
+    str.rsplit(tmp, ",", 2);
+    BOOST_CHECK(tmp == (vector<string>{"1,1,1,1", "1", ""}));
 
     space.rsplit(tmp);
     BOOST_CHECK(tmp == (vector<string>{"1", "1", "1", "1", "1"}));
 
     space.rsplit(tmp, 2);
     BOOST_CHECK(tmp == (vector<string>{"1 1 1", "1", "1"}));
-
 }
 
 BOOST_AUTO_TEST_CASE(rstrip)
@@ -363,12 +400,12 @@ BOOST_AUTO_TEST_CASE(split)
     vector<string> ep = {};
 
     empty.split(tmp);
-    BOOST_CHECK(tmp == ep );
+    BOOST_CHECK(tmp == ep);
 
-    str.split(tmp,",");
+    str.split(tmp, ",");
     BOOST_CHECK(tmp == (vector<string>{"1", "1", "1", "1", "1", ""}));
 
-    str.split(tmp,",",2);
+    str.split(tmp, ",", 2);
     BOOST_CHECK(tmp == (vector<string>{"1", "1", "1,1,1,"}));
 
     space.split(tmp);
@@ -378,7 +415,8 @@ BOOST_AUTO_TEST_CASE(split)
     BOOST_CHECK(tmp == (vector<string>{"1", "1", "1 1 1"}));
 }
 
-BOOST_AUTO_TEST_CASE(splitlines){
+BOOST_AUTO_TEST_CASE(splitlines)
+{
     using py::string;
     using std::vector;
 
@@ -387,19 +425,20 @@ BOOST_AUTO_TEST_CASE(splitlines){
     vector<string> tmp = {};
 
     lines.splitlines(tmp);
-    BOOST_CHECK(tmp == (vector<string>{"Python","C++"}));
+    BOOST_CHECK(tmp == (vector<string>{"Python", "C++"}));
 
-    lines.splitlines(tmp,true);
-    BOOST_CHECK(tmp == (vector<string>{"Python\n","C++"}));
+    lines.splitlines(tmp, true);
+    BOOST_CHECK(tmp == (vector<string>{"Python\n", "C++"}));
 
     lines_end.splitlines(tmp);
-    BOOST_CHECK(tmp == (vector<string>{"Python","C++"}));
+    BOOST_CHECK(tmp == (vector<string>{"Python", "C++"}));
 
-    lines_end.splitlines(tmp,true);
-    BOOST_CHECK(tmp == (vector<string>{"Python\n","C++\n"}));
+    lines_end.splitlines(tmp, true);
+    BOOST_CHECK(tmp == (vector<string>{"Python\n", "C++\n"}));
 }
 
-BOOST_AUTO_TEST_CASE(startswith){
+BOOST_AUTO_TEST_CASE(startswith)
+{
     using py::string;
 
     string str = "strstr";
@@ -411,7 +450,8 @@ BOOST_AUTO_TEST_CASE(startswith){
     BOOST_CHECK(!str.startswith("str", 0, 1));
 }
 
-BOOST_AUTO_TEST_CASE(strip){
+BOOST_AUTO_TEST_CASE(strip)
+{
     using py::string;
 
     string spacious = "    spacious    ";
@@ -424,17 +464,19 @@ BOOST_AUTO_TEST_CASE(strip){
     BOOST_CHECK_EQUAL(empty.strip(""), "");
 }
 
-BOOST_AUTO_TEST_CASE(swapcase){
+BOOST_AUTO_TEST_CASE(swapcase)
+{
     using py::string;
 
     string str = "String";
     string str2 = "py_string";
 
-    BOOST_CHECK_EQUAL(str.swapcase(),"sTRING");
-    BOOST_CHECK_EQUAL(str2.swapcase(),"PY_STRING");
+    BOOST_CHECK_EQUAL(str.swapcase(), "sTRING");
+    BOOST_CHECK_EQUAL(str2.swapcase(), "PY_STRING");
 }
 
-BOOST_AUTO_TEST_CASE(title){
+BOOST_AUTO_TEST_CASE(title)
+{
     using py::string;
 
     string str = "string is like vector<char>";
@@ -442,7 +484,8 @@ BOOST_AUTO_TEST_CASE(title){
     BOOST_CHECK_EQUAL(str.title(), "String Is Like Vector<Char>");
 }
 
-BOOST_AUTO_TEST_CASE(upper){
+BOOST_AUTO_TEST_CASE(upper)
+{
     using py::string;
 
     string upper = "STRING";
@@ -454,7 +497,8 @@ BOOST_AUTO_TEST_CASE(upper){
     BOOST_CHECK_EQUAL(empty.upper(), empty);
 }
 
-BOOST_AUTO_TEST_CASE(zfill){
+BOOST_AUTO_TEST_CASE(zfill)
+{
     using py::string;
 
     string b = "100";
@@ -472,7 +516,7 @@ BOOST_AUTO_TEST_CASE(zfill){
     BOOST_CHECK_EQUAL(c.zfill(2), "-100");
     BOOST_CHECK_EQUAL(d.zfill(5), "+0100");
     BOOST_CHECK_EQUAL(e.zfill(5), "0=100");
-    BOOST_CHECK_EQUAL(empty.zfill(5),"00000");
+    BOOST_CHECK_EQUAL(empty.zfill(5), "00000");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

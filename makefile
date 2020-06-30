@@ -22,7 +22,7 @@ example:example.cpp py_string.hpp
 	./$(BUILD_DIR)/$@
 
 clean:
-	rm $(BUILD_DIR)/example $(BUILD_DIR)/test
+	rm -rf $(BUILD_DIR)
 
 test:test/test.cpp py_string.hpp
 	mkdir -p $(BUILD_DIR)

@@ -346,17 +346,16 @@ return c == 48 || c == 49;
     return std::make_tuple(start, stop, step, len);
   }
 
+  template <class T>
+  inline std::tuple<T, T, T, T> adjust_index(optional<T> _start,
+                                             optional<T> _stop,
+                                             T _length)
+  {
+    return adjust_index<T>(_start, _stop, 1, _length);
+  }
   inline void adjust_index(int &start, int &end, int len)
   {
-    using std::get;
-    auto t = adjust_index<int>(start, end, 1, len);
-    start = get<0>(t), end = get<1>(t);
-  }
-  inline void adjust_index(optional_int &start, optional_int &end, int len)
-  {
-    using std::get;
-    auto t = adjust_index<int>(start, end, 1, len);
-    start = get<0>(t), end = get<1>(t);
+    std::tie(start, end, std::ignore, std::ignore) = adjust_index<int>(start, end, 1, len);
   }
   template <class T> inline std::string itobin(T n)
   {
@@ -1366,12 +1365,9 @@ template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::slice(optional_int start,
                                                optional_int end) const
 {
-  util::adjust_index(start, end, this->size());
-
-  if (start >= (int)end) {
-    return "";
-  }
-  return this->substr(start, end - start);
+  int s, len;
+  std::tie(s, std::ignore, std::ignore, len) = util::adjust_index<int>(start, end, this->size());
+  return this->substr(s, len);
 }
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::slice(optional_int start,
@@ -1383,10 +1379,10 @@ basic_string<_Elme> basic_string<_Elme>::slice(optional_int start,
   if (step == py::nullopt || step == 1)
     return this->slice(start, end);
 
-  using std::get;
-  auto t = util::adjust_index<int>(start, end, step, this->size());
-  int start_i = get<0>(t), step_i = get<2>(t), len_i = get<3>(t);
+  int start_i, step_i, len_i;
   basic_string<_Elme> str = "";
+  std::tie(start_i, std::ignore, step_i, len_i) = util::adjust_index<int>(start, end, step, this->size());
+
   for (int i = 0; i < len_i; i += 1) {
     str.push_back(this->at(start_i));
     start_i += step_i;

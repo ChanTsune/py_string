@@ -33,10 +33,6 @@ namespace null_allow {
       , m_has_value(true)
     {
     }
-
-    operator T() const { return m_value; }
-    operator std::nullptr_t() const { return nullptr; }
-
     null_allow<T> &operator=(std::nullptr_t _Null)
     {
       m_has_value = false;
@@ -1356,10 +1352,10 @@ basic_string<_Elme> basic_string<_Elme>::zfill(size_t width) const
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::slice(optional_int index) const
 {
-  if (index == py::nullopt) {
+  if (!index.has_value()) {
     return *this;
   }
-  return basic_string<_Elme>(1, this->at(index));
+  return basic_string<_Elme>(1, this->at(index.value()));
 }
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::slice(optional_int start,
@@ -1376,7 +1372,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(optional_int start,
 {
   if (step == 0)
     return "";
-  if (step == py::nullopt || step == 1)
+  if (!step.has_value() || step == 1)
     return this->slice(start, end);
 
   int start_i, step_i, len_i;

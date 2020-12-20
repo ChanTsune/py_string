@@ -83,7 +83,7 @@ namespace null_allow {
 } // namespace null_allow
 
 template <class T> using optional = null_allow::null_allow<T>;
-nullptr_t nullopt = nullptr;
+std::nullptr_t nullopt = nullptr;
 
 using optional_int = optional<int>;
 

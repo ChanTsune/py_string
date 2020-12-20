@@ -83,6 +83,7 @@ namespace null_allow {
 } // namespace null_allow
 
 template <class T> using optional = null_allow::null_allow<T>;
+std::nullptr_t nullopt = nullptr;
 
 using optional_int = optional<int>;
 
@@ -1356,7 +1357,7 @@ basic_string<_Elme> basic_string<_Elme>::zfill(size_t width) const
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::slice(optional_int index) const
 {
-  if (index == nullptr) {
+  if (index == py::nullopt) {
     return *this;
   }
   return basic_string<_Elme>(1, this->at(index));
@@ -1379,7 +1380,7 @@ basic_string<_Elme> basic_string<_Elme>::slice(optional_int start,
 {
   if (step == 0)
     return "";
-  if (step == nullptr || step == 1)
+  if (step == py::nullopt || step == 1)
     return this->slice(start, end);
 
   using std::get;

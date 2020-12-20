@@ -22,13 +22,13 @@ BOOST_AUTO_TEST_CASE(sign)
 BOOST_AUTO_TEST_CASE(optional)
 {
   using py::optional_int;
-  optional_int null = nullptr;
+  optional_int null = py::nullopt;
   optional_int i = 1;
-  optional_int null2 = nullptr;
+  optional_int null2 = py::nullopt;
 
   BOOST_CHECK(null == null);
   BOOST_CHECK(null == null2);
-  BOOST_CHECK(null == nullptr);
+  BOOST_CHECK(null == py::nullopt);
   BOOST_CHECK(null != i);
   BOOST_CHECK(i == i);
 
@@ -45,11 +45,11 @@ BOOST_AUTO_TEST_CASE(adjustIndex)
   using py::util::adjust_index;
   using std::make_tuple;
 
-  BOOST_CHECK(adjust_index<int>(nullptr, nullptr, 1, 5)
+  BOOST_CHECK(adjust_index<int>(py::nullopt, py::nullopt, 1, 5)
               == make_tuple(0, 5, 1, 5));
-  BOOST_CHECK(adjust_index<int>(nullptr, nullptr, 2, 5)
+  BOOST_CHECK(adjust_index<int>(py::nullopt, py::nullopt, 2, 5)
               == make_tuple(0, 5, 2, 3));
-  BOOST_CHECK(adjust_index<int>(nullptr, nullptr, -1, 5)
+  BOOST_CHECK(adjust_index<int>(py::nullopt, py::nullopt, -1, 5)
               == make_tuple(4, -1, -1, 5));
   BOOST_CHECK(adjust_index<int>(1, 2, 3, 5) == make_tuple(1, 2, 3, 1));
   BOOST_CHECK(adjust_index<int>(-5, -1, -2, 6) == make_tuple(1, 5, -2, 0));
@@ -60,13 +60,13 @@ BOOST_AUTO_TEST_CASE(slice)
   string s = "01234";
   string t = "012345";
 
-  BOOST_CHECK_EQUAL((s[{ nullptr, nullptr, -1 }]), "43210");
+  BOOST_CHECK_EQUAL((s[{ py::nullopt, py::nullopt, -1 }]), "43210");
 
-  BOOST_CHECK_EQUAL((s[{ nullptr, nullptr, -2 }]), "420");
+  BOOST_CHECK_EQUAL((s[{ py::nullopt, py::nullopt, -2 }]), "420");
 
-  BOOST_CHECK_EQUAL((t[{ nullptr, nullptr, -1 }]), "543210");
+  BOOST_CHECK_EQUAL((t[{ py::nullopt, py::nullopt, -1 }]), "543210");
 
-  BOOST_CHECK_EQUAL((t[{ nullptr, nullptr, -2 }]), "531");
+  BOOST_CHECK_EQUAL((t[{ py::nullopt, py::nullopt, -2 }]), "531");
 
   BOOST_CHECK_EQUAL((t[{ -5, -1, 1 }]), "1234");
 

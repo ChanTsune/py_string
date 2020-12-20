@@ -22,7 +22,7 @@ Since it inherits std::string, it can be handled like std::string. Think that yo
 ```cpp
 py::string str = "hello world!";
 
-std::cout << str*2 << std::endl;
+std::cout << str * 2 << std::endl;
 //hello world!hello world!
 ```
 
@@ -56,14 +56,14 @@ for (auto &&s : slist)
 
 ```cpp
 py::string str3 = "{0} format string{1}";
-std::cout << str3.format("let's","!") << std::endl;
+std::cout << str3.format("let's", "!") << std::endl;
 //let's format string!
 py::string str4 = "{}{}{}";
-std::cout << str4.format("1",2,"3") << std::endl;
+std::cout << str4.format("1", 2, "3") << std::endl;
 //123
 
 py::string str = "{0},{1},{0}";
-std::cout << str.format("apple","banana") << std::endl;
+std::cout << str.format("apple", "banana") << std::endl;
 //apple,banana,apple
 
 ```
@@ -74,7 +74,7 @@ std::cout << str.format("apple","banana") << std::endl;
 py::string str5 = "0123456789";
 std::cout << str5[{0,5}] << std::endl;
 //01234
-std::cout << str5[{nullptr,nullptr,-1}] << std::end;
+std::cout << str5[{py::nullopt, py::nullopt, -1}] << std::end;
 //9876543210
 ```
 

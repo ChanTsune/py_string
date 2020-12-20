@@ -53,6 +53,7 @@ BOOST_AUTO_TEST_CASE(adjustIndex)
               == make_tuple(4, -1, -1, 5));
   BOOST_CHECK(adjust_index<int>(1, 2, 3, 5) == make_tuple(1, 2, 3, 1));
   BOOST_CHECK(adjust_index<int>(-5, -1, -2, 6) == make_tuple(1, 5, -2, 0));
+  BOOST_CHECK(adjust_index<int>(10, 0, 1, 10) == make_tuple(10, 0, 1, 0));
 }
 BOOST_AUTO_TEST_CASE(slice)
 {

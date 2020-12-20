@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(optional)
   BOOST_CHECK(null == null2);
   BOOST_CHECK(null == nullptr);
   BOOST_CHECK(null != i);
-  BOOST_CHECK(i = i);
+  BOOST_CHECK(i == i);
 
   BOOST_CHECK(i == 1);
   BOOST_CHECK(i != 2);

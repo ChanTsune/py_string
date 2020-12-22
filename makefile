@@ -8,7 +8,7 @@ else
 	CXX_VERSION = c++14
 endif
 
-CXX_OPTIONS = -Wall --std=${CXX_VERSION}
+CXX_OPTIONS = -Wall -Wextra --std=${CXX_VERSION}
 
 BUILD_DIR = build
 

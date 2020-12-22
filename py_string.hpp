@@ -1577,7 +1577,7 @@ std::ostream &operator<<(std::ostream &dst, T i)
 
 template <class T>
 std::ostream &operator<<(std::ostream &dst,
-                         const py::null_allow::null_allow<T> &i)
+                         const py::optional<T> &i)
 {
   dst << "optional(";
   if (i.has_value()) {

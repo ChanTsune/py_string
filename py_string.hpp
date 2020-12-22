@@ -1591,4 +1591,4 @@ std::ostream &operator<<(std::ostream &dst,
 #endif
 
 using py_string = py::string;
-#endif // include garde PY_STRING_HPP
+#endif // include guard PY_STRING_HPP

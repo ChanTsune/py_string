@@ -17,6 +17,11 @@
 #include <unordered_map>
 
 namespace py {
+#if __cplusplus >= 201703L
+#include <optional>
+using std::optional;
+using std::nullopt;
+#else
 namespace null_allow {
   template <class T> class null_allow {
   private:
@@ -80,6 +85,7 @@ namespace null_allow {
 
 template <class T> using optional = null_allow::null_allow<T>;
 std::nullptr_t nullopt = nullptr;
+#endif
 
 using optional_int = optional<int>;
 

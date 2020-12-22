@@ -1567,25 +1567,14 @@ namespace format_parser {
 #define PYS_DEBUG
 #ifdef PYS_DEBUG
 
-template <typename T,
-          typename std::enable_if_t<std::is_same<T, std::nullptr_t>::value,
-                                    std::nullptr_t> = nullptr>
-std::ostream &operator<<(std::ostream &dst, T i)
-{
-  return dst << "nullptr";
-}
-
 template <class T>
 std::ostream &operator<<(std::ostream &dst,
                          const py::optional<T> &i)
 {
-  dst << "optional(";
   if (i.has_value()) {
-    dst << i.value();
-  } else {
-    dst << nullptr;
+    return dst << "optional(" << i.value() << ")";
   }
-  return dst << ")";
+  return dst << "nullopt";
 }
 
 #endif

@@ -41,7 +41,7 @@ jobs:
         brew install boost
     - name: test
       run: |
-        make test
+        make -B
       env:
         CXX: ${{ matrix.cxx }}
         CXX_VERSION: ${{ matrix.cxx_version }}

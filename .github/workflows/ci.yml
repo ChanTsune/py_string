@@ -24,6 +24,9 @@ jobs:
           - os: ubuntu-latest
             cxx: clang++
             cxx_version: c++2a
+          - os: ubuntu-latest
+            cxx: g++
+            cxx_version: c++2a
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2

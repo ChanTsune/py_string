@@ -22,9 +22,8 @@ jobs:
         - c++2a
         exclude:
           - os: ubuntu-latest
-            cxx: cl
-          - os: macos-latest
-            cxx: cl
+            cxx: g++
+            cxx_version: c++2a
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2

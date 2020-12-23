@@ -1,6 +1,6 @@
 # py_string
 
-[![Build Status](https://travis-ci.org/ChanTsune/py_string.svg?branch=master)](https://travis-ci.org/ChanTsune/py_string)
+![CI](https://github.com/ChanTsune/py_string/workflows/CI/badge.svg)
 
 A library that provides methods equivalent to Python 3's str class in C ++  
 A class that reproduced the Python str class

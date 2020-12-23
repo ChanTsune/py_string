@@ -1,4 +1,4 @@
-name: clang-format
+name: CI
 
 on:
   push:
@@ -31,12 +31,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install dependencies
-      if: ${{ matrix.os == ubuntu-latest }}
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
         sudo apt update
         sudo apt install libboost-all-dev
     - name: install dependencies
-      if: ${{ matrix.os == macos-latest }}
+      if: ${{ matrix.os == 'macos-latest' }}
       run: |
         brew install boost
     - name: test

@@ -15,7 +15,7 @@ jobs:
         - macos-latest
         cxx:
         - clang++
-        - gcc++
+        - g++
         cxx_version:
         - c++14
         - c++17

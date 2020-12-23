@@ -12,7 +12,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: install tools
       run: |
-        sudo add-apt-repository 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main'
         sudo apt update
         sudo apt install clang-format
     - name: refactor

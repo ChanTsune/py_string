@@ -14,8 +14,8 @@ jobs:
         sudo apt install clang-format-10
     - name: refactor
       run: |
-        clang-format --version
-        clang-format -i -style=file py_string.hpp
+        clang-format-10 --version
+        clang-format-10 -i -style=file py_string.hpp
     - name: Commit changes
       uses: EndBug/add-and-commit@v5
       with:

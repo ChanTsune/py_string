@@ -1,0 +1,28 @@
+name: clang-format
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: install tools
+      run: |
+        sudo add-apt-repository 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main'
+        sudo apt update
+        sudo apt install clang-format
+    - name: refactor
+      run: |
+        clang-format -i -style=file py_string.hpp
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v5
+      with:
+        author_name: GitHub Actions
+        author_email: 41658782+ChanTsune@users.noreply.github.com
+        message: "Refactor by Github Actions"
+      env:
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'

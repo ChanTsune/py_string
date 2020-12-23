@@ -344,14 +344,14 @@ return c == 48 || c == 49;
 
   template <class T>
   inline std::tuple<T, T, T, T> adjust_index(optional<T> _start,
-                                             optional<T> _stop,
-                                             T _length)
+                                             optional<T> _stop, T _length)
   {
     return adjust_index<T>(_start, _stop, 1, _length);
   }
   inline void adjust_index(int &start, int &end, int len)
   {
-    std::tie(start, end, std::ignore, std::ignore) = adjust_index<int>(start, end, 1, len);
+    std::tie(start, end, std::ignore, std::ignore)
+      = adjust_index<int>(start, end, 1, len);
   }
   template <class T> inline std::string itobin(T n)
   {
@@ -1362,7 +1362,8 @@ basic_string<_Elme> basic_string<_Elme>::slice(optional_int start,
                                                optional_int end) const
 {
   int s, len;
-  std::tie(s, std::ignore, std::ignore, len) = util::adjust_index<int>(start, end, this->size());
+  std::tie(s, std::ignore, std::ignore, len)
+    = util::adjust_index<int>(start, end, this->size());
   return this->substr(s, len);
 }
 template <class _Elme>
@@ -1377,7 +1378,8 @@ basic_string<_Elme> basic_string<_Elme>::slice(optional_int start,
 
   int start_i, step_i, len_i;
   basic_string<_Elme> str = "";
-  std::tie(start_i, std::ignore, step_i, len_i) = util::adjust_index<int>(start, end, step, this->size());
+  std::tie(start_i, std::ignore, step_i, len_i)
+    = util::adjust_index<int>(start, end, step, this->size());
 
   for (int i = 0; i < len_i; i += 1) {
     str.push_back(this->at(start_i));
@@ -1568,8 +1570,7 @@ namespace format_parser {
 #ifdef PYS_DEBUG
 
 template <class T>
-std::ostream &operator<<(std::ostream &dst,
-                         const py::optional<T> &i)
+std::ostream &operator<<(std::ostream &dst, const py::optional<T> &i)
 {
   if (i.has_value()) {
     return dst << "optional(" << i.value() << ")";

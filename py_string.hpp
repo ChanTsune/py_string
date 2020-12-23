@@ -29,7 +29,7 @@ namespace null_allow {
     bool m_has_value;
 
   public:
-    null_allow<T>(std::nullptr_t _Null)
+    null_allow<T>(std::nullptr_t)
       : m_has_value(false)
     {
     }
@@ -38,7 +38,7 @@ namespace null_allow {
       , m_has_value(true)
     {
     }
-    null_allow<T> &operator=(std::nullptr_t _Null)
+    null_allow<T> &operator=(std::nullptr_t)
     {
       m_has_value = false;
       return *this;
@@ -59,23 +59,10 @@ namespace null_allow {
     {
       return !(this->operator==(rhs));
     };
-    // bool operator<(null_allow<T> rhs){};
-    // bool operator>(null_allow<T> rhs){};
-    // bool operator<=(null_allow<T> rhs){};
-    // bool operator>=(null_allow<T> rhs){};
-
-    bool operator==(std::nullptr_t _Null) const { return !m_has_value; }
-    bool operator!=(std::nullptr_t _Null) const { return m_has_value; }
-    //  bool operator<(std::nullptr_t _Null){ return !m_has_value; }
-    //  bool operator>(std::nullptr_t _Null){ return !m_has_value; }
-    //  bool operator<=(std::nullptr_t _Null){ return m_has_value; }
-    //  bool operator>=(std::nullptr_t _Null){ return m_has_value; }
+    bool operator==(std::nullptr_t) const { return !m_has_value; }
+    bool operator!=(std::nullptr_t) const { return m_has_value; }
     bool operator==(T &&_Value) const { return m_value == _Value; }
     bool operator!=(T &&_Value) const { return m_value != _Value; }
-    //  bool operator<(T _Value){ return m_value < _Value; }
-    //  bool operator>(T _Value){ return m_value > _Value; }
-    //  bool operator<=(T _Value){ return m_value <= _Value; }
-    //  bool operator>=(T _Value){ return m_value >= _Value; }
     bool has_value() const { return m_has_value; }
     T value() const { return m_value; }
     T value_or(T &&v) const { return m_has_value ? m_value : v; }

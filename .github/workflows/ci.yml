@@ -22,7 +22,7 @@ jobs:
         - c++2a
         exclude:
           - os: ubuntu-latest
-            cxx: g++
+            cxx: clang++
             cxx_version: c++2a
     runs-on: ${{ matrix.os }}
     steps:

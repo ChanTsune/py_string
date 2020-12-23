@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
 
   cout << slice.slice(0, 20, 2) << endl;
   cout << slice.slice(0, 20, -2) << endl;
-  cout << slice[{ 4, nullptr }] << endl;
+  cout << slice[{ 4, py::nullopt }] << endl;
 
   // string format
   py::string format = "{} is {} than {}";

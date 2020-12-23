@@ -19,8 +19,8 @@
 namespace py {
 #if __cplusplus >= 201703L
 #include <optional>
-using std::optional;
 using std::nullopt;
+using std::optional;
 #else
 namespace null_allow {
   template <class T> class null_allow {

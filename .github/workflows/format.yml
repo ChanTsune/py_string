@@ -11,7 +11,7 @@ jobs:
     - name: install tools
       run: |
         sudo apt update
-        sudo apt install clang-format
+        sudo apt install clang-format-10
     - name: refactor
       run: |
         clang-format --version

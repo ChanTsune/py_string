@@ -297,14 +297,12 @@ BOOST_AUTO_TEST_CASE(lstrip)
 BOOST_AUTO_TEST_CASE(partition)
 {
   using py::string;
-  using std::vector;
-  string str = "1-2-3-4-5";
-  vector<string> tmp = {};
-  str.partition("-", tmp);
+  using std::make_tuple;
 
-  BOOST_CHECK(tmp == (vector<string> { "1", "-", "2-3-4-5" }));
-  str.partition("p", tmp);
-  BOOST_CHECK(tmp == (vector<string> { "1-2-3-4-5", "", "" }));
+  string str = "1-2-3-4-5";
+
+  BOOST_CHECK(str.partition("-") == make_tuple("1", "-", "2-3-4-5"));
+  BOOST_CHECK(str.partition("p") == make_tuple("1-2-3-4-5", "", "" ));
 }
 
 BOOST_AUTO_TEST_CASE(replace)
@@ -344,15 +342,12 @@ BOOST_AUTO_TEST_CASE(rjust)
 BOOST_AUTO_TEST_CASE(rpartition)
 {
   using py::string;
-  using std::vector;
+  using std::make_tuple;
 
   string str = "1-2-3-4-5";
-  vector<string> tmp = {};
-  str.rpartition("-", tmp);
 
-  BOOST_CHECK(tmp == (vector<string> { "1-2-3-4", "-", "5" }));
-  str.rpartition("p", tmp);
-  BOOST_CHECK(tmp == (vector<string> { "", "", "1-2-3-4-5" }));
+  BOOST_CHECK(str.rpartition("-") == make_tuple("1-2-3-4", "-", "5"));
+  BOOST_CHECK(str.rpartition("p") == make_tuple("", "", "1-2-3-4-5"));
 }
 
 BOOST_AUTO_TEST_CASE(rsplit)

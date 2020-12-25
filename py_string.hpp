@@ -574,17 +574,17 @@ public:
   void rpartition(basic_string<_Elme> sep, _Iterable &iterable) const;
 
   template <typename _Iterable>
-  void rsplit(_Iterable &dst, int maxsplit = -1) const;
+  void rsplit(_Iterable &dst, size_t maxsplit = std::numeric_limits<size_t>::max()) const;
   template <typename _Iterable>
-  void rsplit(_Iterable &dst, basic_string<_Elme> sep, int maxsplit = -1) const;
+  void rsplit(_Iterable &dst, basic_string<_Elme> sep, size_t maxsplit = std::numeric_limits<size_t>::max()) const;
 
   basic_string<_Elme> rstrip(void) const;
   basic_string<_Elme> rstrip(basic_string<_Elme> chars) const;
 
   template <typename _Iterable>
-  void split(_Iterable &dst, int maxsplit = -1) const;
+  void split(_Iterable &dst, size_t maxsplit = std::numeric_limits<size_t>::max()) const;
   template <typename _Iterable>
-  void split(_Iterable &dst, basic_string<_Elme> sep, int maxsplit = -1) const;
+  void split(_Iterable &dst, basic_string<_Elme> sep, size_t maxsplit = std::numeric_limits<size_t>::max()) const;
 
   template <typename _Iterable>
   void splitlines(_Iterable &dst, bool keepends = false) const;
@@ -1071,7 +1071,7 @@ void basic_string<_Elme>::rpartition(basic_string<_Elme> sep,
 }
 template <class _Elme>
 template <typename _Iterable>
-void basic_string<_Elme>::rsplit(_Iterable &result, int maxsplit) const
+void basic_string<_Elme>::rsplit(_Iterable &result, size_t maxsplit) const
 {
   if (result.size() != 0)
     result.clear();
@@ -1079,9 +1079,6 @@ void basic_string<_Elme>::rsplit(_Iterable &result, int maxsplit) const
   auto end = this->rend();
   int index = this->size() - 1, len = 0;
   basic_string<_Elme> tmp;
-  if (maxsplit < 0) {
-    maxsplit = std::numeric_limits<int>::max();
-  }
   for (; start != end && maxsplit; ++start) {
     if (util::isspace(*start)) {
       if (len != 0) {
@@ -1105,7 +1102,7 @@ void basic_string<_Elme>::rsplit(_Iterable &result, int maxsplit) const
 template <class _Elme>
 template <typename _Iterable>
 void basic_string<_Elme>::rsplit(_Iterable &result, basic_string<_Elme> sep,
-                                 int maxsplit) const
+                                 size_t maxsplit) const
 {
   if (sep.empty())
     return this->rsplit(result, maxsplit);
@@ -1113,9 +1110,6 @@ void basic_string<_Elme>::rsplit(_Iterable &result, basic_string<_Elme> sep,
     result.clear();
   size_t index, pre_index = std::basic_string<_Elme>::npos,
                 sep_len = sep.size();
-  if (maxsplit < 0) {
-    maxsplit = std::numeric_limits<int>::max();
-  }
   for (; maxsplit--;) {
     index = this->rfind(sep, pre_index);
     if (index == std::basic_string<_Elme>::npos)
@@ -1152,7 +1146,7 @@ basic_string<_Elme> basic_string<_Elme>::rstrip(basic_string<_Elme> chars) const
 
 template <class _Elme>
 template <typename _Iterable>
-void basic_string<_Elme>::split(_Iterable &result, int maxsplit) const
+void basic_string<_Elme>::split(_Iterable &result, size_t maxsplit) const
 {
   if (result.size() != 0)
     result.clear();
@@ -1160,9 +1154,6 @@ void basic_string<_Elme>::split(_Iterable &result, int maxsplit) const
   auto end = this->end();
   int index = 0, len = 0;
   basic_string<_Elme> tmp;
-  if (maxsplit < 0) {
-    maxsplit = std::numeric_limits<int>::max();
-  }
   for (; start != end && maxsplit; ++start) {
     if (util::isspace(*start)) {
       if (len != 0) {
@@ -1185,16 +1176,13 @@ void basic_string<_Elme>::split(_Iterable &result, int maxsplit) const
 template <class _Elme>
 template <typename _Iterable>
 void basic_string<_Elme>::split(_Iterable &result, basic_string<_Elme> sep,
-                                int maxsplit) const
+                                size_t maxsplit) const
 {
   if (sep.empty())
     return this->split(result, maxsplit);
   if (result.size() != 0)
     result.clear();
   size_t index, pre_index = 0, sep_len = sep.size();
-  if (maxsplit < 0) {
-    maxsplit = std::numeric_limits<int>::max();
-  }
   for (; maxsplit--;) {
     index = this->find(sep, pre_index);
     if (index == std::basic_string<_Elme>::npos)

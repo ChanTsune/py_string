@@ -341,6 +341,11 @@ return c == 48 || c == 49;
   {
     return adjust_index<T>(_start, _stop, 1, _length);
   }
+  template <class T>
+  inline std::tuple<T,T,T,T> adjust_index(T _start, T stop, T _length)
+  {
+    return adjust_index(optional<T>(_start), optional<T>(stop), _length);
+  }
   inline void adjust_index(int &start, int &end, int len)
   {
     std::tie(start, end, std::ignore, std::ignore)
@@ -520,8 +525,8 @@ public:
   basic_string<_Elme> operator[](std::initializer_list<optional_int> slice);
   basic_string<_Elme> capitalize(void) const noexcept;
   basic_string<_Elme> center(size_t width, _Elme fillchar = ' ') const;
-  size_t count(basic_string<_Elme> sub, int start = 0,
-               int end = std::numeric_limits<int>::max()) const;
+  size_t count(basic_string<_Elme> sub, size_t start = 0,
+               size_t end = std::numeric_limits<size_t>::max()) const;
   bool endswith(basic_string<_Elme> suffix, int start = 0,
                 int end = std::numeric_limits<int>::max()) const;
   basic_string<_Elme> expandtabs(size_t tabsize = 8) const;
@@ -695,14 +700,14 @@ basic_string<_Elme> basic_string<_Elme>::center(size_t width,
          + basic_string<_Elme>(r, fillchar);
 }
 template <class _Elme>
-size_t basic_string<_Elme>::count(basic_string<_Elme> sub, int start,
-                                  int end) const
+size_t basic_string<_Elme>::count(basic_string<_Elme> sub, size_t start,
+                                  size_t end) const
 {
   size_t sublen = sub.size();
   if (sublen == 0) {
     return this->size() + 1;
   }
-  util::adjust_index(start, end, this->size());
+  std::tie(start, end, std::ignore, std::ignore) = util::adjust_index(start, end, this->size());
   size_t nummatches = 0;
   size_t cursor = this->find(sub, start);
   while ((cursor != std::basic_string<_Elme>::npos)

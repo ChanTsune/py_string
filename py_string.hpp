@@ -1043,7 +1043,7 @@ void basic_string<_Elme>::rpartition(basic_string<_Elme> sep,
                                      basic_string<_Elme> &dst2,
                                      basic_string<_Elme> &dst3) const
 {
-  int index = this->pyrfind(sep);
+  auto index = this->pyrfind(sep);
   if (index == -1) {
     dst1 = "";
     dst2 = "";

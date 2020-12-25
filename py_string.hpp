@@ -1327,7 +1327,7 @@ basic_string<_Elme> basic_string<_Elme>::upper(void) const
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::zfill(size_t width) const
 {
-  int len = this->size();
+  auto len = this->size();
   if (len >= width)
     return *this;
   if (this->empty())

@@ -342,7 +342,7 @@ return c == 48 || c == 49;
     return adjust_index<T>(_start, _stop, 1, _length);
   }
   template <class T>
-  inline std::tuple<T,T,T,T> adjust_index(T _start, T stop, T _length)
+  inline std::tuple<T, T, T, T> adjust_index(T _start, T stop, T _length)
   {
     return adjust_index(optional<T>(_start), optional<T>(stop), _length);
   }
@@ -707,7 +707,8 @@ size_t basic_string<_Elme>::count(basic_string<_Elme> sub, size_t start,
   if (sublen == 0) {
     return this->size() + 1;
   }
-  std::tie(start, end, std::ignore, std::ignore) = util::adjust_index(start, end, this->size());
+  std::tie(start, end, std::ignore, std::ignore)
+    = util::adjust_index(start, end, this->size());
   size_t nummatches = 0;
   size_t cursor = this->find(sub, start);
   while ((cursor != std::basic_string<_Elme>::npos)

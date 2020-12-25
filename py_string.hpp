@@ -551,10 +551,7 @@ public:
   basic_string<_Elme> lower(void) const noexcept;
   basic_string<_Elme> lstrip(void) const;
   basic_string<_Elme> lstrip(basic_string<_Elme> chars) const;
-  void partition(basic_string<_Elme> sep, basic_string<_Elme> &dst1,
-                 basic_string<_Elme> &dst2, basic_string<_Elme> &dst3) const;
-  template <typename _Iterable>
-  void partition(basic_string<_Elme> sep, _Iterable &iterable) const;
+  std::tuple<basic_string<_Elme>, basic_string<_Elme>, basic_string<_Elme>> partition(basic_string<_Elme> sep) const;
   basic_string<_Elme>
   pyreplace(basic_string<_Elme> old, basic_string<_Elme> _new,
             size_t count = std::numeric_limits<size_t>::max()) const;
@@ -563,10 +560,7 @@ public:
   int rindex(basic_string<_Elme> sub, int start = 0,
              int end = std::numeric_limits<int>::max()) const;
   basic_string<_Elme> rjust(size_t width, _Elme fillchar = ' ') const;
-  void rpartition(basic_string<_Elme> sep, basic_string<_Elme> &dst1,
-                  basic_string<_Elme> &dst2, basic_string<_Elme> &dst3) const;
-  template <typename _Iterable>
-  void rpartition(basic_string<_Elme> sep, _Iterable &iterable) const;
+  std::tuple<basic_string<_Elme>, basic_string<_Elme>, basic_string<_Elme>> rpartition(basic_string<_Elme> sep) const;
 
   template <typename _Iterable>
   void rsplit(_Iterable &dst,
@@ -966,30 +960,13 @@ basic_string<_Elme> basic_string<_Elme>::lstrip(basic_string<_Elme> chars) const
   return this->substr(std::distance(this->begin(), itr));
 }
 template <class _Elme>
-void basic_string<_Elme>::partition(basic_string<_Elme> sep,
-                                    basic_string<_Elme> &dst1,
-                                    basic_string<_Elme> &dst2,
-                                    basic_string<_Elme> &dst3) const
+std::tuple<basic_string<_Elme>, basic_string<_Elme>, basic_string<_Elme>> basic_string<_Elme>::partition(basic_string<_Elme> sep) const
 {
-  size_t index = this->find(sep);
+  auto index = this->find(sep);
   if (index == std::basic_string<_Elme>::npos) {
-    dst1 = *this;
-    dst2 = "";
-    dst3 = "";
-  } else {
-    dst1 = this->substr(0, index);
-    dst2 = sep;
-    dst3 = this->substr(index + sep.size());
+    return std::make_tuple(*this, "", "");
   }
-}
-template <class _Elme>
-template <typename _Iterable>
-void basic_string<_Elme>::partition(basic_string<_Elme> sep,
-                                    _Iterable &iterable) const
-{
-  basic_string<_Elme> dst1, dst2, dst3;
-  this->partition(sep, dst1, dst2, dst3);
-  iterable = { dst1, dst2, dst3 };
+  return std::make_tuple(this->substr(0, index), sep, this->substr(index + sep.size()));
 }
 template <class _Elme>
 basic_string<_Elme> basic_string<_Elme>::pyreplace(basic_string<_Elme> old,
@@ -1042,30 +1019,13 @@ basic_string<_Elme> basic_string<_Elme>::rjust(size_t width,
 }
 
 template <class _Elme>
-void basic_string<_Elme>::rpartition(basic_string<_Elme> sep,
-                                     basic_string<_Elme> &dst1,
-                                     basic_string<_Elme> &dst2,
-                                     basic_string<_Elme> &dst3) const
+std::tuple<basic_string<_Elme>, basic_string<_Elme>, basic_string<_Elme>> basic_string<_Elme>::rpartition(basic_string<_Elme> sep) const
 {
-  auto index = this->pyrfind(sep);
-  if (index == -1) {
-    dst1 = "";
-    dst2 = "";
-    dst3 = *this;
-  } else {
-    dst1 = this->substr(0, index);
-    dst2 = sep;
-    dst3 = this->substr(index + sep.size());
+  auto index = this->rfind(sep);
+  if (index == std::string::npos) {
+    return std::make_tuple("", "", *this);
   }
-}
-template <class _Elme>
-template <typename _Iterable>
-void basic_string<_Elme>::rpartition(basic_string<_Elme> sep,
-                                     _Iterable &iterable) const
-{
-  basic_string<_Elme> dst1, dst2, dst3;
-  this->rpartition(sep, dst1, dst2, dst3);
-  iterable = { dst1, dst2, dst3 };
+  return std::make_tuple(this->substr(0, index), sep, this->substr(index + sep.size()));
 }
 template <class _Elme>
 template <typename _Iterable>

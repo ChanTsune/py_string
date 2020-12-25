@@ -574,17 +574,21 @@ public:
   void rpartition(basic_string<_Elme> sep, _Iterable &iterable) const;
 
   template <typename _Iterable>
-  void rsplit(_Iterable &dst, size_t maxsplit = std::numeric_limits<size_t>::max()) const;
+  void rsplit(_Iterable &dst,
+              size_t maxsplit = std::numeric_limits<size_t>::max()) const;
   template <typename _Iterable>
-  void rsplit(_Iterable &dst, basic_string<_Elme> sep, size_t maxsplit = std::numeric_limits<size_t>::max()) const;
+  void rsplit(_Iterable &dst, basic_string<_Elme> sep,
+              size_t maxsplit = std::numeric_limits<size_t>::max()) const;
 
   basic_string<_Elme> rstrip(void) const;
   basic_string<_Elme> rstrip(basic_string<_Elme> chars) const;
 
   template <typename _Iterable>
-  void split(_Iterable &dst, size_t maxsplit = std::numeric_limits<size_t>::max()) const;
+  void split(_Iterable &dst,
+             size_t maxsplit = std::numeric_limits<size_t>::max()) const;
   template <typename _Iterable>
-  void split(_Iterable &dst, basic_string<_Elme> sep, size_t maxsplit = std::numeric_limits<size_t>::max()) const;
+  void split(_Iterable &dst, basic_string<_Elme> sep,
+             size_t maxsplit = std::numeric_limits<size_t>::max()) const;
 
   template <typename _Iterable>
   void splitlines(_Iterable &dst, bool keepends = false) const;

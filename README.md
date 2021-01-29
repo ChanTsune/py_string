@@ -17,7 +17,7 @@ Since it inherits std::string, it can be handled like std::string. Think that yo
 #include "py_string.hpp"
 ```
 
-### multipication
+### multiplication
 
 ```cpp
 py::string str = "hello world!";

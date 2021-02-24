@@ -8,3 +8,5 @@ build/
 googletest/
 
 .idea
+
+cmake-build-*/
